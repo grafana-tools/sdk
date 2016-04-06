@@ -47,13 +47,17 @@ func (r *Instance) CreateDatasource(ds grafana.Datasource) {
 func (r *Instance) UpdateDatasource(ds grafana.Datasource) {
 }
 
-func (r *Instance) GetAllDatasources() []grafana.Datasource {
-	var dss []grafana.Datasource
-	data, err := r.get("api/datasources")
-	err = json.Unmarshal(data, &dss)
-	fmt.Printf("%+v\n", err) // output for debug
-
-	return dss
+func (r *Instance) GetAllDatasources() ([]grafana.Datasource, error) {
+	var (
+		raw []byte
+		dss []grafana.Datasource
+		err error
+	)
+	if raw, err = r.get("api/datasources"); err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(raw, &dss)
+	return dss, err
 }
 
 func (r *Instance) SetBoard(b *grafana.Board) {
