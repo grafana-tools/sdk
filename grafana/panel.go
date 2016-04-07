@@ -40,7 +40,7 @@ type (
 		Type       string  `json:"type"`
 		Error      bool    `json:"error"`
 		IsNew      bool    `json:"isNew"`
-		Span       uint    `json:"span"`
+		Span       float32 `json:"span"`
 		Links      []link  `json:"links,omitempty"`
 		Datasource *string `json:"datasource,omitempty"`
 		Renderer   string  `json:"renderer"`
@@ -67,7 +67,7 @@ type (
 		Pointradius     int           `json:"pointradius"`
 		Points          bool          `json:"points"`
 		seriesOverrides []interface{} // TODO
-		Span            int           `json:"span"`
+		Span            float32       `json:"span"`
 		Stack           bool          `json:"stack"`
 		SteppedLine     bool          `json:"steppedLine"`
 		Targets         []Target      `json:"targets,omitempty"`
@@ -83,13 +83,21 @@ type (
 	}
 	tablePanel struct {
 		commonPanel
-		Columns   []string `json:"columns"`
+		Columns   []column `json:"columns"`
 		Transform string   `json:"transform"`
 	}
 	textPanel struct {
 		commonPanel
-		Content string `json:"content"`
-		Mode    string `json:"mode"`
+		Content    string `json:"content"`
+		Mode       string `json:"mode"`
+		PageSize   uint   `json:"pageSize"`
+		Scroll     bool   `json:"scroll"`
+		ShowHeader bool   `json:"showHeader"`
+		Sort       struct {
+			Col  int  `json:"col"`
+			Desc bool `json:"desc"`
+		} `json:"sort"`
+		Styles []columnStyle `json:"styles"`
 	}
 	singlestatPanel struct {
 		commonPanel
@@ -107,27 +115,42 @@ type (
 	unknownPanel map[string]interface{}
 )
 
-// for graph panel
+// for a graph panel
 type grid struct {
-	LeftLogBase     *int   `json:"leftLogBase"`
-	LeftMin         *int   `json:"leftMin"`
-	RightLogBase    *int   `json:"rightLogBase"`
-	RightMax        *int   `json:"rightMax"`
-	RightMin        *int   `json:"rightMin"`
-	Threshold1      *int   `json:"threshold1"`
-	Threshold1Color string `json:"threshold1Color"`
-	Threshold2      *int   `json:"threshold2"`
-	Threshold2Color string `json:"threshold2Color"`
+	LeftLogBase     *int     `json:"leftLogBase"`
+	LeftMax         *int     `json:"leftMax"`
+	LeftMin         *int     `json:"leftMin"`
+	RightLogBase    *int     `json:"rightLogBase"`
+	RightMax        *int     `json:"rightMax"`
+	RightMin        *int     `json:"rightMin"`
+	Threshold1      *float64 `json:"threshold1"`
+	Threshold1Color string   `json:"threshold1Color"`
+	Threshold2      *float64 `json:"threshold2"`
+	Threshold2Color string   `json:"threshold2Color"`
+	ThresholdLine   bool     `json:"thresholdLine"`
 }
 
-// for singlestat
+// for a table
+type (
+	column struct {
+		Text  string `json:"text"`
+		Value string `json:"value"`
+	}
+	columnStyle struct {
+		DateFormat string `json:"dateFormat"`
+		Pattern    string `json:"pattern"`
+		Type       string `json:"type"`
+	}
+)
+
+// for a singlestat
 type valueMap struct {
 	Op    string `json:"op"`
 	Text  string `json:"text"`
 	Value string `json:"value"`
 }
 
-// for any panel
+// for an any panel
 type Target struct {
 	RefID          string `json:"refId"`
 	Datasource     string `json:"datasource"`

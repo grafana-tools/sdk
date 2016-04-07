@@ -1,5 +1,10 @@
 package grafana
 
+import (
+	"bytes"
+	"encoding/json"
+)
+
 /*
  Copyleft 2016 Alexander I.Grafov <grafov@gmail.com>
 
@@ -60,7 +65,7 @@ type (
 		Title    string  `json:"title"`
 		Collapse bool    `json:"collapse"`
 		Editable bool    `json:"editable"`
-		Height   string  `json:"height"`
+		Height   height  `json:"height"`
 		Panels   []Panel `json:"panels"`
 	}
 	templateVar struct {
@@ -72,7 +77,7 @@ type (
 		IncludeAll  bool     `json:"includeAll"`
 		AllFormat   string   `json:"allFormat"`
 		Multi       bool     `json:"multi"`
-		MultiFormat bool     `json:"multiFormat"`
+		MultiFormat string   `json:"multiFormat"`
 		Query       string   `json:"query"`
 		Current     current  `json:"current"`
 		Label       string   `json:"label"`
@@ -111,6 +116,25 @@ type link struct {
 	Tooltip     *string  `json:"tooltip,omitempty"`
 	IncludeVars bool     `json:"includeVars"`
 	KeepTime    *bool    `json:"keepTime,omitempty"`
+}
+
+// height of rows maybe passed as number (ex 200) or
+// as string (ex "200px") or empty string
+type height string
+
+func (h *height) UnmarshalJSON(raw []byte) error {
+	if raw == nil || bytes.Compare(raw, []byte(`"null"`)) == 0 {
+		return nil
+	}
+	if raw[0] != '"' {
+		tmp := []byte{'"'}
+		raw = append(tmp, raw...)
+		raw = append(raw, byte('"'))
+	}
+	var tmp string
+	err := json.Unmarshal(raw, &tmp)
+	*h = height(tmp)
+	return err
 }
 
 func newBoard(title string) *Board {
