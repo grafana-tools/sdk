@@ -23,6 +23,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"time"
 
 	"github.com/grafov/autograf/grafana"
 )
@@ -31,14 +32,36 @@ func (r *Instance) SetDashboard(b *grafana.Board) {
 
 }
 
-func (r *Instance) GetDashboard(slug string) (grafana.Board, error) {
+type BoardMeta struct {
+	IsStarred  bool      `json:"isStarred,omitempty"`
+	IsHome     bool      `json:"isHome,omitempty"`
+	IsSnapshot bool      `json:"isSnapshot,omitempty"`
+	Type       string    `json:"type,omitempty"`
+	CanSave    bool      `json:"canSave"`
+	CanEdit    bool      `json:"canEdit"`
+	CanStar    bool      `json:"canStar"`
+	Slug       string    `json:"slug"`
+	Expires    time.Time `json:"expires"`
+	Created    time.Time `json:"created"`
+	Updated    time.Time `json:"updated"`
+	UpdatedBy  string    `json:"updatedBy"`
+	CreatedBy  string    `json:"createdBy"`
+	Version    int       `json:"version"`
+}
+
+type BoardWithMeta struct {
+	Meta  BoardMeta     `json:"meta"`
+	Board grafana.Board `json:"dashboard"`
+}
+
+func (r *Instance) GetDashboard(slug string) (BoardWithMeta, error) {
 	var (
 		raw   []byte
-		board grafana.Board
+		board BoardWithMeta
 		err   error
 	)
-	if raw, err = r.get(fmt.Sprintf("api/dashboards/db/%s", slug), nil); err != nil {
-		return grafana.Board{}, err
+	if raw, err = r.get(fmt.Sprintf("api/dashboards/%s", slug), nil); err != nil {
+		return BoardWithMeta{}, err
 	}
 	err = json.Unmarshal(raw, &board)
 	return board, err
