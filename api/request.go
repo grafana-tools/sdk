@@ -21,14 +21,11 @@ package api
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"time"
-
-	"github.com/grafov/autograf/grafana"
 )
 
 // Instance of Grafana.
@@ -40,68 +37,6 @@ type Instance struct {
 // NewInstance keeps request data.
 func NewInstance(apiURL, apiKey string) *Instance {
 	return &Instance{url: apiURL, key: fmt.Sprintf("Bearer %s", apiKey)}
-}
-
-func (r *Instance) CreateDatasource(ds grafana.Datasource) {
-}
-
-func (r *Instance) UpdateDatasource(ds grafana.Datasource) {
-}
-
-func (r *Instance) GetAllDatasources() ([]grafana.Datasource, error) {
-	var (
-		raw []byte
-		dss []grafana.Datasource
-		err error
-	)
-	if raw, err = r.get("api/datasources", nil); err != nil {
-		return nil, err
-	}
-	err = json.Unmarshal(raw, &dss)
-	return dss, err
-}
-
-func (r *Instance) SetDashboard(b *grafana.Board) {
-
-}
-
-func (r *Instance) GetDashboard(slug string) (grafana.Board, error) {
-	var (
-		raw   []byte
-		board grafana.Board
-		err   error
-	)
-	if raw, err = r.get(fmt.Sprintf("api/dashboards/db/%s", slug), nil); err != nil {
-		return grafana.Board{}, err
-	}
-	err = json.Unmarshal(raw, &board)
-	return board, err
-}
-
-// SearchDashboards search dashboards by query substring. Il allows restrict the result set with
-// only starred dashboards and only for tags (logical OR applied to multiple tags).
-func (r *Instance) SearchDashboards(query string, starred bool, tags ...string) ([]grafana.Board, error) {
-	var (
-		raw    []byte
-		boards []grafana.Board
-		err    error
-	)
-	u := url.URL{}
-	q := u.Query()
-	if query != "" {
-		q.Set("query", query)
-	}
-	if starred {
-		q.Set("starred", "true")
-	}
-	for _, tag := range tags {
-		q.Add("tag", tag)
-	}
-	if raw, err = r.get("api/search", q); err != nil {
-		return nil, err
-	}
-	err = json.Unmarshal(raw, &boards)
-	return boards, err
 }
 
 func (r *Instance) get(query string, params url.Values) ([]byte, error) {
