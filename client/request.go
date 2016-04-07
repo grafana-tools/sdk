@@ -1,4 +1,4 @@
-package api
+package client
 
 /*
  Copyleft 2016 Alexander I.Grafov <grafov@gmail.com>
