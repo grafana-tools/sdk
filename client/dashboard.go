@@ -44,12 +44,21 @@ func (r *Instance) GetDashboard(slug string) (grafana.Board, error) {
 	return board, err
 }
 
+type FoundBoard struct {
+	ID        uint     `json:"id"`
+	Title     string   `json:"title"`
+	URI       string   `json:"uri"`
+	Type      string   `json:"type"`
+	Tags      []string `json:"tags"`
+	IsStarred bool     `json:"isStarred"`
+}
+
 // SearchDashboards search dashboards by query substring. Il allows restrict the result set with
 // only starred dashboards and only for tags (logical OR applied to multiple tags).
-func (r *Instance) SearchDashboards(query string, starred bool, tags ...string) ([]grafana.Board, error) {
+func (r *Instance) SearchDashboards(query string, starred bool, tags ...string) ([]FoundBoard, error) {
 	var (
 		raw    []byte
-		boards []grafana.Board
+		boards []FoundBoard
 		err    error
 	)
 	u := url.URL{}
