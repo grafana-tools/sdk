@@ -34,8 +34,8 @@ type Instance struct {
 	key string
 }
 
-// NewInstance keeps request data.
-func NewInstance(apiURL, apiKey string) *Instance {
+// New keeps request data.
+func New(apiURL, apiKey string) *Instance {
 	return &Instance{url: apiURL, key: fmt.Sprintf("Bearer %s", apiKey)}
 }
 
