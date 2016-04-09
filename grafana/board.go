@@ -66,7 +66,7 @@ type (
 		Collapse bool    `json:"collapse"`
 		Editable bool    `json:"editable"`
 		Height   height  `json:"height"`
-		Panels   []Panel `json:"panels"`
+		Panels   []Panel `json:"panels,omitempty"`
 	}
 	templateVar struct {
 		Name        string   `json:"name"`

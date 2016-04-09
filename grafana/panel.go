@@ -1,5 +1,7 @@
 package grafana
 
+//go:generate stringer -type=panelType
+
 /*
  Copyleft 2016 Alexander I.Grafov <grafov@gmail.com>
 
@@ -21,19 +23,30 @@ package grafana
 
 import "encoding/json"
 
+const (
+	unknown panelType = iota
+	dashlist
+	graph
+	table
+	text
+	singlestat
+)
+
 type (
 	// Panel represents panels of different types defined in Grafana.
 	// Panels declared in external plugins maybe parsed too but
 	// without manipulating them. They just keeped as is for output
 	// in a resulting JSON.
 	Panel struct {
+		Type string
 		*graphPanel
 		*tablePanel
-		*textPanel
+		*TextPanel
 		*singlestatPanel
 		*dashlistPanel
 		*unknownPanel
 	}
+	panelType   int8
 	commonPanel struct {
 		ID         int     `json:"id"`
 		Title      string  `json:"title"`
@@ -86,7 +99,7 @@ type (
 		Columns   []column `json:"columns"`
 		Transform string   `json:"transform"`
 	}
-	textPanel struct {
+	TextPanel struct {
 		commonPanel
 		Content    string `json:"content"`
 		Mode       string `json:"mode"`
@@ -161,23 +174,26 @@ type Target struct {
 }
 
 func (p *Panel) UnmarshalJSON(b []byte) (err error) {
-	var common commonPanel
-	if err = json.Unmarshal(b, &common); err == nil {
-		switch common.Type {
+	var probe commonPanel
+	if err = json.Unmarshal(b, &probe); err == nil {
+		p.Type = probe.Type
+		switch probe.Type {
 		case "graph":
+			//			p.OfType = Graph
 			var graph graphPanel
 			if err = json.Unmarshal(b, &graph); err == nil {
 				p.graphPanel = &graph
 			}
 		case "table":
+			//		p.OfType = Table
 			var table tablePanel
 			if err = json.Unmarshal(b, &table); err == nil {
 				p.tablePanel = &table
 			}
 		case "text":
-			var text textPanel
+			var text TextPanel
 			if err = json.Unmarshal(b, &text); err == nil {
-				p.textPanel = &text
+				p.TextPanel = &text
 			}
 		case "singlestat":
 			var singlestat singlestatPanel
@@ -206,8 +222,8 @@ func (p *Panel) MarshalJSON() ([]byte, error) {
 	if p.tablePanel != nil {
 		return json.Marshal(*p.tablePanel)
 	}
-	if p.textPanel != nil {
-		return json.Marshal(*p.textPanel)
+	if p.TextPanel != nil {
+		return json.Marshal(*p.TextPanel)
 	}
 	if p.singlestatPanel != nil {
 		return json.Marshal(*p.singlestatPanel)
