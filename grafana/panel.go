@@ -1,7 +1,5 @@
 package grafana
 
-//go:generate stringer -type=panelType
-
 /*
  Copyleft 2016 Alexander I.Grafov <grafov@gmail.com>
 
@@ -24,12 +22,12 @@ package grafana
 import "encoding/json"
 
 const (
-	unknown panelType = iota
-	dashlist
-	graph
-	table
-	text
-	singlestat
+	CustomPanel panelType = iota
+	DashlistPanel
+	GraphPanel
+	TablePanel
+	TextPanel
+	SinglestatPanel
 )
 
 type (
@@ -38,13 +36,13 @@ type (
 	// without manipulating them. They just keeped as is for output
 	// in a resulting JSON.
 	Panel struct {
-		Type string
+		OfType panelType
 		*graphPanel
 		*tablePanel
-		*TextPanel
+		*textPanel
 		*singlestatPanel
 		*dashlistPanel
-		*unknownPanel
+		*customPanel
 	}
 	panelType   int8
 	commonPanel struct {
@@ -99,7 +97,7 @@ type (
 		Columns   []column `json:"columns"`
 		Transform string   `json:"transform"`
 	}
-	TextPanel struct {
+	textPanel struct {
 		commonPanel
 		Content    string `json:"content"`
 		Mode       string `json:"mode"`
@@ -125,7 +123,7 @@ type (
 		Query string   `json:"query"`
 		Tags  []string `json:"tags"`
 	}
-	unknownPanel map[string]interface{}
+	customPanel map[string]interface{}
 )
 
 // for a graph panel
@@ -146,8 +144,8 @@ type grid struct {
 // for a table
 type (
 	column struct {
-		Text  string `json:"text"`
-		Value string `json:"value"`
+		TextPanel string `json:"text"`
+		Value     string `json:"value"`
 	}
 	columnStyle struct {
 		DateFormat string `json:"dateFormat"`
@@ -158,9 +156,9 @@ type (
 
 // for a singlestat
 type valueMap struct {
-	Op    string `json:"op"`
-	Text  string `json:"text"`
-	Value string `json:"value"`
+	Op        string `json:"op"`
+	TextPanel string `json:"text"`
+	Value     string `json:"value"`
 }
 
 // for an any panel
@@ -176,39 +174,42 @@ type Target struct {
 func (p *Panel) UnmarshalJSON(b []byte) (err error) {
 	var probe commonPanel
 	if err = json.Unmarshal(b, &probe); err == nil {
-		p.Type = probe.Type
 		switch probe.Type {
 		case "graph":
-			//			p.OfType = Graph
 			var graph graphPanel
+			p.OfType = GraphPanel
 			if err = json.Unmarshal(b, &graph); err == nil {
 				p.graphPanel = &graph
 			}
 		case "table":
-			//		p.OfType = Table
 			var table tablePanel
+			p.OfType = TablePanel
 			if err = json.Unmarshal(b, &table); err == nil {
 				p.tablePanel = &table
 			}
 		case "text":
-			var text TextPanel
+			var text textPanel
+			p.OfType = TextPanel
 			if err = json.Unmarshal(b, &text); err == nil {
-				p.TextPanel = &text
+				p.textPanel = &text
 			}
 		case "singlestat":
 			var singlestat singlestatPanel
+			p.OfType = SinglestatPanel
 			if err = json.Unmarshal(b, &singlestat); err == nil {
 				p.singlestatPanel = &singlestat
 			}
 		case "dashlist":
 			var dashlist dashlistPanel
+			p.OfType = DashlistPanel
 			if err = json.Unmarshal(b, &dashlist); err == nil {
 				p.dashlistPanel = &dashlist
 			}
 		default:
-			var unknown = make(unknownPanel)
-			if err = json.Unmarshal(b, &unknown); err == nil {
-				p.unknownPanel = &unknown
+			var custom = make(customPanel)
+			p.OfType = CustomPanel
+			if err = json.Unmarshal(b, &custom); err == nil {
+				p.customPanel = &custom
 			}
 		}
 	}
@@ -222,8 +223,8 @@ func (p *Panel) MarshalJSON() ([]byte, error) {
 	if p.tablePanel != nil {
 		return json.Marshal(*p.tablePanel)
 	}
-	if p.TextPanel != nil {
-		return json.Marshal(*p.TextPanel)
+	if p.textPanel != nil {
+		return json.Marshal(*p.textPanel)
 	}
 	if p.singlestatPanel != nil {
 		return json.Marshal(*p.singlestatPanel)
@@ -231,7 +232,7 @@ func (p *Panel) MarshalJSON() ([]byte, error) {
 	if p.dashlistPanel != nil {
 		return json.Marshal(*p.dashlistPanel)
 	}
-	return json.Marshal(*p.unknownPanel)
+	return json.Marshal(*p.customPanel)
 }
 
 // ResetTargets delete all targets defined for a panel.

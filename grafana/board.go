@@ -60,14 +60,6 @@ type (
 		} `json:"timepicker"`
 		panelID uint
 	}
-	// Row represents single row of Grafana dashboard.
-	Row struct {
-		Title    string  `json:"title"`
-		Collapse bool    `json:"collapse"`
-		Editable bool    `json:"editable"`
-		Height   height  `json:"height"`
-		Panels   []Panel `json:"panels,omitempty"`
-	}
 	templateVar struct {
 		Name        string   `json:"name"`
 		Type        string   `json:"type"`
@@ -137,7 +129,7 @@ func (h *height) UnmarshalJSON(raw []byte) error {
 	return err
 }
 
-func newBoard(title string) *Board {
+func NewBoard(title string) *Board {
 	boardID++
 	return &Board{
 		ID:           boardID,
@@ -146,13 +138,5 @@ func newBoard(title string) *Board {
 		Timezone:     "browser",
 		Editable:     true,
 		HideControls: false,
-		Rows:         []*Row{newRow()}}
-}
-
-func newRow() *Row {
-	return &Row{
-		Title:    "New row",
-		Collapse: false,
-		Editable: true,
-		Height:   "250px"}
+		Rows:         []*Row{NewRow()}}
 }
