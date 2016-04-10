@@ -252,14 +252,37 @@ func (p *Panel) ResetTargets() {
 // the argument will be used only if no target with such
 // value already exists.
 func (p *Panel) AddTarget(t *Target) {
-
+	switch p.OfType {
+	case GraphType:
+		p.GraphPanel.Targets = append(p.GraphPanel.Targets, *t)
+	case SinglestatType:
+		p.SinglestatPanel.Targets = append(p.SinglestatPanel.Targets, *t)
+	case TableType:
+		p.TablePanel.Targets = append(p.TablePanel.Targets, *t)
+	}
+	// TODO check for existing refID
 }
 
-// AddTarget adds a new target as defined in the argument.
-// If old target with such refID exists it will be replaced
-// with a new one.
+// SetTarget updates a target if target with such refId exists
+// or creates a new one.
 func (p *Panel) SetTarget(t *Target) {
-
+	setTarget := func(t *Target, targets []Target) {
+		for i := range targets {
+			if t.RefID == targets[i].RefID {
+				targets[i] = *t
+				return
+			}
+		}
+		targets = append(targets, *t)
+	}
+	switch p.OfType {
+	case GraphType:
+		setTarget(t, p.GraphPanel.Targets)
+	case SinglestatType:
+		setTarget(t, p.SinglestatPanel.Targets)
+	case TableType:
+		setTarget(t, p.TablePanel.Targets)
+	}
 }
 
 // RepeatTargetsForDatasources repeats all existing targets for a panel
