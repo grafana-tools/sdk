@@ -36,26 +36,32 @@ func NewRow() *Row {
 		Height:   "250px"}
 }
 
-func (r *Row) AddPanel(oftype panelType, title string) {
-	panel := Panel{OfType: oftype}
-	switch oftype {
-	case DashlistPanel:
-		panel.dashlistPanel = &dashlistPanel{}
-		panel.dashlistPanel.Title = title
-	case GraphPanel:
-		panel.graphPanel = &graphPanel{}
-		panel.graphPanel.Title = title
-	case TablePanel:
-		panel.tablePanel = &tablePanel{}
-		panel.tablePanel.Title = title
-	case TextPanel:
-		panel.textPanel = &textPanel{}
-		panel.textPanel.Title = title
-	case SinglestatPanel:
-		panel.singlestatPanel = &singlestatPanel{}
-		panel.singlestatPanel.Title = title
-	case CustomPanel:
-		panel.customPanel = &customPanel{}
-	}
+func (r *Row) AddDashlist(data DashlistPanel) {
+	panel := Panel{OfType: DashlistType, DashlistPanel: &data}
+	r.Panels = append(r.Panels, panel)
+}
+
+func (r *Row) AddGraph(data GraphPanel) {
+	panel := Panel{OfType: GraphType, GraphPanel: &data}
+	r.Panels = append(r.Panels, panel)
+}
+
+func (r *Row) AddTable(data TablePanel) {
+	panel := Panel{OfType: TableType, TablePanel: &data}
+	r.Panels = append(r.Panels, panel)
+}
+
+func (r *Row) AddText(data TextPanel) {
+	panel := Panel{OfType: TextType, TextPanel: &data}
+	r.Panels = append(r.Panels, panel)
+}
+
+func (r *Row) AddSinglestat(data SinglestatPanel) {
+	panel := Panel{OfType: SinglestatType, SinglestatPanel: &data}
+	r.Panels = append(r.Panels, panel)
+}
+
+func (r *Row) AddCustom(data CustomPanel) {
+	panel := Panel{OfType: CustomType, CustomPanel: &data}
 	r.Panels = append(r.Panels, panel)
 }

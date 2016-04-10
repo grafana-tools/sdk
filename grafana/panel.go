@@ -21,28 +21,26 @@ package grafana
 
 import "encoding/json"
 
+// Each panel may be one of these types.
 const (
-	CustomPanel panelType = iota
-	DashlistPanel
-	GraphPanel
-	TablePanel
-	TextPanel
-	SinglestatPanel
+	CustomType panelType = iota
+	DashlistType
+	GraphType
+	TableType
+	TextType
+	SinglestatType
 )
 
 type (
 	// Panel represents panels of different types defined in Grafana.
-	// Panels declared in external plugins maybe parsed too but
-	// without manipulating them. They just keeped as is for output
-	// in a resulting JSON.
 	Panel struct {
 		OfType panelType
-		*graphPanel
-		*tablePanel
-		*textPanel
-		*singlestatPanel
-		*dashlistPanel
-		*customPanel
+		*GraphPanel
+		*TablePanel
+		*TextPanel
+		*SinglestatPanel
+		*DashlistPanel
+		*CustomPanel
 	}
 	panelType   int8
 	commonPanel struct {
@@ -56,7 +54,7 @@ type (
 		Datasource *string `json:"datasource,omitempty"`
 		Renderer   string  `json:"renderer"`
 	}
-	graphPanel struct {
+	GraphPanel struct {
 		commonPanel
 		AliasColors interface{} `json:"aliasColors"` // XXX
 		Bars        bool        `json:"bars"`
@@ -92,12 +90,13 @@ type (
 		YAxis    bool     `json:"y-axis"`
 		YFormats []string `json:"y_formats"`
 	}
-	tablePanel struct {
+	TablePanel struct {
 		commonPanel
 		Columns   []column `json:"columns"`
 		Transform string   `json:"transform"`
+		Targets   []Target `json:"targets,omitempty"`
 	}
-	textPanel struct {
+	TextPanel struct {
 		commonPanel
 		Content    string `json:"content"`
 		Mode       string `json:"mode"`
@@ -110,20 +109,21 @@ type (
 		} `json:"sort"`
 		Styles []columnStyle `json:"styles"`
 	}
-	singlestatPanel struct {
+	SinglestatPanel struct {
 		commonPanel
 		ValueFontSize string     `json:"valueFontSize"`
 		ValueMaps     []valueMap `json:"valueMaps"`
 		ValueName     string     `json:"valueName"`
+		Targets       []Target   `json:"targets,omitempty"`
 	}
-	dashlistPanel struct {
+	DashlistPanel struct {
 		commonPanel
 		Mode  string   `json:"mode"`
 		Limit uint     `json:"limit"`
 		Query string   `json:"query"`
 		Tags  []string `json:"tags"`
 	}
-	customPanel map[string]interface{}
+	CustomPanel map[string]interface{}
 )
 
 // for a graph panel
@@ -144,8 +144,8 @@ type grid struct {
 // for a table
 type (
 	column struct {
-		TextPanel string `json:"text"`
-		Value     string `json:"value"`
+		TextType string `json:"text"`
+		Value    string `json:"value"`
 	}
 	columnStyle struct {
 		DateFormat string `json:"dateFormat"`
@@ -156,9 +156,9 @@ type (
 
 // for a singlestat
 type valueMap struct {
-	Op        string `json:"op"`
-	TextPanel string `json:"text"`
-	Value     string `json:"value"`
+	Op       string `json:"op"`
+	TextType string `json:"text"`
+	Value    string `json:"value"`
 }
 
 // for an any panel
@@ -176,40 +176,40 @@ func (p *Panel) UnmarshalJSON(b []byte) (err error) {
 	if err = json.Unmarshal(b, &probe); err == nil {
 		switch probe.Type {
 		case "graph":
-			var graph graphPanel
-			p.OfType = GraphPanel
+			var graph GraphPanel
+			p.OfType = GraphType
 			if err = json.Unmarshal(b, &graph); err == nil {
-				p.graphPanel = &graph
+				p.GraphPanel = &graph
 			}
 		case "table":
-			var table tablePanel
-			p.OfType = TablePanel
+			var table TablePanel
+			p.OfType = TableType
 			if err = json.Unmarshal(b, &table); err == nil {
-				p.tablePanel = &table
+				p.TablePanel = &table
 			}
 		case "text":
-			var text textPanel
-			p.OfType = TextPanel
+			var text TextPanel
+			p.OfType = TextType
 			if err = json.Unmarshal(b, &text); err == nil {
-				p.textPanel = &text
+				p.TextPanel = &text
 			}
 		case "singlestat":
-			var singlestat singlestatPanel
-			p.OfType = SinglestatPanel
+			var singlestat SinglestatPanel
+			p.OfType = SinglestatType
 			if err = json.Unmarshal(b, &singlestat); err == nil {
-				p.singlestatPanel = &singlestat
+				p.SinglestatPanel = &singlestat
 			}
 		case "dashlist":
-			var dashlist dashlistPanel
-			p.OfType = DashlistPanel
+			var dashlist DashlistPanel
+			p.OfType = DashlistType
 			if err = json.Unmarshal(b, &dashlist); err == nil {
-				p.dashlistPanel = &dashlist
+				p.DashlistPanel = &dashlist
 			}
 		default:
-			var custom = make(customPanel)
-			p.OfType = CustomPanel
+			var custom = make(CustomPanel)
+			p.OfType = CustomType
 			if err = json.Unmarshal(b, &custom); err == nil {
-				p.customPanel = &custom
+				p.CustomPanel = &custom
 			}
 		}
 	}
@@ -217,27 +217,34 @@ func (p *Panel) UnmarshalJSON(b []byte) (err error) {
 }
 
 func (p *Panel) MarshalJSON() ([]byte, error) {
-	if p.graphPanel != nil {
-		return json.Marshal(*p.graphPanel)
+	if p.GraphPanel != nil {
+		return json.Marshal(*p.GraphPanel)
 	}
-	if p.tablePanel != nil {
-		return json.Marshal(*p.tablePanel)
+	if p.TablePanel != nil {
+		return json.Marshal(*p.TablePanel)
 	}
-	if p.textPanel != nil {
-		return json.Marshal(*p.textPanel)
+	if p.TextPanel != nil {
+		return json.Marshal(*p.TextPanel)
 	}
-	if p.singlestatPanel != nil {
-		return json.Marshal(*p.singlestatPanel)
+	if p.SinglestatPanel != nil {
+		return json.Marshal(*p.SinglestatPanel)
 	}
-	if p.dashlistPanel != nil {
-		return json.Marshal(*p.dashlistPanel)
+	if p.DashlistPanel != nil {
+		return json.Marshal(*p.DashlistPanel)
 	}
-	return json.Marshal(*p.customPanel)
+	return json.Marshal(*p.CustomPanel)
 }
 
 // ResetTargets delete all targets defined for a panel.
 func (p *Panel) ResetTargets() {
-	p.Targets = []Target{}
+	switch p.OfType {
+	case GraphType:
+		p.GraphPanel.Targets = nil
+	case SinglestatType:
+		p.SinglestatPanel.Targets = nil
+	case TableType:
+		p.TablePanel.Targets = nil
+	}
 }
 
 // AddTarget adds a new target as defined in the argument
@@ -260,4 +267,19 @@ func (p *Panel) SetTarget(t *Target) {
 // targets are ignored.
 func (p *Panel) RepeatTargetsForDatasources(ds []Datasource) {
 	// XXX
+}
+
+// Targets is iterate over all panel targets. It just returns nil if
+// no targets defined for panel of concrete type.
+func (p *Panel) Targets() []Target {
+	switch p.OfType {
+	case GraphType:
+		return p.GraphPanel.Targets
+	case SinglestatType:
+		return p.SinglestatPanel.Targets
+	case TableType:
+		return p.TablePanel.Targets
+	default:
+		return nil
+	}
 }
