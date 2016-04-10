@@ -28,19 +28,21 @@ import (
 	"time"
 )
 
+const requestTimeout = 10 * time.Second
+
 // Instance of Grafana.
 type Instance struct {
-	url string
-	key string
+	baseURL string
+	key     string
 }
 
 // New keeps request data.
 func New(apiURL, apiKey string) *Instance {
-	return &Instance{url: apiURL, key: fmt.Sprintf("Bearer %s", apiKey)}
+	return &Instance{baseURL: apiURL, key: fmt.Sprintf("Bearer %s", apiKey)}
 }
 
 func (r *Instance) get(query string, params url.Values) ([]byte, error) {
-	u, _ := url.Parse(r.url)
+	u, _ := url.Parse(r.baseURL)
 	u.Path = query
 	if params != nil {
 		u.RawQuery = params.Encode()
@@ -49,7 +51,7 @@ func (r *Instance) get(query string, params url.Values) ([]byte, error) {
 	req.Header.Set("Authorization", r.key)
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("User-Agent", "autograf")
-	client := &http.Client{Timeout: 10 * time.Second}
+	client := &http.Client{Timeout: requestTimeout}
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
@@ -58,8 +60,8 @@ func (r *Instance) get(query string, params url.Values) ([]byte, error) {
 	return ioutil.ReadAll(resp.Body)
 }
 
-func (r *Instance) post(query string, params url.Values, body []byte) ([]byte, error) {
-	u, _ := url.Parse(r.url)
+func (r *Instance) post(query string, params url.Values, body []byte) ([]byte, int, error) {
+	u, _ := url.Parse(r.baseURL)
 	u.Path = query
 	if params != nil {
 		u.RawQuery = params.Encode()
@@ -69,7 +71,24 @@ func (r *Instance) post(query string, params url.Values, body []byte) ([]byte, e
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("User-Agent", "autograf")
-	client := &http.Client{Timeout: 10 * time.Second}
+	client := &http.Client{Timeout: requestTimeout}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, 0, err
+	}
+	data, err := ioutil.ReadAll(resp.Body)
+	resp.Body.Close()
+	return data, resp.StatusCode, err
+}
+
+func (r *Instance) delete(query string) ([]byte, error) {
+	u, _ := url.Parse(r.baseURL)
+	u.Path = query
+	req, err := http.NewRequest("DELETE", u.String(), nil)
+	req.Header.Set("Authorization", r.key)
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("User-Agent", "autograf")
+	client := &http.Client{Timeout: requestTimeout}
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err

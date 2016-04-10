@@ -21,16 +21,13 @@ package client
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/url"
 	"time"
 
 	"github.com/grafov/autograf/grafana"
 )
-
-func (r *Instance) SetDashboard(b *grafana.Board) {
-
-}
 
 type BoardMeta struct {
 	IsStarred  bool      `json:"isStarred,omitempty"`
@@ -76,6 +73,14 @@ type FoundBoard struct {
 	IsStarred bool     `json:"isStarred"`
 }
 
+type statusMessage struct {
+	ID      *uint   `json:"id"`
+	Message *string `json:"message"`
+	Slug    *string `json:"slug"`
+	Version *string `json:"version"`
+	Status  *string `json:"resp"`
+}
+
 // SearchDashboards search dashboards by query substring. Il allows restrict the result set with
 // only starred dashboards and only for tags (logical OR applied to multiple tags).
 func (r *Instance) SearchDashboards(query string, starred bool, tags ...string) ([]FoundBoard, error) {
@@ -100,4 +105,53 @@ func (r *Instance) SearchDashboards(query string, starred bool, tags ...string) 
 	}
 	err = json.Unmarshal(raw, &boards)
 	return boards, err
+}
+
+// SetDashboard updates existing dashboard or creates a new one.
+// Set dasboard ID to nil to create a new dashboard.
+// Set overwrite to true if you want to overwrite existing dashboard with
+// newer version or with same dashboard title.
+func (r *Instance) SetDashboard(board grafana.Board, overwrite bool) error {
+	var (
+		newBoard struct {
+			Dashboard grafana.Board `json:"dashboard"`
+			Overwrite bool          `json:"overwrite"`
+		}
+		raw  []byte
+		resp statusMessage
+		code int
+		err  error
+	)
+	newBoard.Dashboard = board
+	newBoard.Overwrite = overwrite
+	if raw, err = json.Marshal(newBoard); err != nil {
+		return err
+	}
+	if raw, code, err = r.post("/api/dashboards/db", nil, raw); err != nil {
+		return err
+	}
+	if err = json.Unmarshal(raw, &resp); err != nil {
+		return err
+	}
+	switch code {
+	case 401:
+		return errors.New(*resp.Message)
+	case 412:
+		return errors.New(*resp.Message)
+	}
+	return nil
+}
+
+// DeleteDashboard deletes dashboard that selected by slug string.
+func (r *Instance) DeleteDashboard(slug string) (map[string]string, error) {
+	var (
+		raw   []byte
+		reply = make(map[string]string)
+		err   error
+	)
+	if raw, err = r.delete(fmt.Sprintf("api/dashboards/%s", slug)); err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(raw, &reply)
+	return reply, err
 }
