@@ -69,20 +69,23 @@ type (
 			Total   bool `json:"total"`
 			Values  bool `json:"values"`
 		} `json:"legend"`
-		Lines           bool          `json:"lines"`
-		Linewidth       uint          `json:"linewidth"`
-		NullPointMode   string        `json:"nullPointMode"`
-		Percentage      bool          `json:"percentage"`
-		Pointradius     int           `json:"pointradius"`
-		Points          bool          `json:"points"`
-		seriesOverrides []interface{} // TODO
-		Span            float32       `json:"span"`
-		Stack           bool          `json:"stack"`
-		SteppedLine     bool          `json:"steppedLine"`
-		Targets         []Target      `json:"targets,omitempty"`
-		TimeFrom        *string       `json:"timeFrom"`
-		TimeShift       *string       `json:"timeShift"`
-		Tooltip         struct {
+		Lines           bool   `json:"lines"`
+		Linewidth       uint   `json:"linewidth"`
+		NullPointMode   string `json:"nullPointMode"`
+		Percentage      bool   `json:"percentage"`
+		Pointradius     int    `json:"pointradius"`
+		Points          bool   `json:"points"`
+		SeriesOverrides []struct {
+			Alias string `json:"alias"`
+			Color string `json:"color"`
+		} `json:"seriesOverrides"`
+		Span        float32  `json:"span"`
+		Stack       bool     `json:"stack"`
+		SteppedLine bool     `json:"steppedLine"`
+		Targets     []Target `json:"targets,omitempty"`
+		TimeFrom    *string  `json:"timeFrom"`
+		TimeShift   *string  `json:"timeShift"`
+		Tooltip     struct {
 			Shared    bool   `json:"shared"`
 			ValueType string `json:"value_type"`
 		} `json:"tooltip"`
@@ -288,8 +291,31 @@ func (p *Panel) SetTarget(t *Target) {
 // RepeatTargetsForDatasources repeats all existing targets for a panel
 // for all provided in the argument datasources. Existing datasources of
 // targets are ignored.
-func (p *Panel) RepeatTargetsForDatasources(ds []Datasource) {
-	// XXX
+func (p *Panel) RepeatTargetsForDatasources(dsNames ...string) {
+	repeatDS := func(dsNames []string, targets *[]Target) {
+		var lastRefID string
+		lenTargets := len(*targets)
+		for i, name := range dsNames {
+			if i < lenTargets {
+				(*targets)[i].Datasource = name
+				lastRefID = (*targets)[i].RefID
+			} else {
+				newTarget := (*targets)[i%lenTargets]
+				lastRefID = incRefID(lastRefID)
+				newTarget.RefID = lastRefID
+				newTarget.Datasource = name
+				*targets = append(*targets, newTarget)
+			}
+		}
+	}
+	switch p.OfType {
+	case GraphType:
+		repeatDS(dsNames, &p.GraphPanel.Targets)
+	case SinglestatType:
+		repeatDS(dsNames, &p.SinglestatPanel.Targets)
+	case TableType:
+		repeatDS(dsNames, &p.TablePanel.Targets)
+	}
 }
 
 // Targets is iterate over all panel targets. It just returns nil if
@@ -305,4 +331,11 @@ func (p *Panel) Targets() []Target {
 	default:
 		return nil
 	}
+}
+
+func incRefID(refID string) string {
+	firstLetter := refID[0]
+	ordinal := int(firstLetter)
+	ordinal++
+	return string(rune(ordinal))
 }
