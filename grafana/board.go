@@ -3,6 +3,9 @@ package grafana
 import (
 	"bytes"
 	"encoding/json"
+	"strings"
+
+	"github.com/gosimple/slug"
 )
 
 /*
@@ -31,7 +34,8 @@ var (
 type (
 	// Board represents Grafana dashboard.
 	Board struct {
-		ID              uint     `json:"id"`
+		ID              uint `json:"id"`
+		Slug            string
 		Title           string   `json:"title"`
 		OriginalTitle   string   `json:"originalTitle"`
 		Tags            []string `json:"tags"`
@@ -58,7 +62,7 @@ type (
 			RefreshIntervals []string `json:"refresh_intervals"`
 			TimeOptions      []string `json:"time_options"`
 		} `json:"timepicker"`
-		panelID uint
+		lastPanelID uint
 	}
 	templateVar struct {
 		Name        string   `json:"name"`
@@ -138,5 +142,46 @@ func NewBoard(title string) *Board {
 		Timezone:     "browser",
 		Editable:     true,
 		HideControls: false,
-		Rows:         []*Row{NewRow()}}
+		Rows:         []*Row{}}
+}
+
+func (b *Board) RemoveTags(tags ...string) {
+	tagFound := make(map[string]bool, len(tags))
+	for _, tag := range tags {
+		tagFound[tag] = true
+	}
+	for i, tag := range b.Tags {
+		if tagFound[tag] {
+			b.Tags = append(b.Tags[:i], b.Tags[i+1:]...)
+		}
+	}
+}
+
+func (b *Board) AddTags(tags ...string) {
+	tagFound := make(map[string]bool, len(b.Tags))
+	for _, tag := range b.Tags {
+		tagFound[tag] = true
+	}
+	for _, tag := range tags {
+		if tagFound[tag] {
+			continue
+		}
+		b.Tags = append(b.Tags, tag)
+	}
+}
+
+func (b *Board) AddRow() *Row {
+	row := &Row{
+		Title:    "New row",
+		Collapse: false,
+		Editable: true,
+		Height:   "250px",
+		board:    b}
+	b.Rows = append(b.Rows, row)
+	return row
+}
+
+func (b *Board) UpdateSlug() string {
+	b.Slug = strings.ToLower(slug.Make(b.Title))
+	return b.Slug
 }

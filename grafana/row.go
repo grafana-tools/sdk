@@ -26,42 +26,47 @@ type Row struct {
 	Editable bool    `json:"editable"`
 	Height   height  `json:"height"`
 	Panels   []Panel `json:"panels,omitempty"`
+	board    *Board
 }
 
-func NewRow() *Row {
-	return &Row{
-		Title:    "New row",
-		Collapse: false,
-		Editable: true,
-		Height:   "250px"}
-}
-
-func (r *Row) AddDashlist(data DashlistPanel) {
-	panel := Panel{OfType: DashlistType, DashlistPanel: &data}
+func (r *Row) AddDashlist(data *DashlistPanel) {
+	r.board.lastPanelID++
+	data.ID = r.board.lastPanelID
+	panel := Panel{OfType: DashlistType, DashlistPanel: data}
 	r.Panels = append(r.Panels, panel)
 }
 
-func (r *Row) AddGraph(data GraphPanel) {
-	panel := Panel{OfType: GraphType, GraphPanel: &data}
+func (r *Row) AddGraph(data *GraphPanel) {
+	r.board.lastPanelID++
+	data.ID = r.board.lastPanelID
+	panel := Panel{OfType: GraphType, GraphPanel: data}
 	r.Panels = append(r.Panels, panel)
 }
 
-func (r *Row) AddTable(data TablePanel) {
-	panel := Panel{OfType: TableType, TablePanel: &data}
+func (r *Row) AddTable(data *TablePanel) {
+	r.board.lastPanelID++
+	data.ID = r.board.lastPanelID
+	panel := Panel{OfType: TableType, TablePanel: data}
 	r.Panels = append(r.Panels, panel)
 }
 
-func (r *Row) AddText(data TextPanel) {
-	panel := Panel{OfType: TextType, TextPanel: &data}
+func (r *Row) AddText(data *TextPanel) {
+	r.board.lastPanelID++
+	data.ID = r.board.lastPanelID
+	panel := Panel{OfType: TextType, TextPanel: data}
 	r.Panels = append(r.Panels, panel)
 }
 
-func (r *Row) AddSinglestat(data SinglestatPanel) {
-	panel := Panel{OfType: SinglestatType, SinglestatPanel: &data}
+func (r *Row) AddSinglestat(data *SinglestatPanel) {
+	r.board.lastPanelID++
+	data.ID = r.board.lastPanelID
+	panel := Panel{OfType: SinglestatType, SinglestatPanel: data}
 	r.Panels = append(r.Panels, panel)
 }
 
-func (r *Row) AddCustom(data CustomPanel) {
-	panel := Panel{OfType: CustomType, CustomPanel: &data}
+func (r *Row) AddCustom(data *CustomPanel) {
+	r.board.lastPanelID++
+	(*data)["id"] = r.board.lastPanelID
+	panel := Panel{OfType: CustomType, CustomPanel: data}
 	r.Panels = append(r.Panels, panel)
 }

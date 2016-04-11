@@ -44,7 +44,7 @@ type (
 	}
 	panelType   int8
 	commonPanel struct {
-		ID         int     `json:"id"`
+		ID         uint    `json:"id"`
 		Title      string  `json:"title"`
 		Type       string  `json:"type"`
 		Error      bool    `json:"error"`
@@ -174,6 +174,73 @@ type Target struct {
 	LegendFormat   string `json:"legendFormat"`
 }
 
+func NewDashlist(title string) *DashlistPanel {
+	if title == "" {
+		title = "Panel Title"
+	}
+	return &DashlistPanel{
+		commonPanel: commonPanel{
+			Title:    title,
+			Type:     "dashlist",
+			Renderer: "flot",
+			IsNew:    true}}
+}
+
+func NewGraph(title string) *GraphPanel {
+	if title == "" {
+		title = "Panel Title"
+	}
+	return &GraphPanel{
+		commonPanel: commonPanel{
+			Title:    title,
+			Type:     "graph",
+			Renderer: "flot",
+			IsNew:    true,
+		},
+		NullPointMode: "connected",
+		Pointradius:   5,
+		Span:          12,
+		XAxis:         true,
+		YAxis:         true,
+	}
+}
+
+func NewTable(title string) *TablePanel {
+	if title == "" {
+		title = "Panel Title"
+	}
+	return &TablePanel{
+		commonPanel: commonPanel{
+			Title:    title,
+			Type:     "table",
+			Renderer: "flot",
+			IsNew:    true}}
+}
+
+func NewText(title string) *TextPanel {
+	if title == "" {
+		title = "Panel Title"
+	}
+	return &TextPanel{
+		commonPanel: commonPanel{
+			Title:    title,
+			Type:     "text",
+			Renderer: "flot",
+			IsNew:    true}}
+}
+
+func NewSinglestat(title string) *SinglestatPanel {
+	if title == "" {
+		title = "Panel Title"
+	}
+	return &SinglestatPanel{
+		commonPanel: commonPanel{
+			Title:    title,
+			Type:     "singlestat",
+			Renderer: "flot",
+			IsNew:    true}}
+}
+
 func (p *Panel) UnmarshalJSON(b []byte) (err error) {
 	var probe commonPanel
 	if err = json.Unmarshal(b, &probe); err == nil {
@@ -288,11 +355,38 @@ func (p *Panel) SetTarget(t *Target) {
 	}
 }
 
+// MapDatasources on all existing targets for the panel.
+func (p *Panel) RepeatDatasourcesForEachTarget(dsNames ...string) {
+	repeatDS := func(dsNames []string, targets *[]Target) {
+		var refID = "A"
+		originalTargets := *targets
+		cleanedTargets := make([]Target, 0, len(originalTargets)*len(dsNames))
+		*targets = cleanedTargets
+		for _, target := range originalTargets {
+			for _, ds := range dsNames {
+				newTarget := target
+				newTarget.RefID = refID
+				newTarget.Datasource = ds
+				refID = incRefID(refID)
+				*targets = append(*targets, newTarget)
+			}
+		}
+	}
+	switch p.OfType {
+	case GraphType:
+		repeatDS(dsNames, &p.GraphPanel.Targets)
+	case SinglestatType:
+		repeatDS(dsNames, &p.SinglestatPanel.Targets)
+	case TableType:
+		repeatDS(dsNames, &p.TablePanel.Targets)
+	}
+}
+
 // RepeatTargetsForDatasources repeats all existing targets for a panel
 // for all provided in the argument datasources. Existing datasources of
 // targets are ignored.
 func (p *Panel) RepeatTargetsForDatasources(dsNames ...string) {
-	repeatDS := func(dsNames []string, targets *[]Target) {
+	repeatTarget := func(dsNames []string, targets *[]Target) {
 		var lastRefID string
 		lenTargets := len(*targets)
 		for i, name := range dsNames {
@@ -310,11 +404,24 @@ func (p *Panel) RepeatTargetsForDatasources(dsNames ...string) {
 	}
 	switch p.OfType {
 	case GraphType:
-		repeatDS(dsNames, &p.GraphPanel.Targets)
+		repeatTarget(dsNames, &p.GraphPanel.Targets)
 	case SinglestatType:
-		repeatDS(dsNames, &p.SinglestatPanel.Targets)
+		repeatTarget(dsNames, &p.SinglestatPanel.Targets)
 	case TableType:
-		repeatDS(dsNames, &p.TablePanel.Targets)
+		repeatTarget(dsNames, &p.TablePanel.Targets)
+	}
+}
+
+func (p *Panel) Title() string {
+	switch p.OfType {
+	case GraphType:
+		return p.GraphPanel.Title
+	case SinglestatType:
+		return p.SinglestatPanel.Title
+	case TableType:
+		return p.TablePanel.Title
+	default:
+		return ""
 	}
 }
 
