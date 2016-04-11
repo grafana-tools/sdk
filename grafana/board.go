@@ -153,6 +153,9 @@ func (b *Board) RemoveTags(tags ...string) {
 	for i, tag := range b.Tags {
 		if tagFound[tag] {
 			b.Tags = append(b.Tags[:i], b.Tags[i+1:]...)
+			if len(b.Tags) == 0 {
+				break
+			}
 		}
 	}
 }

@@ -95,9 +95,10 @@ type (
 	}
 	TablePanel struct {
 		commonPanel
-		Columns   []column `json:"columns"`
-		Transform string   `json:"transform"`
-		Targets   []Target `json:"targets,omitempty"`
+		Columns   []column      `json:"columns"`
+		Styles    []columnStyle `json:"styles"`
+		Transform string        `json:"transform"`
+		Targets   []Target      `json:"targets,omitempty"`
 	}
 	TextPanel struct {
 		commonPanel
@@ -151,9 +152,14 @@ type (
 		Value    string `json:"value"`
 	}
 	columnStyle struct {
-		DateFormat string `json:"dateFormat"`
-		Pattern    string `json:"pattern"`
-		Type       string `json:"type"`
+		DateFormat *string   `json:"dateFormat,omitempty"`
+		Pattern    string    `json:"pattern"`
+		Type       string    `json:"type"`
+		ColorMode  *string   `json:"colorMode,omitempty"`
+		Colors     *[]string `json:"colors,omitempty"`
+		Decimals   *uint     `json:"decimals,omitempty"`
+		Thresholds *[]string `json:"thresholds,omitempty"`
+		Unit       *string   `json:"unit,omitempty"`
 	}
 )
 
