@@ -34,8 +34,8 @@ var (
 type (
 	// Board represents Grafana dashboard.
 	Board struct {
-		ID              uint `json:"id"`
-		Slug            string
+		ID              uint     `json:"id"`
+		Slug            string   `json:"-"`
 		Title           string   `json:"title"`
 		OriginalTitle   string   `json:"originalTitle"`
 		Tags            []string `json:"tags"`
@@ -170,9 +170,12 @@ func (b *Board) AddTags(tags ...string) {
 	}
 }
 
-func (b *Board) AddRow() *Row {
+func (b *Board) AddRow(title string) *Row {
+	if title == "" {
+		title = "New row"
+	}
 	row := &Row{
-		Title:    "New row",
+		Title:    title,
 		Collapse: false,
 		Editable: true,
 		Height:   "250px",
