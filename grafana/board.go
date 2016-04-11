@@ -1,13 +1,5 @@
 package grafana
 
-import (
-	"bytes"
-	"encoding/json"
-	"strings"
-
-	"github.com/gosimple/slug"
-)
-
 /*
  Copyleft 2016 Alexander I.Grafov <grafov@gmail.com>
 
@@ -26,6 +18,14 @@ import (
 
  ॐ तारे तुत्तारे तुरे स्व
 */
+
+import (
+	"bytes"
+	"encoding/json"
+	"strings"
+
+	"github.com/gosimple/slug"
+)
 
 var (
 	boardID uint
