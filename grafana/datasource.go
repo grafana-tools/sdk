@@ -31,7 +31,7 @@ type Datasource struct {
 	Password          *string     `json:"password,omitempty"`
 	User              *string     `json:"user,omitempty"`
 	Database          *string     `json:"database,omitempty"`
-	BasicAuth         *string     `json:"basicAuth,omitempty"`
+	BasicAuth         *bool       `json:"basicAuth,omitempty"`
 	BasicAuthUser     *string     `json:"basicAuthUser,omitempty"`
 	BasicAuthPassword *string     `json:"basicAuthPassword,omitempty"`
 	IsDefault         bool        `json:"isDefault"`

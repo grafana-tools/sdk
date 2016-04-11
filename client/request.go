@@ -36,6 +36,14 @@ type Instance struct {
 	key     string
 }
 
+type StatusMessage struct {
+	ID      *uint   `json:"id"`
+	Message *string `json:"message"`
+	Slug    *string `json:"slug"`
+	Version *string `json:"version"`
+	Status  *string `json:"resp"`
+}
+
 // New keeps request data.
 func New(apiURL, apiKey string) *Instance {
 	return &Instance{baseURL: apiURL, key: fmt.Sprintf("Bearer %s", apiKey)}
@@ -58,6 +66,29 @@ func (r *Instance) get(query string, params url.Values) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 	return ioutil.ReadAll(resp.Body)
+}
+
+func (r *Instance) put(query string, params url.Values, body []byte) ([]byte, int, error) {
+	u, _ := url.Parse(r.baseURL)
+	u.Path = query
+	if params != nil {
+		u.RawQuery = params.Encode()
+	}
+	req, err := http.NewRequest("PUT", u.String(), bytes.NewBuffer(body))
+	req.Header.Set("Authorization", r.key)
+	req.Header.Set("Accept", "application/json")
+	if body != nil {
+		req.Header.Set("Content-Type", "application/json")
+	}
+	req.Header.Set("User-Agent", "autograf")
+	client := &http.Client{Timeout: requestTimeout}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, 0, err
+	}
+	data, err := ioutil.ReadAll(resp.Body)
+	resp.Body.Close()
+	return data, resp.StatusCode, err
 }
 
 func (r *Instance) post(query string, params url.Values, body []byte) ([]byte, int, error) {

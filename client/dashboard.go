@@ -73,14 +73,6 @@ type FoundBoard struct {
 	IsStarred bool     `json:"isStarred"`
 }
 
-type statusMessage struct {
-	ID      *uint   `json:"id"`
-	Message *string `json:"message"`
-	Slug    *string `json:"slug"`
-	Version *string `json:"version"`
-	Status  *string `json:"resp"`
-}
-
 // SearchDashboards search dashboards by query substring. Il allows restrict the result set with
 // only starred dashboards and only for tags (logical OR applied to multiple tags).
 func (r *Instance) SearchDashboards(query string, starred bool, tags ...string) ([]FoundBoard, error) {
@@ -118,16 +110,19 @@ func (r *Instance) SetDashboard(board grafana.Board, overwrite bool) error {
 			Overwrite bool          `json:"overwrite"`
 		}
 		raw  []byte
-		resp statusMessage
+		resp StatusMessage
 		code int
 		err  error
 	)
 	newBoard.Dashboard = board
 	newBoard.Overwrite = overwrite
+	if !overwrite {
+		newBoard.Dashboard.ID = 0
+	}
 	if raw, err = json.Marshal(newBoard); err != nil {
 		return err
 	}
-	if raw, code, err = r.post("/api/dashboards/db", nil, raw); err != nil {
+	if raw, code, err = r.post("api/dashboards/db", nil, raw); err != nil {
 		return err
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
@@ -143,14 +138,14 @@ func (r *Instance) SetDashboard(board grafana.Board, overwrite bool) error {
 }
 
 // DeleteDashboard deletes dashboard that selected by slug string.
-func (r *Instance) DeleteDashboard(slug string) (map[string]string, error) {
+func (r *Instance) DeleteDashboard(slug string) (StatusMessage, error) {
 	var (
 		raw   []byte
-		reply = make(map[string]string)
+		reply StatusMessage
 		err   error
 	)
-	if raw, err = r.delete(fmt.Sprintf("api/dashboards/%s", slug)); err != nil {
-		return nil, err
+	if raw, err = r.delete(fmt.Sprintf("api/dashboards/db/%s", slug)); err != nil {
+		return StatusMessage{}, err
 	}
 	err = json.Unmarshal(raw, &reply)
 	return reply, err

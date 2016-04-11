@@ -21,15 +21,10 @@ package client
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/grafov/autograf/grafana"
 )
-
-func (r *Instance) CreateDatasource(ds grafana.Datasource) {
-}
-
-func (r *Instance) UpdateDatasource(ds grafana.Datasource) {
-}
 
 func (r *Instance) GetAllDatasources() ([]grafana.Datasource, error) {
 	var (
@@ -42,4 +37,53 @@ func (r *Instance) GetAllDatasources() ([]grafana.Datasource, error) {
 	}
 	err = json.Unmarshal(raw, &dss)
 	return dss, err
+}
+
+func (r *Instance) CreateDatasource(ds grafana.Datasource) (StatusMessage, error) {
+	var (
+		raw  []byte
+		resp StatusMessage
+		err  error
+	)
+	if raw, err = json.Marshal(ds); err != nil {
+		return StatusMessage{}, err
+	}
+	if raw, _, err = r.post("api/datasources", nil, raw); err != nil {
+		return StatusMessage{}, err
+	}
+	if err = json.Unmarshal(raw, &resp); err != nil {
+		return StatusMessage{}, err
+	}
+	return resp, nil
+}
+
+func (r *Instance) UpdateDatasource(ds grafana.Datasource) (StatusMessage, error) {
+	var (
+		raw  []byte
+		resp StatusMessage
+		err  error
+	)
+	if raw, err = json.Marshal(ds); err != nil {
+		return StatusMessage{}, err
+	}
+	if raw, _, err = r.post(fmt.Sprintf("api/datasources/%d", ds.ID), nil, raw); err != nil {
+		return StatusMessage{}, err
+	}
+	if err = json.Unmarshal(raw, &resp); err != nil {
+		return StatusMessage{}, err
+	}
+	return resp, nil
+}
+
+func (r *Instance) DeleteDatasource(id uint) (StatusMessage, error) {
+	var (
+		raw   []byte
+		reply StatusMessage
+		err   error
+	)
+	if raw, err = r.delete(fmt.Sprintf("api/datasources/%d", id)); err != nil {
+		return StatusMessage{}, err
+	}
+	err = json.Unmarshal(raw, &reply)
+	return reply, err
 }
