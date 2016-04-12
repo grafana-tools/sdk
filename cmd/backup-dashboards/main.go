@@ -24,6 +24,7 @@ func main() {
 	)
 	if len(os.Args) != 2 {
 		fmt.Fprint(os.Stderr, "Usage:  backup-dashboards http://grafana.host:3000 api-key-string-here\n")
+		os.Exit(0)
 	}
 	c := client.New(os.Args[1], os.Args[2])
 	if boards, err = c.SearchDashboards("", false); err != nil {
