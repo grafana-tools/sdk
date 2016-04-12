@@ -146,16 +146,13 @@ func NewBoard(title string) *Board {
 }
 
 func (b *Board) RemoveTags(tags ...string) {
-	tagFound := make(map[string]bool, len(tags))
-	for _, tag := range tags {
-		tagFound[tag] = true
-	}
+	tagFound := make(map[string]int, len(b.Tags))
 	for i, tag := range b.Tags {
-		if tagFound[tag] {
+		tagFound[tag] = i
+	}
+	for _, removeTag := range tags {
+		if i, ok := tagFound[removeTag]; ok {
 			b.Tags = append(b.Tags[:i], b.Tags[i+1:]...)
-			if len(b.Tags) == 0 {
-				break
-			}
 		}
 	}
 }
