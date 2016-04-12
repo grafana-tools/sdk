@@ -11,6 +11,24 @@ Currently there are two packages:
 
 DSL part is unfinished yet so it will be published later.
 
+# Installation
+
+For use in your Go apps just install packages separately:
+
+    go get github.com/grafov/autograf/grafana
+    go get github.com/grafov/autograf/client
+
+Single external dependency required for `grafana` package:
+
+    go get github.com/gosimple/slug
+
+— "slugify" URLs is a simple task but this package used in Grafana server so it used
+here for compatibility reasons.
+
+Sample utility that just saves all dashboards from Grafana to JSON files in a current dir:
+
+    go install github.com/grafov/autograf/grafana/cmd/backup-dashboards
+
 ## Roadmap
 
 ### Major targets
