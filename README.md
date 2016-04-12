@@ -17,7 +17,7 @@ DSL part is unfinished yet so it will be published later.
 
 * `[DONE]` Realize data structures used in a default Grafana installation for data visualizing (dashboards, datasources, panels, variables, annotations).
 * `[PROGRESS]` Support all functions of Grafana REST API for manipulating dashboards and datasources.
-* Realize DSL for defining dashboards in a plain text format.
+* `[PROGRESS]` Realize DSL for defining dashboards in a plain text format.
 * Import dashboards or single panels from running Grafana instances and convert them to DSL.
 
 ### Minor targets
