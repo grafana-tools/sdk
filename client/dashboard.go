@@ -21,7 +21,6 @@ package client
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/url"
 	"time"
@@ -130,9 +129,9 @@ func (r *Instance) SetDashboard(board grafana.Board, overwrite bool) error {
 	}
 	switch code {
 	case 401:
-		return errors.New(*resp.Message)
+		return fmt.Errorf("%d %s", code, *resp.Message)
 	case 412:
-		return errors.New(*resp.Message)
+		return fmt.Errorf("%d %s", code, *resp.Message)
 	}
 	return nil
 }
