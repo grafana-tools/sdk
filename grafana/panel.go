@@ -49,15 +49,17 @@ type (
 	}
 	panelType   int8
 	commonPanel struct {
-		ID         uint    `json:"id"`
-		Title      string  `json:"title"`
-		Type       string  `json:"type"`
-		Error      bool    `json:"error"`
-		IsNew      bool    `json:"isNew"`
-		Span       float32 `json:"span"`
-		Links      []link  `json:"links,omitempty"`
-		Datasource *string `json:"datasource,omitempty"`
-		Renderer   string  `json:"renderer"`
+		ID         uint     `json:"id"`
+		Title      string   `json:"title"`                // general
+		Span       float32  `json:"span"`                 // general
+		Links      []link   `json:"links,omitempty"`      // general
+		Datasource *string  `json:"datasource,omitempty"` // metrics
+		Renderer   string   `json:"renderer"`             // display styles
+		Repeat     *string  `json:"repeat,omitempty"`     // templating options
+		MinSpan    *float32 `json:"minSpan,omitempty"`    // templating options
+		Type       string   `json:"type"`
+		Error      bool     `json:"error"`
+		IsNew      bool     `json:"isNew"`
 	}
 	GraphPanel struct {
 		commonPanel
