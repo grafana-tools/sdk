@@ -115,10 +115,17 @@ type (
 	}
 	SinglestatPanel struct {
 		commonPanel
-		ValueFontSize string     `json:"valueFontSize"`
-		ValueMaps     []valueMap `json:"valueMaps"`
-		ValueName     string     `json:"valueName"`
-		Targets       []Target   `json:"targets,omitempty"`
+		Colors          []string   `json:"colors"`
+		ColorValue      bool       `json:"colorValue"`
+		ColorBackground bool       `json:"colorBackground"`
+		Decimals        int        `json:"decimals"`
+		Format          string     `json:"format"`
+		NullPointMode   string     `json:"nullPointMode"`
+		ValueFontSize   string     `json:"valueFontSize"`
+		ValueMaps       []valueMap `json:"valueMaps"`
+		ValueName       string     `json:"valueName"`
+		Targets         []Target   `json:"targets,omitempty"`
+		Thresholds      string     `json:"thresholds"`
 	}
 	DashlistPanel struct {
 		commonPanel
