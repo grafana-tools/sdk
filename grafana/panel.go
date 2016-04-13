@@ -440,14 +440,14 @@ func (p *Panel) Title() string {
 
 // Targets is iterate over all panel targets. It just returns nil if
 // no targets defined for panel of concrete type.
-func (p *Panel) Targets() []Target {
+func (p *Panel) Targets() *[]Target {
 	switch p.OfType {
 	case GraphType:
-		return p.GraphPanel.Targets
+		return &p.GraphPanel.Targets
 	case SinglestatType:
-		return p.SinglestatPanel.Targets
+		return &p.SinglestatPanel.Targets
 	case TableType:
-		return p.TablePanel.Targets
+		return &p.TablePanel.Targets
 	default:
 		return nil
 	}
