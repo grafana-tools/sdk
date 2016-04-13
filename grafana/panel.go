@@ -99,7 +99,11 @@ type (
 	}
 	TablePanel struct {
 		commonPanel
-		Columns   []column      `json:"columns"`
+		Columns []column `json:"columns"`
+		Sort    *struct {
+			Col  uint `json:"col"`
+			Desc bool `json:"desc"`
+		} `json:"sort,omitempty"`
 		Styles    []columnStyle `json:"styles"`
 		Transform string        `json:"transform"`
 		Targets   []Target      `json:"targets,omitempty"`
