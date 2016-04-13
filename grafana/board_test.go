@@ -43,3 +43,21 @@ func TestBoardRemoveTags_WhenNoTags(t *testing.T) {
 		t.Errorf("len(tags) should be 0 but got %d", len(b.Tags))
 	}
 }
+
+func TestBoardHasTag_TagExists(t *testing.T) {
+	b := NewBoard("Sample")
+	b.AddTags("1", "2", "3")
+
+	if !b.HasTag("2") {
+		t.Error("tag exists but not found")
+	}
+}
+
+func TestBoardHasTag_TagNotExists(t *testing.T) {
+	b := NewBoard("Sample")
+	b.AddTags("1", "2")
+
+	if b.HasTag("3") {
+		t.Error("tag not exists but found")
+	}
+}

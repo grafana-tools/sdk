@@ -170,6 +170,15 @@ func (b *Board) AddTags(tags ...string) {
 	}
 }
 
+func (b *Board) HasTag(tag string) bool {
+	for _, t := range b.Tags {
+		if t == tag {
+			return true
+		}
+	}
+	return false
+}
+
 func (b *Board) AddRow(title string) *Row {
 	if title == "" {
 		title = "New row"
