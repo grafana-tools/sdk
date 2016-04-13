@@ -1,6 +1,6 @@
 # Autograf is a dashboard constructor for Grafana
 
-Grafana UI is flexible and usable for exploring and visualizing data. But it is not very suitable for repetitive operations with large number of objects on multiple dashboards. Aim of Autograf project is help with maintaining a large set of dashboards and datasources in an automated way. Autograf will not try to be a replacement for native Grafana methods of automation (templating variables, repeatable panels and scripted dashboards) but it complement them with own way.
+[Grafana](http://grafana.org) is flexible and usable for exploring and visualizing data. But UI of Grafana is not very suitable for repetitive operations with large number of objects on multiple dashboards. Aim of Autograf project is help with maintaining a large set of dashboards and datasources in an automated way. Autograf will not try to be a replacement for native Grafana methods of automation (templating variables, repeatable panels and scripted dashboards) but it complement them with own way.
 
 This project is in early stage of development. Firstly it offer a way for processing dashboards in Go apps and interacting with Grafana instances. This part of project is already usable. Secondly it will become DSL for constructing dashboards. 
 
