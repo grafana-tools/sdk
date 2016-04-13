@@ -19,7 +19,12 @@ package grafana
  ॐ तारे तुत्तारे तुरे स्व
 */
 
-import "encoding/json"
+import (
+	"bytes"
+	"encoding/json"
+	"errors"
+	"strconv"
+)
 
 // Each panel may be one of these types.
 const (
@@ -69,23 +74,20 @@ type (
 			Total   bool `json:"total"`
 			Values  bool `json:"values"`
 		} `json:"legend"`
-		Lines           bool   `json:"lines"`
-		Linewidth       uint   `json:"linewidth"`
-		NullPointMode   string `json:"nullPointMode"`
-		Percentage      bool   `json:"percentage"`
-		Pointradius     int    `json:"pointradius"`
-		Points          bool   `json:"points"`
-		SeriesOverrides []struct {
-			Alias string `json:"alias"`
-			Color string `json:"color"`
-		} `json:"seriesOverrides"`
-		Span        float32  `json:"span"`
-		Stack       bool     `json:"stack"`
-		SteppedLine bool     `json:"steppedLine"`
-		Targets     []Target `json:"targets,omitempty"`
-		TimeFrom    *string  `json:"timeFrom"`
-		TimeShift   *string  `json:"timeShift"`
-		Tooltip     struct {
+		Lines           bool            `json:"lines"`
+		Linewidth       uint            `json:"linewidth"`
+		NullPointMode   string          `json:"nullPointMode"`
+		Percentage      bool            `json:"percentage"`
+		Pointradius     int             `json:"pointradius"`
+		Points          bool            `json:"points"`
+		SeriesOverrides []serieOverride `json:"seriesOverrides"`
+		Span            float32         `json:"span"`
+		Stack           bool            `json:"stack"`
+		SteppedLine     bool            `json:"steppedLine"`
+		Targets         []Target        `json:"targets,omitempty"`
+		TimeFrom        *string         `json:"timeFrom"`
+		TimeShift       *string         `json:"timeShift"`
+		Tooltip         struct {
 			Shared    bool   `json:"shared"`
 			ValueType string `json:"value_type"`
 		} `json:"tooltip"`
@@ -138,18 +140,74 @@ type (
 )
 
 // for a graph panel
-type grid struct {
-	LeftLogBase     *int     `json:"leftLogBase"`
-	LeftMax         *int     `json:"leftMax"`
-	LeftMin         *int     `json:"leftMin"`
-	RightLogBase    *int     `json:"rightLogBase"`
-	RightMax        *int     `json:"rightMax"`
-	RightMin        *int     `json:"rightMin"`
-	Threshold1      *float64 `json:"threshold1"`
-	Threshold1Color string   `json:"threshold1Color"`
-	Threshold2      *float64 `json:"threshold2"`
-	Threshold2Color string   `json:"threshold2Color"`
-	ThresholdLine   bool     `json:"thresholdLine"`
+type (
+	grid struct {
+		LeftLogBase     *int     `json:"leftLogBase"`
+		LeftMax         *int     `json:"leftMax"`
+		LeftMin         *int     `json:"leftMin"`
+		RightLogBase    *int     `json:"rightLogBase"`
+		RightMax        *int     `json:"rightMax"`
+		RightMin        *int     `json:"rightMin"`
+		Threshold1      *float64 `json:"threshold1"`
+		Threshold1Color string   `json:"threshold1Color"`
+		Threshold2      *float64 `json:"threshold2"`
+		Threshold2Color string   `json:"threshold2Color"`
+		ThresholdLine   bool     `json:"thresholdLine"`
+	}
+	serieOverride struct {
+		Alias         string    `json:"alias"`
+		Bars          *bool     `json:"bars,omitempty"`
+		Color         *string   `json:"color,omitempty"`
+		Fill          *int      `json:"fill,omitempty"`
+		FillBelowTo   *string   `json:"fillBelowTo,omitempty"`
+		Legend        *bool     `json:"legend,omitempty"`
+		Lines         *bool     `json:"lines,omitempty"`
+		Stack         *stackVal `json:"stack,omitempty"`
+		Transform     *string   `json:"transform,omitempty"`
+		YAxis         *int      `json:"yaxis,omitempty"`
+		ZIndex        *int      `json:"zindex,omitempty"`
+		NullPointMode *string   `json:"nullPointMode,omitempty"`
+	}
+	stackVal struct {
+		Flag   bool
+		Letter string
+	}
+)
+
+func (s *stackVal) UnmarshalJSON(raw []byte) error {
+	if raw == nil || bytes.Compare(raw, []byte(`"null"`)) == 0 {
+		return nil
+	}
+	var (
+		tmp string
+		err error
+	)
+	if raw[0] != '"' {
+		if bytes.Compare(raw, []byte("true")) == 0 {
+			s.Flag = true
+			return nil
+		}
+		if bytes.Compare(raw, []byte("false")) == 0 {
+			return nil
+		}
+		return errors.New("bad boolean value provided")
+	}
+	if err = json.Unmarshal(raw, &tmp); err != nil {
+		return err
+	}
+	s.Letter = tmp
+	return nil
+}
+
+func (s stackVal) MarshalJSON() ([]byte, error) {
+	if s.Letter != "" {
+		var buf bytes.Buffer
+		buf.WriteRune('"')
+		buf.WriteString(s.Letter)
+		buf.WriteRune('"')
+		return buf.Bytes(), nil
+	}
+	return strconv.AppendBool([]byte{}, s.Flag), nil
 }
 
 // for a table
