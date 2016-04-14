@@ -28,7 +28,7 @@ import (
 	"github.com/grafov/autograf/grafana"
 )
 
-type BoardMeta struct {
+type BoardProperties struct {
 	IsStarred  bool      `json:"isStarred,omitempty"`
 	IsHome     bool      `json:"isHome,omitempty"`
 	IsSnapshot bool      `json:"isSnapshot,omitempty"`
@@ -45,22 +45,22 @@ type BoardMeta struct {
 	Version    int       `json:"version"`
 }
 
-type BoardWithMeta struct {
-	Meta  BoardMeta     `json:"meta"`
-	Board grafana.Board `json:"dashboard"`
-}
-
-func (r *Instance) GetDashboard(slug string) (BoardWithMeta, error) {
+func (r *Instance) GetDashboard(slug string) (grafana.Board, BoardProperties, error) {
 	var (
-		raw   []byte
-		board BoardWithMeta
-		err   error
+		raw    []byte
+		result struct {
+			Meta  BoardProperties `json:"meta"`
+			Board grafana.Board   `json:"dashboard"`
+		}
+		err error
 	)
 	if raw, err = r.get(fmt.Sprintf("api/dashboards/%s", slug), nil); err != nil {
-		return BoardWithMeta{}, err
+		return grafana.Board{}, BoardProperties{}, err
 	}
-	err = json.Unmarshal(raw, &board)
-	return board, err
+	if err = json.Unmarshal(raw, &result); err != nil {
+		return grafana.Board{}, BoardProperties{}, err
+	}
+	return result.Board, result.Meta, err
 }
 
 type FoundBoard struct {
