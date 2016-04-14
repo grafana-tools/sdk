@@ -161,26 +161,27 @@ type (
 		ThresholdLine   bool     `json:"thresholdLine"`
 	}
 	serieOverride struct {
-		Alias         string    `json:"alias"`
-		Bars          *bool     `json:"bars,omitempty"`
-		Color         *string   `json:"color,omitempty"`
-		Fill          *int      `json:"fill,omitempty"`
-		FillBelowTo   *string   `json:"fillBelowTo,omitempty"`
-		Legend        *bool     `json:"legend,omitempty"`
-		Lines         *bool     `json:"lines,omitempty"`
-		Stack         *stackVal `json:"stack,omitempty"`
-		Transform     *string   `json:"transform,omitempty"`
-		YAxis         *int      `json:"yaxis,omitempty"`
-		ZIndex        *int      `json:"zindex,omitempty"`
-		NullPointMode *string   `json:"nullPointMode,omitempty"`
-	}
-	stackVal struct {
-		Flag   bool
-		Letter string
+		Alias         string      `json:"alias"`
+		Bars          *bool       `json:"bars,omitempty"`
+		Color         *string     `json:"color,omitempty"`
+		Fill          *int        `json:"fill,omitempty"`
+		FillBelowTo   *string     `json:"fillBelowTo,omitempty"`
+		Legend        *bool       `json:"legend,omitempty"`
+		Lines         *bool       `json:"lines,omitempty"`
+		Stack         *BoolString `json:"stack,omitempty"`
+		Transform     *string     `json:"transform,omitempty"`
+		YAxis         *int        `json:"yaxis,omitempty"`
+		ZIndex        *int        `json:"zindex,omitempty"`
+		NullPointMode *string     `json:"nullPointMode,omitempty"`
 	}
 )
 
-func (s *stackVal) UnmarshalJSON(raw []byte) error {
+type BoolString struct {
+	Flag  bool
+	Value string
+}
+
+func (s *BoolString) UnmarshalJSON(raw []byte) error {
 	if raw == nil || bytes.Compare(raw, []byte(`"null"`)) == 0 {
 		return nil
 	}
@@ -201,15 +202,15 @@ func (s *stackVal) UnmarshalJSON(raw []byte) error {
 	if err = json.Unmarshal(raw, &tmp); err != nil {
 		return err
 	}
-	s.Letter = tmp
+	s.Value = tmp
 	return nil
 }
 
-func (s stackVal) MarshalJSON() ([]byte, error) {
-	if s.Letter != "" {
+func (s BoolString) MarshalJSON() ([]byte, error) {
+	if s.Value != "" {
 		var buf bytes.Buffer
 		buf.WriteRune('"')
-		buf.WriteString(s.Letter)
+		buf.WriteString(s.Value)
 		buf.WriteRune('"')
 		return buf.Bytes(), nil
 	}

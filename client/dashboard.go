@@ -58,7 +58,7 @@ func (r *Instance) GetDashboard(slug string) (grafana.Board, BoardProperties, er
 		return grafana.Board{}, BoardProperties{}, err
 	}
 	if err = json.Unmarshal(raw, &result); err != nil {
-		return grafana.Board{}, BoardProperties{}, err
+		return grafana.Board{}, BoardProperties{}, fmt.Errorf("unmarshal board with meta: %s\n%s", err, raw)
 	}
 	return result.Board, result.Meta, err
 }

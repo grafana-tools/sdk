@@ -8,7 +8,7 @@ import (
 
 func TestStackVal_UnmarshalJSON_GotTrue(t *testing.T) {
 	var sampleOut struct {
-		Val stackVal `json:"val"`
+		Val BoolString `json:"val"`
 	}
 	var sampleIn = []byte(`{"val":true}`)
 
@@ -17,14 +17,14 @@ func TestStackVal_UnmarshalJSON_GotTrue(t *testing.T) {
 	if !sampleOut.Val.Flag {
 		t.Errorf("should be true but got false")
 	}
-	if sampleOut.Val.Letter != "" {
+	if sampleOut.Val.Value != "" {
 		t.Error("string value should be empty")
 	}
 }
 
 func TestStackVal_UnmarshalJSON_GotFalse(t *testing.T) {
 	var sampleOut struct {
-		Val stackVal `json:"val"`
+		Val BoolString `json:"val"`
 	}
 	var sampleIn = []byte(`{"val":false}`)
 
@@ -33,14 +33,14 @@ func TestStackVal_UnmarshalJSON_GotFalse(t *testing.T) {
 	if sampleOut.Val.Flag {
 		t.Errorf("should be false but got true")
 	}
-	if sampleOut.Val.Letter != "" {
+	if sampleOut.Val.Value != "" {
 		t.Error("string value should be empty")
 	}
 }
 
 func TestStackVal_UnmarshalJSON_GotString(t *testing.T) {
 	var sampleOut struct {
-		Val stackVal `json:"val"`
+		Val BoolString `json:"val"`
 	}
 	var sampleIn = []byte(`{"val":"A"}`)
 
@@ -49,14 +49,14 @@ func TestStackVal_UnmarshalJSON_GotString(t *testing.T) {
 	if sampleOut.Val.Flag {
 		t.Error("should be false but got true")
 	}
-	if sampleOut.Val.Letter != "A" {
-		t.Errorf("should be 'A' but got '%s'", sampleOut.Val.Letter)
+	if sampleOut.Val.Value != "A" {
+		t.Errorf("should be 'A' but got '%s'", sampleOut.Val.Value)
 	}
 }
 
 func TestStackVal_MarshalJSON_GotTrue(t *testing.T) {
 	var sampleInp struct {
-		Val stackVal `json:"val"`
+		Val BoolString `json:"val"`
 	}
 	sampleInp.Val.Flag = true
 	var sampleOut = []byte(`{"val":true}`)
@@ -70,7 +70,7 @@ func TestStackVal_MarshalJSON_GotTrue(t *testing.T) {
 
 func TestStackVal_MarshalJSON_GotFalse(t *testing.T) {
 	var sampleInp struct {
-		Val stackVal `json:"val"`
+		Val BoolString `json:"val"`
 	}
 	sampleInp.Val.Flag = false
 	var sampleOut = []byte(`{"val":false}`)
@@ -84,9 +84,9 @@ func TestStackVal_MarshalJSON_GotFalse(t *testing.T) {
 
 func TestStackVal_MarshalJSON_GotString(t *testing.T) {
 	var sampleInp struct {
-		Val stackVal `json:"val"`
+		Val BoolString `json:"val"`
 	}
-	sampleInp.Val.Letter = "A"
+	sampleInp.Val.Value = "A"
 	var sampleOut = []byte(`{"val":"A"}`)
 
 	data, _ := json.Marshal(sampleInp)

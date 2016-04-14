@@ -51,15 +51,16 @@ type (
 		Annotations struct {
 			List []annotation `json:"list"`
 		} `json:"annotations"`
-		Refresh       *string `json:"refresh,omitempty"`
-		SchemaVersion uint    `json:"schemiaVersion"`
-		Version       uint    `json:"version"`
-		Links         []link  `json:"links"`
+		Refresh       *BoolString `json:"refresh,omitempty"`
+		SchemaVersion uint        `json:"schemiaVersion"`
+		Version       uint        `json:"version"`
+		Links         []link      `json:"links"`
 		Time          struct {
 			From string `json:"from"`
 			To   string `json:"to"`
 		} `json:"time"`
 		Timepicker struct {
+			Now              *bool    `json:"now,omitempty"`
 			RefreshIntervals []string `json:"refresh_intervals"`
 			TimeOptions      []string `json:"time_options"`
 		} `json:"timepicker"`
