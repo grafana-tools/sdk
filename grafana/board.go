@@ -51,9 +51,10 @@ type (
 		Annotations struct {
 			List []annotation `json:"list"`
 		} `json:"annotations"`
-		SchemaVersion uint   `json:"schemiaVersion"`
-		Version       uint   `json:"version"`
-		Links         []link `json:"links"`
+		Refresh       *string `json:"refresh,omitempty"`
+		SchemaVersion uint    `json:"schemiaVersion"`
+		Version       uint    `json:"version"`
+		Links         []link  `json:"links"`
 		Time          struct {
 			From string `json:"from"`
 			To   string `json:"to"`
