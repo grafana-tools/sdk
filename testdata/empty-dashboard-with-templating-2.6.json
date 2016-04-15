@@ -88,9 +88,8 @@
         "auto": true,
         "auto_count": 5,
         "current": {
-          "text": "1m",
-          "value": "1m",
-          "tags": []
+          "text": "auto",
+          "value": "$__auto_interval"
         },
         "datasource": null,
         "includeAll": false,
@@ -100,12 +99,12 @@
         "name": "intervals",
         "options": [
           {
-            "selected": false,
+            "selected": true,
             "text": "auto",
             "value": "$__auto_interval"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "1m",
             "value": "1m"
           },
@@ -158,6 +157,30 @@
         "query": "1m,10m,30m,1h,6h,12h,1d,7d,14d,30d",
         "refresh": false,
         "type": "interval"
+      },
+      {
+        "allFormat": "glob",
+        "datasource": "Prometheus",
+        "includeAll": false,
+        "multi": true,
+        "multiFormat": "regex values",
+        "name": "query",
+        "options": [
+          {
+            "text": "prometheus",
+            "value": "prometheus",
+            "selected": true
+          }
+        ],
+        "query": "go_goroutines",
+        "refresh": true,
+        "regex": "/job=\"([^\"]+)\"/",
+        "type": "query",
+        "current": {
+          "text": "prometheus",
+          "value": "prometheus"
+        },
+        "label": "Query"
       }
     ]
   },
@@ -165,6 +188,6 @@
     "list": []
   },
   "schemaVersion": 8,
-  "version": 0,
+  "version": 2,
   "links": []
 }
