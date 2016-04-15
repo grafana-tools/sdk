@@ -49,17 +49,22 @@ type (
 	}
 	panelType   int8
 	commonPanel struct {
-		ID         uint     `json:"id"`
-		Title      string   `json:"title"`                // general
-		Span       float32  `json:"span"`                 // general
-		Links      []link   `json:"links,omitempty"`      // general
-		Datasource *string  `json:"datasource,omitempty"` // metrics
-		Renderer   string   `json:"renderer"`             // display styles
-		Repeat     *string  `json:"repeat,omitempty"`     // templating options
-		MinSpan    *float32 `json:"minSpan,omitempty"`    // templating options
-		Type       string   `json:"type"`
-		Error      bool     `json:"error"`
-		IsNew      bool     `json:"isNew"`
+		ID         uint    `json:"id"`
+		Title      string  `json:"title"`                // general
+		Span       float32 `json:"span"`                 // general
+		Links      []link  `json:"links,omitempty"`      // general
+		Datasource *string `json:"datasource,omitempty"` // metrics
+		Renderer   string  `json:"renderer"`             // display styles
+		Repeat     *string `json:"repeat,omitempty"`     // templating options
+		ScopedVars map[string]struct {
+			Selected bool   `json:"selected"`
+			Text     string `json:"text"`
+			Value    string `json:"value"`
+		} `json:"scopedVars,omitempty"`
+		MinSpan *float32 `json:"minSpan,omitempty"` // templating options
+		Type    string   `json:"type"`
+		Error   bool     `json:"error"`
+		IsNew   bool     `json:"isNew"`
 	}
 	GraphPanel struct {
 		commonPanel
@@ -68,14 +73,16 @@ type (
 		Fill        int         `json:"fill"`
 		Grid        grid        `json:"grid"`
 		Legend      struct {
-			Avg     bool `json:"avg"`
-			Current bool `json:"current"`
-			Max     bool `json:"max"`
-			Min     bool `json:"min"`
-			Show    bool `json:"show"`
-			Total   bool `json:"total"`
-			Values  bool `json:"values"`
-		} `json:"legend"`
+			Avg       bool `json:"avg"`
+			Current   bool `json:"current"`
+			Max       bool `json:"max"`
+			Min       bool `json:"min"`
+			HideEmpty bool `json:"hideEmpty"`
+			HideZero  bool `json:"hideZero"`
+			Show      bool `json:"show"`
+			Total     bool `json:"total"`
+			Values    bool `json:"values"`
+		} `json:"legend,omitempty"`
 		Lines           bool            `json:"lines"`
 		Linewidth       uint            `json:"linewidth"`
 		NullPointMode   string          `json:"nullPointMode"`
@@ -123,17 +130,27 @@ type (
 	}
 	SinglestatPanel struct {
 		commonPanel
-		Colors          []string   `json:"colors"`
-		ColorValue      bool       `json:"colorValue"`
-		ColorBackground bool       `json:"colorBackground"`
-		Decimals        int        `json:"decimals"`
-		Format          string     `json:"format"`
-		NullPointMode   string     `json:"nullPointMode"`
-		ValueFontSize   string     `json:"valueFontSize"`
-		ValueMaps       []valueMap `json:"valueMaps"`
-		ValueName       string     `json:"valueName"`
-		Targets         []Target   `json:"targets,omitempty"`
-		Thresholds      string     `json:"thresholds"`
+		Colors          []string `json:"colors"`
+		ColorValue      bool     `json:"colorValue"`
+		ColorBackground bool     `json:"colorBackground"`
+		Decimals        int      `json:"decimals"`
+		Format          string   `json:"format"`
+		NullPointMode   string   `json:"nullPointMode"`
+		Postfix         *string  `json:"postfix,omitempty"`
+		Prefix          *string  `json:"prefix,omitempty"`
+		PostfixFontSize *string  `json:"postfixFontSize,omitempty"`
+		PrefixFontSize  *string  `json:"prefixFontSize,omitempty"`
+		SparkLine       struct {
+			FillColor *string `json:"fillColor,omitempty"`
+			Full      bool    `json:"full,omitempty"`
+			LineColor *string `json:"lineColor,omitempty"`
+			Show      bool    `json:"show,omitempty"`
+		} `json:"sparkline"`
+		ValueFontSize string     `json:"valueFontSize"`
+		ValueMaps     []valueMap `json:"valueMaps"`
+		ValueName     string     `json:"valueName"`
+		Targets       []Target   `json:"targets,omitempty"`
+		Thresholds    string     `json:"thresholds"`
 	}
 	DashlistPanel struct {
 		commonPanel

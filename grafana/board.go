@@ -69,6 +69,7 @@ type (
 	templateVar struct {
 		Name        string   `json:"name"`
 		Type        string   `json:"type"`
+		AutoCount   *int     `json:"auto_count,omitempty"`
 		Datasource  *string  `json:"datasource"`
 		Refresh     bool     `json:"refresh"`
 		Options     []option `json:"options"`
@@ -88,8 +89,9 @@ type (
 	}
 	// for templateVar
 	current struct {
-		Text  string `json:"text"`
-		Value string `json:"value"`
+		Tags  []*string   `json:"tags,omitempty"`
+		Text  string      `json:"text"`
+		Value interface{} `json:"value"` // TODO select more precise type
 	}
 	annotation struct {
 		Name       string  `json:"name"`
