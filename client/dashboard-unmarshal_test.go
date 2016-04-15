@@ -19,6 +19,17 @@ func TestUnmarshal_NewEmptyDashboard26(t *testing.T) {
 	}
 }
 
+func TestUnmarshal_EmptyDashboardWithTemplating26(t *testing.T) {
+	var board grafana.Board
+	raw, _ := ioutil.ReadFile("../testdata/empty-dashboard-with-templating-2.6.json")
+
+	err := json.Unmarshal(raw, &board)
+
+	if err != nil {
+		t.Error(err)
+	}
+}
+
 func TestUnmarshal_DashboardWithDefaultPanelsIn2Rows26(t *testing.T) {
 	var board grafana.Board
 	raw, _ := ioutil.ReadFile("../testdata/default-panels-all-types-2-rows-dashboard-2.6.json")
