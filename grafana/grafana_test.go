@@ -34,10 +34,10 @@ func ExampleNewBoard() {
 	//         {
 	//           "id": 1,
 	//           "title": "Sample graph title",
+	//           "renderer": "flot",
 	//           "type": "graph",
 	//           "error": false,
 	//           "isNew": true,
-	//           "renderer": "flot",
 	//           "aliasColors": null,
 	//           "bars": false,
 	//           "fill": 0,
@@ -59,6 +59,8 @@ func ExampleNewBoard() {
 	//             "current": false,
 	//             "max": false,
 	//             "min": false,
+	//             "hideEmpty": false,
+	//             "hideZero": false,
 	//             "show": false,
 	//             "total": false,
 	//             "values": false
@@ -104,5 +106,4 @@ func ExampleNewBoard() {
 	//     "time_options": null
 	//   }
 	// }
-
 }
