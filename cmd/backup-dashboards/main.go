@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/grafov/autograf/client"
+	"github.com/grafov/autograf/grafana"
 )
 
 /* This is a simple example of usage of Grafana client
@@ -17,10 +18,11 @@ Usage:
 
 func main() {
 	var (
-		boards        []client.FoundBoard
-		boardWithMeta client.BoardWithMeta
-		data          []byte
-		err           error
+		boards []client.FoundBoard
+		board  grafana.Board
+		meta   client.BoardProperties
+		data   []byte
+		err    error
 	)
 	if len(os.Args) != 2 {
 		fmt.Fprint(os.Stderr, "Usage:  backup-dashboards http://grafana.host:3000 api-key-string-here\n")
@@ -32,16 +34,16 @@ func main() {
 		os.Exit(1)
 	}
 	for _, link := range boards {
-		if boardWithMeta, err = c.GetDashboard(link.URI); err != nil {
+		if board, meta, err = c.GetDashboard(link.URI); err != nil {
 			fmt.Fprintf(os.Stderr, fmt.Sprintf("%s for %s\n", err, link.URI))
 			continue
 		}
-		if data, err = json.MarshalIndent(boardWithMeta.Board, "", "  "); err != nil {
-			fmt.Fprintf(os.Stderr, fmt.Sprintf("%s for %s\n", err, boardWithMeta.Board.Title))
+		if data, err = json.MarshalIndent(board, "", "  "); err != nil {
+			fmt.Fprintf(os.Stderr, fmt.Sprintf("%s for %s\n", err, board.Title))
 			continue
 		}
-		if err = ioutil.WriteFile(fmt.Sprintf("%s.json", boardWithMeta.Meta.Slug), data, os.FileMode(int(0666))); err != nil {
-			fmt.Fprintf(os.Stderr, fmt.Sprintf("%s for %s\n", err, boardWithMeta.Meta.Slug))
+		if err = ioutil.WriteFile(fmt.Sprintf("%s.json", meta.Slug), data, os.FileMode(int(0666))); err != nil {
+			fmt.Fprintf(os.Stderr, fmt.Sprintf("%s for %s\n", err, meta.Slug))
 		}
 	}
 }
