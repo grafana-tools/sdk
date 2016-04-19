@@ -36,6 +36,8 @@ const (
 	SinglestatType
 )
 
+const MixedSource = "-- Mixed --"
+
 type (
 	// Panel represents panels of different types defined in Grafana.
 	Panel struct {
@@ -73,15 +75,17 @@ type (
 		Fill        int         `json:"fill"`
 		Grid        grid        `json:"grid"`
 		Legend      struct {
-			Avg       bool `json:"avg"`
-			Current   bool `json:"current"`
-			Max       bool `json:"max"`
-			Min       bool `json:"min"`
-			HideEmpty bool `json:"hideEmpty"`
-			HideZero  bool `json:"hideZero"`
-			Show      bool `json:"show"`
-			Total     bool `json:"total"`
-			Values    bool `json:"values"`
+			AlignAsTable bool `json:"alignAsTable"`
+			Avg          bool `json:"avg"`
+			Current      bool `json:"current"`
+			HideEmpty    bool `json:"hideEmpty"`
+			HideZero     bool `json:"hideZero"`
+			Max          bool `json:"max"`
+			Min          bool `json:"min"`
+			RightSide    bool `json:"rightSide"`
+			Show         bool `json:"show"`
+			Total        bool `json:"total"`
+			Values       bool `json:"values"`
 		} `json:"legend,omitempty"`
 		Lines           bool            `json:"lines"`
 		Linewidth       uint            `json:"linewidth"`
@@ -517,6 +521,19 @@ func (p *Panel) Title() string {
 		return p.TablePanel.Title
 	default:
 		return ""
+	}
+}
+
+func (p *Panel) Datasource() *string {
+	switch p.OfType {
+	case GraphType:
+		return p.GraphPanel.Datasource
+	case SinglestatType:
+		return p.SinglestatPanel.Datasource
+	case TableType:
+		return p.TablePanel.Datasource
+	default:
+		return nil
 	}
 }
 
