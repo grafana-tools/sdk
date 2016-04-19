@@ -63,10 +63,11 @@ type (
 			Text     string `json:"text"`
 			Value    string `json:"value"`
 		} `json:"scopedVars,omitempty"`
-		MinSpan *float32 `json:"minSpan,omitempty"` // templating options
-		Type    string   `json:"type"`
-		Error   bool     `json:"error"`
-		IsNew   bool     `json:"isNew"`
+		Transparent bool     `json:"transparent"`
+		MinSpan     *float32 `json:"minSpan,omitempty"` // templating options
+		Type        string   `json:"type"`
+		Error       bool     `json:"error"`
+		IsNew       bool     `json:"isNew"`
 	}
 	GraphPanel struct {
 		commonPanel
