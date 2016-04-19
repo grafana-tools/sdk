@@ -104,18 +104,21 @@ type (
 	}
 )
 
+// link represents link to another dashboard or external weblink
 type link struct {
 	Title       string   `json:"title"`
 	Type        string   `json:"type"`
-	Dashboard   *string  `json:"dashboard,omitempty"`
+	AsDropdown  *bool    `json:"asDropdown,omitempty"`
 	DashURI     *string  `json:"dashUri,omitempty"`
-	Params      *string  `json:"params,omitempty"`
+	Dashboard   *string  `json:"dashboard,omitempty"`
 	Icon        *string  `json:"icon,omitempty"`
-	Tags        []string `json:"tags,omitempty"`
-	URL         *string  `json:"url,omitempty"`
-	Tooltip     *string  `json:"tooltip,omitempty"`
 	IncludeVars bool     `json:"includeVars"`
 	KeepTime    *bool    `json:"keepTime,omitempty"`
+	Params      *string  `json:"params,omitempty"`
+	Tags        []string `json:"tags,omitempty"`
+	TargetBlank *bool    `json:"targetBlank,omitempty"`
+	Tooltip     *string  `json:"tooltip,omitempty"`
+	URL         *string  `json:"url,omitempty"`
 }
 
 // height of rows maybe passed as number (ex 200) or
