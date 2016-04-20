@@ -71,7 +71,7 @@ func (r *Instance) GetDashboard(slug string) (grafana.Board, BoardProperties, er
 // Contrary to GetDashboard() it not unpack loaded JSON to grafana.Board structure. Instead it
 // returns it as byte slice. It guarantee that data of dashboard returned untouched by conversion
 // with grafana.Board so no matter how properly fields from a current version of Grafana mapped to
-// our grafana.Board fields. It useful for backuping purposes when you load a dashboard exactly with
+// our grafana.Board fields. It useful for backuping purposes when you want a dashboard exactly with
 // same data as it exported by Grafana.
 func (r *Instance) GetRawDashboard(slug string) ([]byte, BoardProperties, error) {
 	var (
