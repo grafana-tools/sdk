@@ -58,7 +58,9 @@ type (
 		Datasource *string `json:"datasource,omitempty"` // metrics
 		Renderer   string  `json:"renderer"`             // display styles
 		Repeat     *string `json:"repeat,omitempty"`     // templating options
-		ScopedVars map[string]struct {
+		//RepeatIteration *int64   `json:"repeatIteration,omitempty"`
+		RepeatPanelID *uint `json:"repeatPanelId,omitempty"`
+		ScopedVars    map[string]struct {
 			Selected bool   `json:"selected"`
 			Text     string `json:"text"`
 			Value    string `json:"value"`
@@ -140,6 +142,7 @@ type (
 		ColorBackground bool     `json:"colorBackground"`
 		Decimals        int      `json:"decimals"`
 		Format          string   `json:"format"`
+		MaxDataPoints   *int     `json:"maxDataPoints,omitempty"`
 		NullPointMode   string   `json:"nullPointMode"`
 		Postfix         *string  `json:"postfix,omitempty"`
 		Prefix          *string  `json:"prefix,omitempty"`

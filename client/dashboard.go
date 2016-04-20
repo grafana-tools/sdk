@@ -20,6 +20,7 @@ package client
 */
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -57,7 +58,9 @@ func (r *Instance) GetDashboard(slug string) (grafana.Board, BoardProperties, er
 	if raw, err = r.get(fmt.Sprintf("api/dashboards/%s", slug), nil); err != nil {
 		return grafana.Board{}, BoardProperties{}, err
 	}
-	if err = json.Unmarshal(raw, &result); err != nil {
+	dec := json.NewDecoder(bytes.NewReader(raw))
+	dec.UseNumber()
+	if err := dec.Decode(&result); err != nil {
 		return grafana.Board{}, BoardProperties{}, fmt.Errorf("unmarshal board with meta: %s\n%s", err, raw)
 	}
 	return result.Board, result.Meta, err
