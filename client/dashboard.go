@@ -46,6 +46,7 @@ type BoardProperties struct {
 	Version    int       `json:"version"`
 }
 
+// GetDashboard loads a dashboard from Grafana instance along with metadata for a dashboard.
 func (r *Instance) GetDashboard(slug string) (grafana.Board, BoardProperties, error) {
 	var (
 		raw    []byte
@@ -64,6 +65,32 @@ func (r *Instance) GetDashboard(slug string) (grafana.Board, BoardProperties, er
 		return grafana.Board{}, BoardProperties{}, fmt.Errorf("unmarshal board with meta: %s\n%s", err, raw)
 	}
 	return result.Board, result.Meta, err
+}
+
+// GetRawDashboard loads a dashboard JSON from Grafana instance along with metadata for a dashboard.
+// Contrary to GetDashboard() it not unpack loaded JSON to grafana.Board structure. Instead it
+// returns it as byte slice. It guarantee that data of dashboard returned untouched by conversion
+// with grafana.Board so no matter how properly fields from a current version of Grafana mapped to
+// our grafana.Board fields. It useful for backuping purposes when you load a dashboard exactly with
+// same data as it exported by Grafana.
+func (r *Instance) GetRawDashboard(slug string) ([]byte, BoardProperties, error) {
+	var (
+		raw    []byte
+		result struct {
+			Meta  BoardProperties `json:"meta"`
+			Board json.RawMessage `json:"dashboard"`
+		}
+		err error
+	)
+	if raw, err = r.get(fmt.Sprintf("api/dashboards/%s", slug), nil); err != nil {
+		return nil, BoardProperties{}, err
+	}
+	dec := json.NewDecoder(bytes.NewReader(raw))
+	dec.UseNumber()
+	if err := dec.Decode(&result); err != nil {
+		return nil, BoardProperties{}, fmt.Errorf("unmarshal board with meta: %s\n%s", err, raw)
+	}
+	return []byte(result.Board), result.Meta, err
 }
 
 type FoundBoard struct {

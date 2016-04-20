@@ -1,48 +1,43 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
 
 	"github.com/grafov/autograf/client"
-	"github.com/grafov/autograf/grafana"
 )
 
 /* This is a simple example of usage of Grafana client
 for copying dashboards and saving them to a disk.
+Ie really useful for Grafana backups!
+
 Usage:
   backup-dashboards http://grafana.host:3000 api-key-string-here
 */
 
 func main() {
 	var (
-		boards []client.FoundBoard
-		board  grafana.Board
-		meta   client.BoardProperties
-		data   []byte
-		err    error
+		boardLinks []client.FoundBoard
+		rawBoard   []byte
+		meta       client.BoardProperties
+		err        error
 	)
-	if len(os.Args) != 2 {
+	if len(os.Args) != 3 {
 		fmt.Fprint(os.Stderr, "Usage:  backup-dashboards http://grafana.host:3000 api-key-string-here\n")
 		os.Exit(0)
 	}
 	c := client.New(os.Args[1], os.Args[2])
-	if boards, err = c.SearchDashboards("", false); err != nil {
+	if boardLinks, err = c.SearchDashboards("", false); err != nil {
 		fmt.Fprintf(os.Stderr, fmt.Sprintf("%s\n", err))
 		os.Exit(1)
 	}
-	for _, link := range boards {
-		if board, meta, err = c.GetDashboard(link.URI); err != nil {
+	for _, link := range boardLinks {
+		if rawBoard, meta, err = c.GetRawDashboard(link.URI); err != nil {
 			fmt.Fprintf(os.Stderr, fmt.Sprintf("%s for %s\n", err, link.URI))
 			continue
 		}
-		if data, err = json.MarshalIndent(board, "", "  "); err != nil {
-			fmt.Fprintf(os.Stderr, fmt.Sprintf("%s for %s\n", err, board.Title))
-			continue
-		}
-		if err = ioutil.WriteFile(fmt.Sprintf("%s.json", meta.Slug), data, os.FileMode(int(0666))); err != nil {
+		if err = ioutil.WriteFile(fmt.Sprintf("%s.json", meta.Slug), rawBoard, os.FileMode(int(0666))); err != nil {
 			fmt.Fprintf(os.Stderr, fmt.Sprintf("%s for %s\n", err, meta.Slug))
 		}
 	}
