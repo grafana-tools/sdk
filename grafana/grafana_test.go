@@ -9,6 +9,7 @@ import (
 
 func ExampleNewBoard() {
 	board := grafana.NewBoard("Sample dashboard title")
+	board.ID = 1
 	row1 := board.AddRow("Sample row title")
 	row1.AddGraph(grafana.NewGraph("Sample graph title"))
 	data, _ := json.MarshalIndent(board, "", "  ")
@@ -27,6 +28,7 @@ func ExampleNewBoard() {
 	//   "rows": [
 	//     {
 	//       "title": "Sample row title",
+	//       "showTitle": false,
 	//       "collapse": false,
 	//       "editable": true,
 	//       "height": "250px",
@@ -35,6 +37,7 @@ func ExampleNewBoard() {
 	//           "id": 1,
 	//           "title": "Sample graph title",
 	//           "renderer": "flot",
+	//           "transparent": false,
 	//           "type": "graph",
 	//           "error": false,
 	//           "isNew": true,
@@ -55,12 +58,14 @@ func ExampleNewBoard() {
 	//             "thresholdLine": false
 	//           },
 	//           "legend": {
+	//             "alignAsTable": false,
 	//             "avg": false,
 	//             "current": false,
-	//             "max": false,
-	//             "min": false,
 	//             "hideEmpty": false,
 	//             "hideZero": false,
+	//             "max": false,
+	//             "min": false,
+	//             "rightSide": false,
 	//             "show": false,
 	//             "total": false,
 	//             "values": false
