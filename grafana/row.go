@@ -30,44 +30,44 @@ type Row struct {
 	board     *Board
 }
 
+func (r *Row) Add(panel *Panel) {
+	r.board.lastPanelID++
+	panel.ID = r.board.lastPanelID
+	r.Panels = append(r.Panels, *panel)
+}
+
 func (r *Row) AddDashlist(data *DashlistPanel) {
 	r.board.lastPanelID++
-	data.ID = r.board.lastPanelID
-	panel := Panel{OfType: DashlistType, DashlistPanel: data}
+	panel := Panel{ID: r.board.lastPanelID, OfType: DashlistType, DashlistPanel: data}
 	r.Panels = append(r.Panels, panel)
 }
 
 func (r *Row) AddGraph(data *GraphPanel) {
 	r.board.lastPanelID++
-	data.ID = r.board.lastPanelID
-	panel := Panel{OfType: GraphType, GraphPanel: data}
+	panel := Panel{ID: r.board.lastPanelID, OfType: GraphType, GraphPanel: data}
 	r.Panels = append(r.Panels, panel)
 }
 
 func (r *Row) AddTable(data *TablePanel) {
 	r.board.lastPanelID++
-	data.ID = r.board.lastPanelID
-	panel := Panel{OfType: TableType, TablePanel: data}
+	panel := Panel{ID: r.board.lastPanelID, OfType: TableType, TablePanel: data}
 	r.Panels = append(r.Panels, panel)
 }
 
 func (r *Row) AddText(data *TextPanel) {
 	r.board.lastPanelID++
-	data.ID = r.board.lastPanelID
-	panel := Panel{OfType: TextType, TextPanel: data}
+	panel := Panel{ID: r.board.lastPanelID, OfType: TextType, TextPanel: data}
 	r.Panels = append(r.Panels, panel)
 }
 
 func (r *Row) AddSinglestat(data *SinglestatPanel) {
 	r.board.lastPanelID++
-	data.ID = r.board.lastPanelID
-	panel := Panel{OfType: SinglestatType, SinglestatPanel: data}
+	panel := Panel{ID: r.board.lastPanelID, OfType: SinglestatType, SinglestatPanel: data}
 	r.Panels = append(r.Panels, panel)
 }
 
 func (r *Row) AddCustom(data *CustomPanel) {
 	r.board.lastPanelID++
-	(*data)["id"] = r.board.lastPanelID
-	panel := Panel{OfType: CustomType, CustomPanel: data}
+	panel := Panel{ID: r.board.lastPanelID, OfType: CustomType, CustomPanel: data}
 	r.Panels = append(r.Panels, panel)
 }

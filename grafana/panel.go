@@ -41,22 +41,13 @@ const MixedSource = "-- Mixed --"
 type (
 	// Panel represents panels of different types defined in Grafana.
 	Panel struct {
-		OfType panelType
-		*GraphPanel
-		*TablePanel
-		*TextPanel
-		*SinglestatPanel
-		*DashlistPanel
-		*CustomPanel
-	}
-	panelType   int8
-	commonPanel struct {
+		OfType     panelType
 		ID         uint    `json:"id"`
 		Title      string  `json:"title"`                // general
 		Span       float32 `json:"span"`                 // general
 		Links      []link  `json:"links,omitempty"`      // general
 		Datasource *string `json:"datasource,omitempty"` // metrics
-		Renderer   string  `json:"renderer"`             // display styles
+		Renderer   *string `json:"renderer,omitempty"`   // display styles
 		Repeat     *string `json:"repeat,omitempty"`     // templating options
 		//RepeatIteration *int64   `json:"repeatIteration,omitempty"`
 		RepeatPanelID *uint `json:"repeatPanelId,omitempty"`
@@ -70,9 +61,15 @@ type (
 		Type        string   `json:"type"`
 		Error       bool     `json:"error"`
 		IsNew       bool     `json:"isNew"`
+		*GraphPanel
+		*TablePanel
+		*TextPanel
+		*SinglestatPanel
+		*DashlistPanel
+		*CustomPanel
 	}
+	panelType  int8
 	GraphPanel struct {
-		commonPanel
 		AliasColors interface{} `json:"aliasColors"` // XXX
 		Bars        bool        `json:"bars"`
 		Fill        int         `json:"fill"`
@@ -112,7 +109,6 @@ type (
 		YFormats []string `json:"y_formats"`
 	}
 	TablePanel struct {
-		commonPanel
 		Columns []column `json:"columns"`
 		Sort    *struct {
 			Col  uint `json:"col"`
@@ -123,7 +119,6 @@ type (
 		Targets   []Target      `json:"targets,omitempty"`
 	}
 	TextPanel struct {
-		commonPanel
 		Content    string `json:"content"`
 		Mode       string `json:"mode"`
 		PageSize   uint   `json:"pageSize"`
@@ -136,7 +131,6 @@ type (
 		Styles []columnStyle `json:"styles"`
 	}
 	SinglestatPanel struct {
-		commonPanel
 		Colors          []string `json:"colors"`
 		ColorValue      bool     `json:"colorValue"`
 		ColorBackground bool     `json:"colorBackground"`
@@ -161,7 +155,6 @@ type (
 		Thresholds    string     `json:"thresholds"`
 	}
 	DashlistPanel struct {
-		commonPanel
 		Mode  string   `json:"mode"`
 		Limit uint     `json:"limit"`
 		Query string   `json:"query"`
@@ -277,75 +270,73 @@ type Target struct {
 	LegendFormat   string `json:"legendFormat"`
 }
 
-func NewDashlist(title string) *DashlistPanel {
+// func NewDashlist(title string) *DashlistPanel {
+// 	if title == "" {
+// 		title = "Panel Title"
+// 	}
+// 	return &DashlistPanel{
+// 			Title:    title,
+// 			Type:     "dashlist",
+// 			Renderer: "flot",
+// 			IsNew:    true}
+// }
+
+func NewGraph(title string) *Panel {
 	if title == "" {
 		title = "Panel Title"
 	}
-	return &DashlistPanel{
-		commonPanel: commonPanel{
-			Title:    title,
-			Type:     "dashlist",
-			Renderer: "flot",
-			IsNew:    true}}
+	render := "flot"
+	return &Panel{
+		Title:    title,
+		Type:     "graph",
+		Renderer: &render,
+		IsNew:    true,
+		GraphPanel: &GraphPanel{
+			NullPointMode: "connected",
+			Pointradius:   5,
+			Span:          12,
+			XAxis:         true,
+			YAxis:         true,
+		}}
 }
 
-func NewGraph(title string) *GraphPanel {
-	if title == "" {
-		title = "Panel Title"
-	}
-	return &GraphPanel{
-		commonPanel: commonPanel{
-			Title:    title,
-			Type:     "graph",
-			Renderer: "flot",
-			IsNew:    true,
-		},
-		NullPointMode: "connected",
-		Pointradius:   5,
-		Span:          12,
-		XAxis:         true,
-		YAxis:         true,
-	}
-}
+// func NewTable(title string) *TablePanel {
+// 	if title == "" {
+// 		title = "Panel Title"
+// 	}
+// 	return &TablePanel{
+// 		commonPanel: commonPanel{
+// 			Title:    title,
+// 			Type:     "table",
+// 			Renderer: "flot",
+// 			IsNew:    true}}
+// }
 
-func NewTable(title string) *TablePanel {
-	if title == "" {
-		title = "Panel Title"
-	}
-	return &TablePanel{
-		commonPanel: commonPanel{
-			Title:    title,
-			Type:     "table",
-			Renderer: "flot",
-			IsNew:    true}}
-}
+// func NewText(title string) *TextPanel {
+// 	if title == "" {
+// 		title = "Panel Title"
+// 	}
+// 	return &TextPanel{
+// 		commonPanel: commonPanel{
+// 			Title:    title,
+// 			Type:     "text",
+// 			Renderer: "flot",
+// 			IsNew:    true}}
+// }
 
-func NewText(title string) *TextPanel {
-	if title == "" {
-		title = "Panel Title"
-	}
-	return &TextPanel{
-		commonPanel: commonPanel{
-			Title:    title,
-			Type:     "text",
-			Renderer: "flot",
-			IsNew:    true}}
-}
+// func NewSinglestat(title string) *SinglestatPanel {
+// 	if title == "" {
+// 		title = "Panel Title"
+// 	}
+// 	return &SinglestatPanel{
+// 		Title:    title,
+// 		Type:     "singlestat",
+// 		Renderer: "flot",
+// 		IsNew:    true}
+// }
 
-func NewSinglestat(title string) *SinglestatPanel {
-	if title == "" {
-		title = "Panel Title"
-	}
-	return &SinglestatPanel{
-		commonPanel: commonPanel{
-			Title:    title,
-			Type:     "singlestat",
-			Renderer: "flot",
-			IsNew:    true}}
-}
-
-func (p *Panel) UnmarshalJSON(b []byte) (err error) {
-	var probe commonPanel
+func (p *Panel) XXXUnmarshalJSON(b []byte) (err error) {
+	var probe Panel
 	if err = json.Unmarshal(b, &probe); err == nil {
 		switch probe.Type {
 		case "graph":
@@ -515,31 +506,22 @@ func (p *Panel) RepeatTargetsForDatasources(dsNames ...string) {
 	}
 }
 
-func (p *Panel) Title() string {
-	switch p.OfType {
-	case GraphType:
-		return p.GraphPanel.Title
-	case SinglestatType:
-		return p.SinglestatPanel.Title
-	case TableType:
-		return p.TablePanel.Title
-	default:
-		return ""
-	}
-}
+//  func (p *Panel) Title() string {
+// 	return p.Title
+// }
 
-func (p *Panel) Datasource() *string {
-	switch p.OfType {
-	case GraphType:
-		return p.GraphPanel.Datasource
-	case SinglestatType:
-		return p.SinglestatPanel.Datasource
-	case TableType:
-		return p.TablePanel.Datasource
-	default:
-		return nil
-	}
-}
+// func (p *Panel) Datasource() *string {
+// 	switch p.OfType {
+// 	case GraphType:
+// 		return p.GraphPanel.Datasource
+// 	case SinglestatType:
+// 		return p.SinglestatPanel.Datasource
+// 	case TableType:
+// 		return p.TablePanel.Datasource
+// 	default:
+// 		return nil
+// 	}
+// }
 
 // Targets is iterate over all panel targets. It just returns nil if
 // no targets defined for panel of concrete type.

@@ -11,7 +11,7 @@ func ExampleNewBoard() {
 	board := grafana.NewBoard("Sample dashboard title")
 	board.ID = 1
 	row1 := board.AddRow("Sample row title")
-	row1.AddGraph(grafana.NewGraph("Sample graph title"))
+	row1.Add(grafana.NewGraph("Sample graph title"))
 	data, _ := json.MarshalIndent(board, "", "  ")
 	fmt.Printf("%s", data)
 	// Output:
