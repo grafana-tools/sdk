@@ -10,7 +10,7 @@ import (
 
 /* This is a simple example of usage of Grafana client
 for copying dashboards and saving them to a disk.
-Ie really useful for Grafana backups!
+It really useful for Grafana backups!
 
 Usage:
   backup-dashboards http://grafana.host:3000 api-key-string-here
