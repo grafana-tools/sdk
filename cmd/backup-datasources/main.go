@@ -1,5 +1,15 @@
 package main
 
+/* This is a simple example of usage of Grafana client
+for copying datasources and saving them to a disk.
+It is useful for Grafana backups!
+
+Usage:
+  backup-datasources http://grafana.host:3000 api-key-string-here
+
+You need get API key with Admin rights from your Grafana!
+*/
+
 import (
 	"encoding/json"
 	"fmt"
@@ -10,16 +20,6 @@ import (
 	"github.com/grafov/autograf/client"
 	"github.com/grafov/autograf/grafana"
 )
-
-/* This is a simple example of usage of Grafana client
-for copying datasources and saving them to a disk.
-It is useful for Grafana backups!
-
-Usage:
-  backup-datasources http://grafana.host:3000 api-key-string-here
-
-You need get API key with Admin rights from your Grafana!
-*/
 
 func main() {
 	var (
