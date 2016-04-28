@@ -49,7 +49,7 @@ func New(apiURL, apiKey string) *Instance {
 	return &Instance{baseURL: apiURL, key: fmt.Sprintf("Bearer %s", apiKey)}
 }
 
-func (r *Instance) get(query string, params url.Values) ([]byte, error) {
+func (r *Instance) get(query string, params url.Values) ([]byte, int, error) {
 	u, _ := url.Parse(r.baseURL)
 	u.Path = query
 	if params != nil {
@@ -62,10 +62,11 @@ func (r *Instance) get(query string, params url.Values) ([]byte, error) {
 	client := &http.Client{Timeout: requestTimeout}
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
-	defer resp.Body.Close()
-	return ioutil.ReadAll(resp.Body)
+	data, err := ioutil.ReadAll(resp.Body)
+	resp.Body.Close()
+	return data, resp.StatusCode, err
 }
 
 func (r *Instance) put(query string, params url.Values, body []byte) ([]byte, int, error) {

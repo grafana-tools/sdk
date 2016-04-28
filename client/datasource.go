@@ -28,12 +28,16 @@ import (
 
 func (r *Instance) GetAllDatasources() ([]grafana.Datasource, error) {
 	var (
-		raw []byte
-		dss []grafana.Datasource
-		err error
+		raw  []byte
+		dss  []grafana.Datasource
+		code int
+		err  error
 	)
-	if raw, err = r.get("api/datasources", nil); err != nil {
+	if raw, code, err = r.get("api/datasources", nil); err != nil {
 		return nil, err
+	}
+	if code != 200 {
+		return nil, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	err = json.Unmarshal(raw, &dss)
 	return dss, err

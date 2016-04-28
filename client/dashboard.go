@@ -54,10 +54,14 @@ func (r *Instance) GetDashboard(slug string) (grafana.Board, BoardProperties, er
 			Meta  BoardProperties `json:"meta"`
 			Board grafana.Board   `json:"dashboard"`
 		}
-		err error
+		code int
+		err  error
 	)
-	if raw, err = r.get(fmt.Sprintf("api/dashboards/%s", slug), nil); err != nil {
+	if raw, code, err = r.get(fmt.Sprintf("api/dashboards/%s", slug), nil); err != nil {
 		return grafana.Board{}, BoardProperties{}, err
+	}
+	if code != 200 {
+		return grafana.Board{}, BoardProperties{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	dec := json.NewDecoder(bytes.NewReader(raw))
 	dec.UseNumber()
@@ -80,10 +84,14 @@ func (r *Instance) GetRawDashboard(slug string) ([]byte, BoardProperties, error)
 			Meta  BoardProperties `json:"meta"`
 			Board json.RawMessage `json:"dashboard"`
 		}
-		err error
+		code int
+		err  error
 	)
-	if raw, err = r.get(fmt.Sprintf("api/dashboards/%s", slug), nil); err != nil {
+	if raw, code, err = r.get(fmt.Sprintf("api/dashboards/%s", slug), nil); err != nil {
 		return nil, BoardProperties{}, err
+	}
+	if code != 200 {
+		return nil, BoardProperties{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	dec := json.NewDecoder(bytes.NewReader(raw))
 	dec.UseNumber()
@@ -108,6 +116,7 @@ func (r *Instance) SearchDashboards(query string, starred bool, tags ...string) 
 	var (
 		raw    []byte
 		boards []FoundBoard
+		code   int
 		err    error
 	)
 	u := url.URL{}
@@ -121,8 +130,11 @@ func (r *Instance) SearchDashboards(query string, starred bool, tags ...string) 
 	for _, tag := range tags {
 		q.Add("tag", tag)
 	}
-	if raw, err = r.get("api/search", q); err != nil {
+	if raw, code, err = r.get("api/search", q); err != nil {
 		return nil, err
+	}
+	if code != 200 {
+		return nil, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	err = json.Unmarshal(raw, &boards)
 	return boards, err
