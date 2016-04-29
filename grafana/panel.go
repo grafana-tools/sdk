@@ -90,6 +90,8 @@ type (
 			Total        bool `json:"total"`
 			Values       bool `json:"values"`
 		} `json:"legend,omitempty"`
+		LeftYAxisLabel  *string         `json:"leftYAxisLabel,omitempty"`
+		RightYAxisLabel *string         `json:"rightYAxisLabel,omitempty"`
 		Lines           bool            `json:"lines"`
 		Linewidth       uint            `json:"linewidth"`
 		NullPointMode   string          `json:"nullPointMode"`
