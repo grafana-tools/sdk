@@ -42,7 +42,7 @@ Sample utility that just saves all dashboards from Grafana to JSON files in a cu
 
 * Support functions of Grafana REST API for manipulating users and organizations.
 
-## Related works in Go
+## Collection of Grafana tools in Golang
 
 * [github.com/grafana/grafana-api-golang-client](https://github.com/grafana/grafana-api-golang-client) — official golang client of Grafana project. Currently in realizes parts of the REST API.
 * [github.com/adejoux/grafanaclient](https://github.com/adejoux/grafanaclient) — API to manage Grafana 2.0 datasources and dashboards. It lacks features from 2.5 and later Grafana versions.
@@ -50,7 +50,7 @@ Sample utility that just saves all dashboards from Grafana to JSON files in a cu
 * [github.com/raintank/memo](https://github.com/raintank/memo) — send slack mentions to Grafana annotations.
 * [github.com/retzkek/grafctl](https://github.com/retzkek/grafctl) — backup/restore/track dashboards with git.
 
-### Other projects offered DSL or helper tools for Grafana
+### Projects offered DSL or helper tools for Grafana in other languages
 
 * [github.com/jakubplichta/grafana-dashboard-builder](https://github.com/jakubplichta/grafana-dashboard-builder) Python tool for building Grafana dashboards in YAML.
 * [github.com/m110/grafcli](https://github.com/m110/grafcli) Python tool for managing Grafana in CLI. It querying Grafana backends directly. The project abandoned in alpha state for a long time.
