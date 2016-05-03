@@ -97,7 +97,6 @@ type (
 		Pointradius     int             `json:"pointradius"`
 		Points          bool            `json:"points"`
 		SeriesOverrides []serieOverride `json:"seriesOverrides"`
-		Span            float32         `json:"span"`
 		Stack           bool            `json:"stack"`
 		SteppedLine     bool            `json:"steppedLine"`
 		Targets         []Target        `json:"targets,omitempty"`
@@ -352,6 +351,21 @@ func NewSinglestat(title string) *Panel {
 		Renderer:        &render,
 		IsNew:           true,
 		SinglestatPanel: &SinglestatPanel{}}
+}
+
+// NewCustom initializes panel with a singlestat panel.
+func NewCustom(title string) *Panel {
+	if title == "" {
+		title = "Panel Title"
+	}
+	render := "flot"
+	return &Panel{
+		OfType:      CustomType,
+		Title:       title,
+		Type:        "singlestat",
+		Renderer:    &render,
+		IsNew:       true,
+		CustomPanel: &CustomPanel{}}
 }
 
 // ResetTargets delete all targets defined for a panel.

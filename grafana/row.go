@@ -38,36 +38,48 @@ func (r *Row) Add(panel *Panel) {
 
 func (r *Row) AddDashlist(data *DashlistPanel) {
 	r.board.lastPanelID++
-	panel := Panel{ID: r.board.lastPanelID, OfType: DashlistType, DashlistPanel: data}
-	r.Panels = append(r.Panels, panel)
+	panel := NewDashlist("")
+	panel.ID = r.board.lastPanelID
+	panel.DashlistPanel = data
+	r.Panels = append(r.Panels, *panel)
 }
 
 func (r *Row) AddGraph(data *GraphPanel) {
 	r.board.lastPanelID++
-	panel := Panel{ID: r.board.lastPanelID, OfType: GraphType, GraphPanel: data}
-	r.Panels = append(r.Panels, panel)
+	panel := NewGraph("")
+	panel.ID = r.board.lastPanelID
+	panel.GraphPanel = data
+	r.Panels = append(r.Panels, *panel)
 }
 
 func (r *Row) AddTable(data *TablePanel) {
 	r.board.lastPanelID++
-	panel := Panel{ID: r.board.lastPanelID, OfType: TableType, TablePanel: data}
-	r.Panels = append(r.Panels, panel)
+	panel := NewTable("")
+	panel.ID = r.board.lastPanelID
+	panel.TablePanel = data
+	r.Panels = append(r.Panels, *panel)
 }
 
 func (r *Row) AddText(data *TextPanel) {
 	r.board.lastPanelID++
-	panel := Panel{ID: r.board.lastPanelID, OfType: TextType, TextPanel: data}
-	r.Panels = append(r.Panels, panel)
+	panel := NewText("")
+	panel.ID = r.board.lastPanelID
+	panel.TextPanel = data
+	r.Panels = append(r.Panels, *panel)
 }
 
 func (r *Row) AddSinglestat(data *SinglestatPanel) {
 	r.board.lastPanelID++
-	panel := Panel{ID: r.board.lastPanelID, OfType: SinglestatType, SinglestatPanel: data}
-	r.Panels = append(r.Panels, panel)
+	panel := NewSinglestat("")
+	panel.ID = r.board.lastPanelID
+	panel.SinglestatPanel = data
+	r.Panels = append(r.Panels, *panel)
 }
 
 func (r *Row) AddCustom(data *CustomPanel) {
 	r.board.lastPanelID++
-	panel := Panel{ID: r.board.lastPanelID, OfType: CustomType, CustomPanel: data}
-	r.Panels = append(r.Panels, panel)
+	panel := NewCustom("")
+	panel.ID = r.board.lastPanelID
+	panel.CustomPanel = data
+	r.Panels = append(r.Panels, *panel)
 }

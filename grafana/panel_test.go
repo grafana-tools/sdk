@@ -149,7 +149,7 @@ func TestGraph_SetTarget(t *testing.T) {
 	graph := NewGraph("")
 	graph.AddTarget(&target1)
 
-	graph.AddTarget(&target2)
+	graph.SetTarget(&target2)
 
 	if len(graph.GraphPanel.Targets) != 1 {
 		t.Errorf("should be 1 but %d", len(graph.GraphPanel.Targets))
