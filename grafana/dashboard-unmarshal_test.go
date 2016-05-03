@@ -60,3 +60,14 @@ func TestUnmarshal_DashboardWithDefaultPanelsIn2Rows26(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+func TestUnmarshal_DashboardWithsGraphWithTargets26(t *testing.T) {
+	var board Board
+	raw, _ := ioutil.ReadFile("../testdata/default-panels-graph-with-targets-2.6.json")
+
+	err := json.Unmarshal(raw, &board)
+
+	if err != nil {
+		t.Error(err)
+	}
+}

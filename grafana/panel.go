@@ -41,14 +41,14 @@ const MixedSource = "-- Mixed --"
 type (
 	// Panel represents panels of different types defined in Grafana.
 	Panel struct {
-		OfType     panelType
-		ID         uint    `json:"id"`
-		Title      string  `json:"title"`                // general
-		Span       float32 `json:"span"`                 // general
-		Links      []link  `json:"links,omitempty"`      // general
-		Datasource *string `json:"datasource,omitempty"` // metrics
-		Renderer   *string `json:"renderer,omitempty"`   // display styles
-		Repeat     *string `json:"repeat,omitempty"`     // templating options
+		OfType     panelType `json:"-"`
+		ID         uint      `json:"id"`
+		Title      string    `json:"title"`                // general
+		Span       float32   `json:"span"`                 // general
+		Links      []link    `json:"links,omitempty"`      // general
+		Datasource *string   `json:"datasource,omitempty"` // metrics
+		Renderer   *string   `json:"renderer,omitempty"`   // display styles
+		Repeat     *string   `json:"repeat,omitempty"`     // templating options
 		//RepeatIteration *int64   `json:"repeatIteration,omitempty"`
 		RepeatPanelID *uint `json:"repeatPanelId,omitempty"`
 		ScopedVars    map[string]struct {
@@ -61,6 +61,7 @@ type (
 		Type        string   `json:"type"`
 		Error       bool     `json:"error"`
 		IsNew       bool     `json:"isNew"`
+		// should be added only one of types:
 		*GraphPanel
 		*TablePanel
 		*TextPanel
@@ -272,23 +273,29 @@ type Target struct {
 	LegendFormat   string `json:"legendFormat"`
 }
 
-// func NewDashlist(title string) *DashlistPanel {
-// 	if title == "" {
-// 		title = "Panel Title"
-// 	}
-// 	return &DashlistPanel{
-// 			Title:    title,
-// 			Type:     "dashlist",
-// 			Renderer: "flot",
-// 			IsNew:    true}
-// }
+// NewDashlist initializes panel with a dashlist panel.
+func NewDashlist(title string) *Panel {
+	if title == "" {
+		title = "Panel Title"
+	}
+	render := "flot"
+	return &Panel{
+		OfType:        DashlistType,
+		Title:         title,
+		Type:          "dashlist",
+		Renderer:      &render,
+		IsNew:         true,
+		DashlistPanel: &DashlistPanel{}}
+}
 
+// NewGraph initializes panel with a graph panel.
 func NewGraph(title string) *Panel {
 	if title == "" {
 		title = "Panel Title"
 	}
 	render := "flot"
 	return &Panel{
+		OfType:   GraphType,
 		Title:    title,
 		Type:     "graph",
 		Renderer: &render,
@@ -302,103 +309,49 @@ func NewGraph(title string) *Panel {
 		}}
 }
 
-// func NewTable(title string) *TablePanel {
-// 	if title == "" {
-// 		title = "Panel Title"
-// 	}
-// 	return &TablePanel{
-// 		commonPanel: commonPanel{
-// 			Title:    title,
-// 			Type:     "table",
-// 			Renderer: "flot",
-// 			IsNew:    true}}
-// }
-
-// func NewText(title string) *TextPanel {
-// 	if title == "" {
-// 		title = "Panel Title"
-// 	}
-// 	return &TextPanel{
-// 		commonPanel: commonPanel{
-// 			Title:    title,
-// 			Type:     "text",
-// 			Renderer: "flot",
-// 			IsNew:    true}}
-// }
-
-// func NewSinglestat(title string) *SinglestatPanel {
-// 	if title == "" {
-// 		title = "Panel Title"
-// 	}
-// 	return &SinglestatPanel{
-// 		Title:    title,
-// 		Type:     "singlestat",
-// 		Renderer: "flot",
-// 		IsNew:    true}
-// }
-
-func (p *Panel) XXXUnmarshalJSON(b []byte) (err error) {
-	var probe Panel
-	if err = json.Unmarshal(b, &probe); err == nil {
-		switch probe.Type {
-		case "graph":
-			var graph GraphPanel
-			p.OfType = GraphType
-			if err = json.Unmarshal(b, &graph); err == nil {
-				p.GraphPanel = &graph
-			}
-		case "table":
-			var table TablePanel
-			p.OfType = TableType
-			if err = json.Unmarshal(b, &table); err == nil {
-				p.TablePanel = &table
-			}
-		case "text":
-			var text TextPanel
-			p.OfType = TextType
-			if err = json.Unmarshal(b, &text); err == nil {
-				p.TextPanel = &text
-			}
-		case "singlestat":
-			var singlestat SinglestatPanel
-			p.OfType = SinglestatType
-			if err = json.Unmarshal(b, &singlestat); err == nil {
-				p.SinglestatPanel = &singlestat
-			}
-		case "dashlist":
-			var dashlist DashlistPanel
-			p.OfType = DashlistType
-			if err = json.Unmarshal(b, &dashlist); err == nil {
-				p.DashlistPanel = &dashlist
-			}
-		default:
-			var custom = make(CustomPanel)
-			p.OfType = CustomType
-			if err = json.Unmarshal(b, &custom); err == nil {
-				p.CustomPanel = &custom
-			}
-		}
+// NewTable initializes panel with a table panel.
+func NewTable(title string) *Panel {
+	if title == "" {
+		title = "Panel Title"
 	}
-	return
+	render := "flot"
+	return &Panel{
+		OfType:     TableType,
+		Title:      title,
+		Type:       "table",
+		Renderer:   &render,
+		IsNew:      true,
+		TablePanel: &TablePanel{}}
 }
 
-func (p *Panel) MarshalJSON() ([]byte, error) {
-	if p.GraphPanel != nil {
-		return json.Marshal(*p.GraphPanel)
+// NewText initializes panel with a text panel.
+func NewText(title string) *Panel {
+	if title == "" {
+		title = "Panel Title"
 	}
-	if p.TablePanel != nil {
-		return json.Marshal(*p.TablePanel)
+	render := "flot"
+	return &Panel{
+		OfType:    TextType,
+		Title:     title,
+		Type:      "text",
+		Renderer:  &render,
+		IsNew:     true,
+		TextPanel: &TextPanel{}}
+}
+
+// NewSinglestat initializes panel with a singlestat panel.
+func NewSinglestat(title string) *Panel {
+	if title == "" {
+		title = "Panel Title"
 	}
-	if p.TextPanel != nil {
-		return json.Marshal(*p.TextPanel)
-	}
-	if p.SinglestatPanel != nil {
-		return json.Marshal(*p.SinglestatPanel)
-	}
-	if p.DashlistPanel != nil {
-		return json.Marshal(*p.DashlistPanel)
-	}
-	return json.Marshal(*p.CustomPanel)
+	render := "flot"
+	return &Panel{
+		OfType:          SinglestatType,
+		Title:           title,
+		Type:            "singlestat",
+		Renderer:        &render,
+		IsNew:           true,
+		SinglestatPanel: &SinglestatPanel{}}
 }
 
 // ResetTargets delete all targets defined for a panel.
@@ -508,10 +461,6 @@ func (p *Panel) RepeatTargetsForDatasources(dsNames ...string) {
 	}
 }
 
-//  func (p *Panel) Title() string {
-// 	return p.Title
-// }
-
 // func (p *Panel) Datasource() *string {
 // 	switch p.OfType {
 // 	case GraphType:
@@ -525,9 +474,9 @@ func (p *Panel) RepeatTargetsForDatasources(dsNames ...string) {
 // 	}
 // }
 
-// Targets is iterate over all panel targets. It just returns nil if
+// GetTargets is iterate over all panel targets. It just returns nil if
 // no targets defined for panel of concrete type.
-func (p *Panel) Targets() *[]Target {
+func (p *Panel) GetTargets() *[]Target {
 	switch p.OfType {
 	case GraphType:
 		return &p.GraphPanel.Targets
