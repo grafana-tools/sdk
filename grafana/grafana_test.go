@@ -34,13 +34,6 @@ func ExampleNewBoard() {
 	//       "height": "250px",
 	//       "panels": [
 	//         {
-	//           "id": 1,
-	//           "title": "Sample graph title",
-	//           "renderer": "flot",
-	//           "transparent": false,
-	//           "type": "graph",
-	//           "error": false,
-	//           "isNew": true,
 	//           "aliasColors": null,
 	//           "bars": false,
 	//           "fill": 0,
