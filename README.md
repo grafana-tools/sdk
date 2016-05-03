@@ -11,6 +11,15 @@ Currently there are two packages:
 
 DSL part is unfinished yet so it will be published later.
 
+## Demo utilities
+
+Autograf includes a couple of demo apps for show how to use `client` and `grafana` API:
+
+* [backup-dashboards](cmd/backup-dashboards) — just saves all your dashboards as JSON-files.
+* [backup-datasources](cmd/backup-datasources) — just saves all your datasources as JSON-files.
+
+You need Grafana API key with _admin rights_ for using these utilities.
+
 # Installation
 
 For use in your Go apps just install packages separately:
