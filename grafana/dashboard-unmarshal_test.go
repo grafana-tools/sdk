@@ -61,7 +61,7 @@ func TestUnmarshal_DashboardWithDefaultPanelsIn2Rows26(t *testing.T) {
 	}
 }
 
-func TestUnmarshal_DashboardWithsGraphWithTargets26(t *testing.T) {
+func TestUnmarshal_DashboardWithGraphWithTargets26(t *testing.T) {
 	var board Board
 	raw, _ := ioutil.ReadFile("../testdata/default-panels-graph-with-targets-2.6.json")
 

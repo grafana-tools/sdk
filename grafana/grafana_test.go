@@ -15,7 +15,7 @@ func ExampleNewBoard() {
 	data, _ := json.MarshalIndent(board, "", "  ")
 	fmt.Printf("%s", data)
 	// Output:
-	// {
+	// 	{
 	//   "id": 1,
 	//   "title": "Sample dashboard title",
 	//   "originalTitle": "",
@@ -34,6 +34,14 @@ func ExampleNewBoard() {
 	//       "height": "250px",
 	//       "panels": [
 	//         {
+	//           "id": 1,
+	//           "title": "Sample graph title",
+	//           "span": 12,
+	//           "renderer": "flot",
+	//           "transparent": false,
+	//           "type": "graph",
+	//           "error": false,
+	//           "isNew": true,
 	//           "aliasColors": null,
 	//           "bars": false,
 	//           "fill": 0,
@@ -65,12 +73,10 @@ func ExampleNewBoard() {
 	//           },
 	//           "lines": false,
 	//           "linewidth": 0,
-	//           "nullPointMode": "connected",
 	//           "percentage": false,
 	//           "pointradius": 5,
 	//           "points": false,
 	//           "seriesOverrides": null,
-	//           "span": 12,
 	//           "stack": false,
 	//           "steppedLine": false,
 	//           "timeFrom": null,
@@ -81,7 +87,8 @@ func ExampleNewBoard() {
 	//           },
 	//           "x-axis": true,
 	//           "y-axis": true,
-	//           "y_formats": null
+	//           "y_formats": null,
+	//           "CustomPanel": null
 	//         }
 	//       ]
 	//     }

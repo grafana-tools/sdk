@@ -41,6 +41,16 @@ const MixedSource = "-- Mixed --"
 type (
 	// Panel represents panels of different types defined in Grafana.
 	Panel struct {
+		commonPanel
+		// should be added only one of types:
+		*GraphPanel
+		*TablePanel
+		*TextPanel
+		*SinglestatPanel
+		*DashlistPanel
+		*CustomPanel
+	}
+	commonPanel struct {
 		OfType     panelType `json:"-"`
 		ID         uint      `json:"id"`
 		Title      string    `json:"title"`                // general
@@ -61,13 +71,6 @@ type (
 		Type        string   `json:"type"`
 		Error       bool     `json:"error"`
 		IsNew       bool     `json:"isNew"`
-		// should be added only one of types:
-		*GraphPanel
-		*TablePanel
-		*TextPanel
-		*SinglestatPanel
-		*DashlistPanel
-		*CustomPanel
 	}
 	panelType  int8
 	GraphPanel struct {
@@ -279,11 +282,12 @@ func NewDashlist(title string) *Panel {
 	}
 	render := "flot"
 	return &Panel{
-		OfType:        DashlistType,
-		Title:         title,
-		Type:          "dashlist",
-		Renderer:      &render,
-		IsNew:         true,
+		commonPanel: commonPanel{
+			OfType:   DashlistType,
+			Title:    title,
+			Type:     "dashlist",
+			Renderer: &render,
+			IsNew:    true},
 		DashlistPanel: &DashlistPanel{}}
 }
 
@@ -294,15 +298,16 @@ func NewGraph(title string) *Panel {
 	}
 	render := "flot"
 	return &Panel{
-		OfType:   GraphType,
-		Title:    title,
-		Type:     "graph",
-		Renderer: &render,
-		IsNew:    true,
+		commonPanel: commonPanel{
+			OfType:   GraphType,
+			Title:    title,
+			Type:     "graph",
+			Renderer: &render,
+			Span:     12,
+			IsNew:    true},
 		GraphPanel: &GraphPanel{
 			NullPointMode: "connected",
 			Pointradius:   5,
-			Span:          12,
 			XAxis:         true,
 			YAxis:         true,
 		}}
@@ -315,11 +320,12 @@ func NewTable(title string) *Panel {
 	}
 	render := "flot"
 	return &Panel{
-		OfType:     TableType,
-		Title:      title,
-		Type:       "table",
-		Renderer:   &render,
-		IsNew:      true,
+		commonPanel: commonPanel{
+			OfType:   TableType,
+			Title:    title,
+			Type:     "table",
+			Renderer: &render,
+			IsNew:    true},
 		TablePanel: &TablePanel{}}
 }
 
@@ -330,11 +336,12 @@ func NewText(title string) *Panel {
 	}
 	render := "flot"
 	return &Panel{
-		OfType:    TextType,
-		Title:     title,
-		Type:      "text",
-		Renderer:  &render,
-		IsNew:     true,
+		commonPanel: commonPanel{
+			OfType:   TextType,
+			Title:    title,
+			Type:     "text",
+			Renderer: &render,
+			IsNew:    true},
 		TextPanel: &TextPanel{}}
 }
 
@@ -345,11 +352,12 @@ func NewSinglestat(title string) *Panel {
 	}
 	render := "flot"
 	return &Panel{
-		OfType:          SinglestatType,
-		Title:           title,
-		Type:            "singlestat",
-		Renderer:        &render,
-		IsNew:           true,
+		commonPanel: commonPanel{
+			OfType:   SinglestatType,
+			Title:    title,
+			Type:     "singlestat",
+			Renderer: &render,
+			IsNew:    true},
 		SinglestatPanel: &SinglestatPanel{}}
 }
 
@@ -360,11 +368,12 @@ func NewCustom(title string) *Panel {
 	}
 	render := "flot"
 	return &Panel{
-		OfType:      CustomType,
-		Title:       title,
-		Type:        "singlestat",
-		Renderer:    &render,
-		IsNew:       true,
+		commonPanel: commonPanel{
+			OfType:   CustomType,
+			Title:    title,
+			Type:     "singlestat",
+			Renderer: &render,
+			IsNew:    true},
 		CustomPanel: &CustomPanel{}}
 }
 
@@ -475,19 +484,6 @@ func (p *Panel) RepeatTargetsForDatasources(dsNames ...string) {
 	}
 }
 
-// func (p *Panel) Datasource() *string {
-// 	switch p.OfType {
-// 	case GraphType:
-// 		return p.GraphPanel.Datasource
-// 	case SinglestatType:
-// 		return p.SinglestatPanel.Datasource
-// 	case TableType:
-// 		return p.TablePanel.Datasource
-// 	default:
-// 		return nil
-// 	}
-// }
-
 // GetTargets is iterate over all panel targets. It just returns nil if
 // no targets defined for panel of concrete type.
 func (p *Panel) GetTargets() *[]Target {
@@ -502,6 +498,76 @@ func (p *Panel) GetTargets() *[]Target {
 		return nil
 	}
 }
+
+type probePanel struct {
+	commonPanel
+	Rest json.RawMessage
+}
+
+func (p *Panel) UnmarshalJSON(b []byte) (err error) {
+	var probe probePanel
+	if err = json.Unmarshal(b, &probe); err == nil {
+		p.commonPanel = probe.commonPanel
+		switch probe.Type {
+		case "graph":
+			var graph GraphPanel
+			p.OfType = GraphType
+			if err = json.Unmarshal(probe.Rest, &graph); err == nil {
+				p.GraphPanel = &graph
+			}
+		case "table":
+			var table TablePanel
+			p.OfType = TableType
+			if err = json.Unmarshal(probe.Rest, &table); err == nil {
+				p.TablePanel = &table
+			}
+		case "text":
+			var text TextPanel
+			p.OfType = TextType
+			if err = json.Unmarshal(probe.Rest, &text); err == nil {
+				p.TextPanel = &text
+			}
+		case "singlestat":
+			var singlestat SinglestatPanel
+			p.OfType = SinglestatType
+			if err = json.Unmarshal(probe.Rest, &singlestat); err == nil {
+				p.SinglestatPanel = &singlestat
+			}
+		case "dashlist":
+			var dashlist DashlistPanel
+			p.OfType = DashlistType
+			if err = json.Unmarshal(probe.Rest, &dashlist); err == nil {
+				p.DashlistPanel = &dashlist
+			}
+		default:
+			var custom = make(CustomPanel)
+			p.OfType = CustomType
+			if err = json.Unmarshal(probe.Rest, &custom); err == nil {
+				p.CustomPanel = &custom
+			}
+		}
+	}
+	return
+}
+
+// func (p *Panel) MarshalJSON() ([]byte, error) {
+// 	if p.GraphPanel != nil {
+// 		return json.Marshal(*p.GraphPanel)
+// 	}
+// 	if p.TablePanel != nil {
+// 		return json.Marshal(*p.TablePanel)
+// 	}
+// 	if p.TextPanel != nil {
+// 		return json.Marshal(*p.TextPanel)
+// 	}
+// 	if p.SinglestatPanel != nil {
+// 		return json.Marshal(*p.SinglestatPanel)
+// 	}
+// 	if p.DashlistPanel != nil {
+// 		return json.Marshal(*p.DashlistPanel)
+// 	}
+// 	return json.Marshal(*p.CustomPanel)
+// }
 
 func incRefID(refID string) string {
 	firstLetter := refID[0]
