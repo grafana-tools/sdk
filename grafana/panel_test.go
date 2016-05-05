@@ -135,7 +135,7 @@ func TestGraph_AddTarget(t *testing.T) {
 	}
 }
 
-func TestGraph_SetTarget(t *testing.T) {
+func TestGraph_SetTargetNew(t *testing.T) {
 	var (
 		target1 = Target{
 			RefID:      "A",
@@ -151,10 +151,37 @@ func TestGraph_SetTarget(t *testing.T) {
 
 	graph.SetTarget(&target2)
 
+	if len(graph.GraphPanel.Targets) != 2 {
+		t.Errorf("should be 2 but %d", len(graph.GraphPanel.Targets))
+	}
+	if graph.GraphPanel.Targets[0].RefID != "A" {
+		t.Errorf("should be equal A but %s", graph.GraphPanel.Targets[0].RefID)
+	}
+	if graph.GraphPanel.Targets[1].RefID != "B" {
+		t.Errorf("should be equal B but %s", graph.GraphPanel.Targets[1].RefID)
+	}
+}
+
+func TestGraph_SetTargetUpdate(t *testing.T) {
+	var (
+		target1 = Target{
+			RefID:      "A",
+			Datasource: "Sample Source 1",
+			Expr:       "sample request 1"}
+		target2 = Target{
+			RefID:      "A",
+			Datasource: "Sample Source 2",
+			Expr:       "sample request 2"}
+	)
+	graph := NewGraph("")
+	graph.AddTarget(&target1)
+
+	graph.SetTarget(&target2)
+
 	if len(graph.GraphPanel.Targets) != 1 {
 		t.Errorf("should be 1 but %d", len(graph.GraphPanel.Targets))
 	}
-	if graph.GraphPanel.Targets[0].RefID != "B" {
-		t.Errorf("should be equal B but %s", graph.GraphPanel.Targets[0].RefID)
+	if graph.GraphPanel.Targets[0].RefID != "A" {
+		t.Errorf("should be equal A but %s", graph.GraphPanel.Targets[0].RefID)
 	}
 }

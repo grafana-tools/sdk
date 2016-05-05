@@ -42,7 +42,8 @@ type (
 	// Panel represents panels of different types defined in Grafana.
 	Panel struct {
 		commonPanel
-		// should be added only one of types:
+		// Should be initialized only one type of panels.
+		// OfType field defines which of types below will be used.
 		*GraphPanel
 		*TablePanel
 		*TextPanel
@@ -51,7 +52,7 @@ type (
 		*CustomPanel
 	}
 	commonPanel struct {
-		OfType     panelType `json:"-"`
+		OfType     panelType `json:"-"` // it required for defining type of the panel
 		ID         uint      `json:"id"`
 		Title      string    `json:"title"`                // general
 		Span       float32   `json:"span"`                 // general
@@ -408,22 +409,22 @@ func (p *Panel) AddTarget(t *Target) {
 // SetTarget updates a target if target with such refId exists
 // or creates a new one.
 func (p *Panel) SetTarget(t *Target) {
-	setTarget := func(t *Target, targets []Target) {
-		for i := range targets {
-			if t.RefID == targets[i].RefID {
-				targets[i] = *t
+	setTarget := func(t *Target, targets *[]Target) {
+		for i, target := range *targets {
+			if t.RefID == target.RefID {
+				(*targets)[i] = *t
 				return
 			}
 		}
-		targets = append(targets, *t)
+		(*targets) = append((*targets), *t)
 	}
 	switch p.OfType {
 	case GraphType:
-		setTarget(t, p.GraphPanel.Targets)
+		setTarget(t, &p.GraphPanel.Targets)
 	case SinglestatType:
-		setTarget(t, p.SinglestatPanel.Targets)
+		setTarget(t, &p.SinglestatPanel.Targets)
 	case TableType:
-		setTarget(t, p.TablePanel.Targets)
+		setTarget(t, &p.TablePanel.Targets)
 	}
 }
 
@@ -501,7 +502,7 @@ func (p *Panel) GetTargets() *[]Target {
 
 type probePanel struct {
 	commonPanel
-	Rest json.RawMessage
+	json.RawMessage
 }
 
 func (p *Panel) UnmarshalJSON(b []byte) (err error) {
@@ -512,37 +513,37 @@ func (p *Panel) UnmarshalJSON(b []byte) (err error) {
 		case "graph":
 			var graph GraphPanel
 			p.OfType = GraphType
-			if err = json.Unmarshal(probe.Rest, &graph); err == nil {
+			if err = json.Unmarshal(b, &graph); err == nil {
 				p.GraphPanel = &graph
 			}
 		case "table":
 			var table TablePanel
 			p.OfType = TableType
-			if err = json.Unmarshal(probe.Rest, &table); err == nil {
+			if err = json.Unmarshal(b, &table); err == nil {
 				p.TablePanel = &table
 			}
 		case "text":
 			var text TextPanel
 			p.OfType = TextType
-			if err = json.Unmarshal(probe.Rest, &text); err == nil {
+			if err = json.Unmarshal(b, &text); err == nil {
 				p.TextPanel = &text
 			}
 		case "singlestat":
 			var singlestat SinglestatPanel
 			p.OfType = SinglestatType
-			if err = json.Unmarshal(probe.Rest, &singlestat); err == nil {
+			if err = json.Unmarshal(b, &singlestat); err == nil {
 				p.SinglestatPanel = &singlestat
 			}
 		case "dashlist":
 			var dashlist DashlistPanel
 			p.OfType = DashlistType
-			if err = json.Unmarshal(probe.Rest, &dashlist); err == nil {
+			if err = json.Unmarshal(b, &dashlist); err == nil {
 				p.DashlistPanel = &dashlist
 			}
 		default:
 			var custom = make(CustomPanel)
 			p.OfType = CustomType
-			if err = json.Unmarshal(probe.Rest, &custom); err == nil {
+			if err = json.Unmarshal(b, &custom); err == nil {
 				p.CustomPanel = &custom
 			}
 		}
