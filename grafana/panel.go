@@ -551,24 +551,47 @@ func (p *Panel) UnmarshalJSON(b []byte) (err error) {
 	return
 }
 
-// func (p *Panel) MarshalJSON() ([]byte, error) {
-// 	if p.GraphPanel != nil {
-// 		return json.Marshal(*p.GraphPanel)
-// 	}
-// 	if p.TablePanel != nil {
-// 		return json.Marshal(*p.TablePanel)
-// 	}
-// 	if p.TextPanel != nil {
-// 		return json.Marshal(*p.TextPanel)
-// 	}
-// 	if p.SinglestatPanel != nil {
-// 		return json.Marshal(*p.SinglestatPanel)
-// 	}
-// 	if p.DashlistPanel != nil {
-// 		return json.Marshal(*p.DashlistPanel)
-// 	}
-// 	return json.Marshal(*p.CustomPanel)
-// }
+func (p *Panel) MarshalJSON() ([]byte, error) {
+	switch p.OfType {
+	case GraphType:
+		var outGraph = struct {
+			commonPanel
+			GraphPanel
+		}{p.commonPanel, *p.GraphPanel}
+		return json.Marshal(outGraph)
+	case TableType:
+		var outTable = struct {
+			commonPanel
+			TablePanel
+		}{p.commonPanel, *p.TablePanel}
+		return json.Marshal(outTable)
+	case TextType:
+		var outText = struct {
+			commonPanel
+			TextPanel
+		}{p.commonPanel, *p.TextPanel}
+		return json.Marshal(outText)
+	case SinglestatType:
+		var outSinglestat = struct {
+			commonPanel
+			SinglestatPanel
+		}{p.commonPanel, *p.SinglestatPanel}
+		return json.Marshal(outSinglestat)
+	case DashlistType:
+		var outDashlist = struct {
+			commonPanel
+			DashlistPanel
+		}{p.commonPanel, *p.DashlistPanel}
+		return json.Marshal(outDashlist)
+	case CustomType:
+		var outCustom = struct {
+			commonPanel
+			CustomPanel
+		}{p.commonPanel, *p.CustomPanel}
+		return json.Marshal(outCustom)
+	}
+	return nil, errors.New("can't marshal unknown panel type")
+}
 
 func incRefID(refID string) string {
 	firstLetter := refID[0]
