@@ -78,6 +78,7 @@ type (
 		Multi       bool     `json:"multi"`
 		MultiFormat string   `json:"multiFormat"`
 		Query       string   `json:"query"`
+		Regex       string   `json:"regex"`
 		Current     current  `json:"current"`
 		Label       string   `json:"label"`
 	}
