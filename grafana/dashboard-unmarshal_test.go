@@ -84,6 +84,10 @@ func TestUnmarshal_DashboardWithGraphWithTargets26(t *testing.T) {
 		t.Errorf("panel type should be %d (\"graph\") type but got %d", GraphType, panel.OfType)
 	}
 
+	if *panel.Datasource != MixedSource {
+		t.Errorf("panel Datasource should be \"%s\" but got \"%s\"", MixedSource, *panel.Datasource)
+	}
+
 	if len(panel.GraphPanel.Targets) != 2 {
 		t.Errorf("panel has 2 targets but got %s", len(panel.GraphPanel.Targets))
 	}

@@ -19,7 +19,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "Prometheus",
+          "datasource": "-- Mixed --",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -69,14 +69,16 @@
               "intervalFactor": 2,
               "legendFormat": "",
               "refId": "A",
-              "step": 21
+              "step": 21,
+              "datasource": "Prometheus"
             },
             {
               "expr": "changes(go_goroutines{job=\"prometheus\"}[5m])",
               "intervalFactor": 2,
               "legendFormat": "changes",
               "refId": "B",
-              "step": 21
+              "step": 21,
+              "datasource": "Prometheus"
             }
           ],
           "timeFrom": null,
@@ -134,6 +136,6 @@
     "list": []
   },
   "schemaVersion": 8,
-  "version": 0,
+  "version": 1,
   "links": []
 }
