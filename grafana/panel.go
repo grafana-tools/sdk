@@ -502,7 +502,7 @@ func (p *Panel) GetTargets() *[]Target {
 
 type probePanel struct {
 	commonPanel
-	json.RawMessage
+	//	json.RawMessage
 }
 
 func (p *Panel) UnmarshalJSON(b []byte) (err error) {

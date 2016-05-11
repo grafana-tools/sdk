@@ -70,4 +70,21 @@ func TestUnmarshal_DashboardWithGraphWithTargets26(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+
+	if len(board.Rows) != 1 {
+		t.Errorf("there are 1 row defined but got %d", len(board.Rows))
+	}
+	if len(board.Rows[0].Panels) != 1 {
+		t.Errorf("there are 1 panel defined but got %d", len(board.Rows[0].Panels))
+	}
+
+	panel := board.Rows[0].Panels[0]
+
+	if panel.OfType != GraphType {
+		t.Errorf("panel type should be %d (\"graph\") type but got %d", GraphType, panel.OfType)
+	}
+
+	if len(panel.GraphPanel.Targets) != 2 {
+		t.Errorf("panel has 2 targets but got %s", len(panel.GraphPanel.Targets))
+	}
 }
