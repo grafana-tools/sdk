@@ -58,6 +58,7 @@ type (
 		Span       float32   `json:"span"`                 // general
 		Links      []link    `json:"links,omitempty"`      // general
 		Datasource *string   `json:"datasource,omitempty"` // metrics
+		Height     *string   `json:"height,omitempty"`     // general
 		Renderer   *string   `json:"renderer,omitempty"`   // display styles
 		Repeat     *string   `json:"repeat,omitempty"`     // templating options
 		//RepeatIteration *int64   `json:"repeatIteration,omitempty"`
