@@ -10,15 +10,15 @@ Currently implemented only create/update/delete operations for dashboards and da
 
 ### Authorization
 
-Only API tokens supported.
+Only API tokens implemented.
 
 ### Dashboards
 
-Partially supported.
+Partially implemented.
 
 ### Datasources
 
-Partially supported.
+Partially implemented.
 
 ### Organizations
 
@@ -26,7 +26,7 @@ Not implemented.
 
 ### Users
 
-Not implemented.
+Partially implemented.
 
 ### Snapshots
 
