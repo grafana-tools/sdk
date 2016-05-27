@@ -34,7 +34,7 @@ type User struct {
 	IsGrafanaAdmin bool   `json:"isGrafanaAdmin"`
 }
 
-// GetUser loads a dashboard from Grafana instance along with metadata for a dashboard.
+// GetUser get an actual user.
 func (r *Instance) GetUser() (User, error) {
 	var (
 		raw  []byte
@@ -43,15 +43,37 @@ func (r *Instance) GetUser() (User, error) {
 		err  error
 	)
 	if raw, code, err = r.get("api/user", nil); err != nil {
-		return User{}, err
+		return user, err
 	}
 	if code != 200 {
-		return User{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
+		return user, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	dec := json.NewDecoder(bytes.NewReader(raw))
 	dec.UseNumber()
 	if err := dec.Decode(&user); err != nil {
-		return User{}, fmt.Errorf("unmarshal user: %s\n%s", err, raw)
+		return user, fmt.Errorf("unmarshal user: %s\n%s", err, raw)
 	}
 	return user, err
+}
+
+// GetUsers get all users.
+func (r *Instance) GetUsers() ([]User, error) {
+	var (
+		raw   []byte
+		users []User
+		code  int
+		err   error
+	)
+	if raw, code, err = r.get("api/users", nil); err != nil {
+		return users, err
+	}
+	if code != 200 {
+		return users, fmt.Errorf("HTTP error %d: returns %s", code, raw)
+	}
+	dec := json.NewDecoder(bytes.NewReader(raw))
+	dec.UseNumber()
+	if err := dec.Decode(&users); err != nil {
+		return users, fmt.Errorf("unmarshal users: %s\n%s", err, raw)
+	}
+	return users, err
 }
