@@ -102,6 +102,8 @@ type (
 		LineColor  string  `json:"lineColor"`
 		IconSize   uint    `json:"iconSize"`
 		Enable     bool    `json:"enable"`
+		Query      string  `json:"query"`
+		TextField  string  `json:"textField"`
 	}
 )
 
