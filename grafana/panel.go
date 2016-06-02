@@ -273,6 +273,7 @@ type Target struct {
 	Datasource     string `json:"datasource"`
 	Expr           string `json:"expr"`
 	IntervalFactor int    `json:"intervalFactor"`
+	Interval       string `json:"interval"`
 	Step           int    `json:"step"`
 	LegendFormat   string `json:"legendFormat"`
 }
