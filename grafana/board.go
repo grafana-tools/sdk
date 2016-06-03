@@ -69,6 +69,7 @@ type (
 	templateVar struct {
 		Name        string   `json:"name"`
 		Type        string   `json:"type"`
+		Auto        bool     `json:"auto,omitempty"`
 		AutoCount   *int     `json:"auto_count,omitempty"`
 		Datasource  *string  `json:"datasource"`
 		Refresh     bool     `json:"refresh"`
