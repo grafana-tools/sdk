@@ -22,7 +22,7 @@ func ExampleNewBoard() {
 	data, _ := json.MarshalIndent(board, "", "  ")
 	fmt.Printf("%s", data)
 	// Output:
-	// 	{
+	// {
 	//   "id": 1,
 	//   "title": "Sample dashboard title",
 	//   "originalTitle": "",
@@ -150,6 +150,7 @@ func ExampleNewBoard() {
 	//               "datasource": "Sample Source 1",
 	//               "expr": "sample request 1",
 	//               "intervalFactor": 0,
+	//               "interval": "",
 	//               "step": 0,
 	//               "legendFormat": ""
 	//             }
