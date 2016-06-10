@@ -50,6 +50,9 @@ type BoardProperties struct {
 }
 
 // GetDashboard loads a dashboard from Grafana instance along with metadata for a dashboard.
+// For dashboards from a filesystem set "file/" prefix for slug. By default dashboards from
+// a database assumed. Database dashboards may have "db/" prefix or may have not, it will
+// be appended automatically.
 func (r *Instance) GetDashboard(slug string) (grafana.Board, BoardProperties, error) {
 	var (
 		raw    []byte
@@ -81,6 +84,10 @@ func (r *Instance) GetDashboard(slug string) (grafana.Board, BoardProperties, er
 // with grafana.Board so no matter how properly fields from a current version of Grafana mapped to
 // our grafana.Board fields. It useful for backuping purposes when you want a dashboard exactly with
 // same data as it exported by Grafana.
+//
+// For dashboards from a filesystem set "file/" prefix for slug. By default dashboards from
+// a database assumed. Database dashboards may have "db/" prefix or may have not, it will
+// be appended automatically.
 func (r *Instance) GetRawDashboard(slug string) ([]byte, BoardProperties, error) {
 	var (
 		raw    []byte
@@ -150,6 +157,8 @@ func (r *Instance) SearchDashboards(query string, starred bool, tags ...string) 
 // Set dasboard ID to nil to create a new dashboard.
 // Set overwrite to true if you want to overwrite existing dashboard with
 // newer version or with same dashboard title.
+// Grafana only can create or update a dashboard in a database. File dashboards
+// may be only loaded with HTTP API but not created or updated.
 func (r *Instance) SetDashboard(board grafana.Board, overwrite bool) error {
 	var (
 		isBoardFromDB bool
@@ -189,6 +198,8 @@ func (r *Instance) SetDashboard(board grafana.Board, overwrite bool) error {
 }
 
 // DeleteDashboard deletes dashboard that selected by slug string.
+// Grafana only can delete a dashboard in a database. File dashboards
+// may be only loaded with HTTP API but not deteled.
 func (r *Instance) DeleteDashboard(slug string) (StatusMessage, error) {
 	var (
 		isBoardFromDB bool
