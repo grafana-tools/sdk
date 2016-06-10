@@ -29,6 +29,7 @@ import (
 	"github.com/grafov/autograf/grafana"
 )
 
+// BoardProperties keeps metadata of a dashboard.
 type BoardProperties struct {
 	IsStarred  bool      `json:"isStarred,omitempty"`
 	IsHome     bool      `json:"isHome,omitempty"`
@@ -48,6 +49,16 @@ type BoardProperties struct {
 
 // GetDashboard loads a dashboard from Grafana instance along with metadata for a dashboard.
 func (r *Instance) GetDashboard(slug string) (grafana.Board, BoardProperties, error) {
+	return r.getDashboard("db", slug)
+}
+
+// GetFileDashboard loads a dashboard from a file system as configured in Grafana instance
+// along with metadata for a dashboard.
+func (r *Instance) GetFileDashboard(slug string) (grafana.Board, BoardProperties, error) {
+	return r.getDashboard("file", slug)
+}
+
+func (r *Instance) getDashboard(prefix, slug string) (grafana.Board, BoardProperties, error) {
 	var (
 		raw    []byte
 		result struct {
@@ -57,7 +68,7 @@ func (r *Instance) GetDashboard(slug string) (grafana.Board, BoardProperties, er
 		code int
 		err  error
 	)
-	if raw, code, err = r.get(fmt.Sprintf("api/dashboards/%s", slug), nil); err != nil {
+	if raw, code, err = r.get(fmt.Sprintf("api/dashboards/%s/%s", prefix, slug), nil); err != nil {
 		return grafana.Board{}, BoardProperties{}, err
 	}
 	if code != 200 {
@@ -78,6 +89,21 @@ func (r *Instance) GetDashboard(slug string) (grafana.Board, BoardProperties, er
 // our grafana.Board fields. It useful for backuping purposes when you want a dashboard exactly with
 // same data as it exported by Grafana.
 func (r *Instance) GetRawDashboard(slug string) ([]byte, BoardProperties, error) {
+	return r.getRawDashboard("db", slug)
+}
+
+// GetRawFileDashboard loads a dashboard JSON from a file system as configured in
+// Grafana instance along with metadata for a dashboard.
+// Contrary to GetFileDashboard() it not unpack loaded JSON to grafana.Board structure. Instead it
+// returns it as byte slice. It guarantee that data of dashboard returned untouched by conversion
+// with grafana.Board so no matter how properly fields from a current version of Grafana mapped to
+// our grafana.Board fields. It useful for backuping purposes when you want a dashboard exactly with
+// same data as it exported by Grafana.
+func (r *Instance) GetRawFileDashboard(slug string) ([]byte, BoardProperties, error) {
+	return r.getRawDashboard("file", slug)
+}
+
+func (r *Instance) getRawDashboard(prefix, slug string) ([]byte, BoardProperties, error) {
 	var (
 		raw    []byte
 		result struct {
@@ -87,7 +113,7 @@ func (r *Instance) GetRawDashboard(slug string) ([]byte, BoardProperties, error)
 		code int
 		err  error
 	)
-	if raw, code, err = r.get(fmt.Sprintf("api/dashboards/%s", slug), nil); err != nil {
+	if raw, code, err = r.get(fmt.Sprintf("api/dashboards/%s/%s", prefix, slug), nil); err != nil {
 		return nil, BoardProperties{}, err
 	}
 	if code != 200 {
@@ -101,6 +127,7 @@ func (r *Instance) GetRawDashboard(slug string) ([]byte, BoardProperties, error)
 	return []byte(result.Board), result.Meta, err
 }
 
+// FoundBoard keeps result of search with metadata of a dashboard.
 type FoundBoard struct {
 	ID        uint     `json:"id"`
 	Title     string   `json:"title"`
