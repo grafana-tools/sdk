@@ -22,8 +22,10 @@ package client
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/grafov/autograf/grafana"
@@ -49,16 +51,6 @@ type BoardProperties struct {
 
 // GetDashboard loads a dashboard from Grafana instance along with metadata for a dashboard.
 func (r *Instance) GetDashboard(slug string) (grafana.Board, BoardProperties, error) {
-	return r.getDashboard("db", slug)
-}
-
-// GetFileDashboard loads a dashboard from a file system as configured in Grafana instance
-// along with metadata for a dashboard.
-func (r *Instance) GetFileDashboard(slug string) (grafana.Board, BoardProperties, error) {
-	return r.getDashboard("file", slug)
-}
-
-func (r *Instance) getDashboard(prefix, slug string) (grafana.Board, BoardProperties, error) {
 	var (
 		raw    []byte
 		result struct {
@@ -68,7 +60,8 @@ func (r *Instance) getDashboard(prefix, slug string) (grafana.Board, BoardProper
 		code int
 		err  error
 	)
-	if raw, code, err = r.get(fmt.Sprintf("api/dashboards/%s/%s", prefix, slug), nil); err != nil {
+	slug, _ = setPrefix(slug)
+	if raw, code, err = r.get(fmt.Sprintf("api/dashboards/%s", slug), nil); err != nil {
 		return grafana.Board{}, BoardProperties{}, err
 	}
 	if code != 200 {
@@ -89,21 +82,6 @@ func (r *Instance) getDashboard(prefix, slug string) (grafana.Board, BoardProper
 // our grafana.Board fields. It useful for backuping purposes when you want a dashboard exactly with
 // same data as it exported by Grafana.
 func (r *Instance) GetRawDashboard(slug string) ([]byte, BoardProperties, error) {
-	return r.getRawDashboard("db", slug)
-}
-
-// GetRawFileDashboard loads a dashboard JSON from a file system as configured in
-// Grafana instance along with metadata for a dashboard.
-// Contrary to GetFileDashboard() it not unpack loaded JSON to grafana.Board structure. Instead it
-// returns it as byte slice. It guarantee that data of dashboard returned untouched by conversion
-// with grafana.Board so no matter how properly fields from a current version of Grafana mapped to
-// our grafana.Board fields. It useful for backuping purposes when you want a dashboard exactly with
-// same data as it exported by Grafana.
-func (r *Instance) GetRawFileDashboard(slug string) ([]byte, BoardProperties, error) {
-	return r.getRawDashboard("file", slug)
-}
-
-func (r *Instance) getRawDashboard(prefix, slug string) ([]byte, BoardProperties, error) {
 	var (
 		raw    []byte
 		result struct {
@@ -113,7 +91,8 @@ func (r *Instance) getRawDashboard(prefix, slug string) ([]byte, BoardProperties
 		code int
 		err  error
 	)
-	if raw, code, err = r.get(fmt.Sprintf("api/dashboards/%s/%s", prefix, slug), nil); err != nil {
+	slug, _ = setPrefix(slug)
+	if raw, code, err = r.get(fmt.Sprintf("api/dashboards/%s", slug), nil); err != nil {
 		return nil, BoardProperties{}, err
 	}
 	if code != 200 {
@@ -137,7 +116,7 @@ type FoundBoard struct {
 	IsStarred bool     `json:"isStarred"`
 }
 
-// SearchDashboards search dashboards by query substring. Il allows restrict the result set with
+// SearchDashboards search dashboards by substring of their title. It allows restrict the result set with
 // only starred dashboards and only for tags (logical OR applied to multiple tags).
 func (r *Instance) SearchDashboards(query string, starred bool, tags ...string) ([]FoundBoard, error) {
 	var (
@@ -173,7 +152,8 @@ func (r *Instance) SearchDashboards(query string, starred bool, tags ...string) 
 // newer version or with same dashboard title.
 func (r *Instance) SetDashboard(board grafana.Board, overwrite bool) error {
 	var (
-		newBoard struct {
+		isBoardFromDB bool
+		newBoard      struct {
 			Dashboard grafana.Board `json:"dashboard"`
 			Overwrite bool          `json:"overwrite"`
 		}
@@ -182,6 +162,9 @@ func (r *Instance) SetDashboard(board grafana.Board, overwrite bool) error {
 		code int
 		err  error
 	)
+	if board.Slug, isBoardFromDB = cleanPrefix(board.Slug); !isBoardFromDB {
+		return errors.New("only database dashboard (with 'db/' prefix in a slug) can be set")
+	}
 	newBoard.Dashboard = board
 	newBoard.Overwrite = overwrite
 	if !overwrite {
@@ -208,13 +191,39 @@ func (r *Instance) SetDashboard(board grafana.Board, overwrite bool) error {
 // DeleteDashboard deletes dashboard that selected by slug string.
 func (r *Instance) DeleteDashboard(slug string) (StatusMessage, error) {
 	var (
-		raw   []byte
-		reply StatusMessage
-		err   error
+		isBoardFromDB bool
+		raw           []byte
+		reply         StatusMessage
+		err           error
 	)
+	if slug, isBoardFromDB = setPrefix(slug); !isBoardFromDB {
+		return StatusMessage{}, errors.New("only database dashboards (with 'db/' prefix in a slug) can be removed")
+	}
 	if raw, err = r.delete(fmt.Sprintf("api/dashboards/db/%s", slug)); err != nil {
 		return StatusMessage{}, err
 	}
 	err = json.Unmarshal(raw, &reply)
 	return reply, err
+}
+
+// implicitely use dashboards from Grafana DB not from a file system
+func setPrefix(slug string) (string, bool) {
+	if strings.HasPrefix(slug, "db") {
+		return slug, true
+	}
+	if strings.HasPrefix(slug, "file") {
+		return slug, false
+	}
+	return fmt.Sprintf("db/%s", slug), true
+}
+
+// assume we use database dashboard by default
+func cleanPrefix(slug string) (string, bool) {
+	if strings.HasPrefix(slug, "db") {
+		return slug[3:], true
+	}
+	if strings.HasPrefix(slug, "file") {
+		return slug[3:], false
+	}
+	return fmt.Sprintf("%s", slug), true
 }
