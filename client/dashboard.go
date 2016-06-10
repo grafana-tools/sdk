@@ -207,7 +207,7 @@ func (r *Instance) DeleteDashboard(slug string) (StatusMessage, error) {
 		reply         StatusMessage
 		err           error
 	)
-	if slug, isBoardFromDB = setPrefix(slug); !isBoardFromDB {
+	if slug, isBoardFromDB = cleanPrefix(slug); !isBoardFromDB {
 		return StatusMessage{}, errors.New("only database dashboards (with 'db/' prefix in a slug) can be removed")
 	}
 	if raw, err = r.delete(fmt.Sprintf("api/dashboards/db/%s", slug)); err != nil {
