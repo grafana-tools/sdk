@@ -20,6 +20,26 @@ Autograf includes a couple of demo apps for show how to use `client` and `grafan
 
 You need Grafana API key with _admin rights_ for using these utilities.
 
+## Thoughts about DSL
+
+Work on DSL syntax and translator in progress not much yet to say about it. I want something simple in plain text
+for describing dashboards instead of mapping them 1:1 to Grafana objects. Short sample how it may look (syntax may be
+changed):
+
+    # Example of a board with a panel
+    board Sample title
+
+	# define new source
+    source src4
+    prometheus http://127.1:9090
+
+    graph Example graph №1
+    expr go_goroutines{job="test"}
+    repeat expr for scr1, src2, src3
+
+    ./panels/my-graph  # inserts template from a file
+    source src4
+
 # Installation
 
 For use in your Go apps just install packages separately:
