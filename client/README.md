@@ -2,7 +2,7 @@
 
 [![GoDoc](https://godoc.org/github.com/grafov/autograf/client?status.svg)](https://godoc.org/github.com/grafov/autograf/client)
 
-It realizes [HTTP REST API](http://docs.grafana.org/reference/http_api). It may be used for integrating Go apps with Grafana.
+It realizes [HTTP REST API](http://docs.grafana.org/reference/http_api). It may be used for integrating Go apps with Grafana. It uses [grafana](https://godoc.org/github.com/grafov/autograf/grafana) package for keeping loaded dashboards and defines its own types for keeping users/orgs and other auxilary structures used in Grafana API.
 
 ## Status of API realization
 
