@@ -282,14 +282,14 @@ type Target struct {
 	// For Elasticsearch
 	DsType  *string `json:"dsType,omitempty"`
 	Metrics []struct {
-		ID    int    `json:"id"`
+		ID    string `json:"id"`
 		Field string `json:"field"`
 		Type  string `json:"type"`
 	} `json:"metrics,omitempty"`
 	Query      string `json:"query,omitempty"`
 	TimeField  string `json:"timeField,omitempty"`
 	BucketAggs []struct {
-		ID       int    `json:"id"`
+		ID       string `json:"id"`
 		Field    string `json:"field"`
 		Type     string `json:"type"`
 		Settings struct {

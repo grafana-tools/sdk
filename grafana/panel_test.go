@@ -187,7 +187,7 @@ func TestGraph_SetTargetUpdate(t *testing.T) {
 }
 
 // Test on the panel sample with Elasticsearch datasource with Graylog query. Grafana 2.6.
-func TastPanel_ElasticsearchSource_ParsedTargets(t *testing.T) {
+func TestPanel_ElasticsearchSource_ParsedTargets(t *testing.T) {
 	var rawPanel = []byte(`{
   "aliasColors": {},
   "bars": true,
@@ -281,11 +281,11 @@ func TastPanel_ElasticsearchSource_ParsedTargets(t *testing.T) {
   ]
 }`)
 
-	var graph *Panel
-	err := json.Unmarshal(rawPanel, graph)
+	var graph Panel
+	err := json.Unmarshal(rawPanel, &graph)
 
 	if err != nil {
-		t.Error(err)
+		t.Fatalf("%s", err)
 	}
 	if len(graph.GraphPanel.Targets) != 1 {
 		t.Errorf("should be 1 but %d", len(graph.GraphPanel.Targets))
