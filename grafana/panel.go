@@ -269,13 +269,34 @@ type valueMap struct {
 
 // for an any panel
 type Target struct {
-	RefID          string `json:"refId"`
-	Datasource     string `json:"datasource"`
+	RefID      string `json:"refId"`
+	Datasource string `json:"datasource"`
+
+	// For Prometheus
 	Expr           string `json:"expr"`
 	IntervalFactor int    `json:"intervalFactor"`
 	Interval       string `json:"interval"`
 	Step           int    `json:"step"`
 	LegendFormat   string `json:"legendFormat"`
+
+	// For Elasticsearch
+	DsType  *string `json:"dsType,omitempty"`
+	Metrics []struct {
+		ID    int    `json:"id"`
+		Field string `json:"field"`
+		Type  string `json:"type"`
+	} `json:"metrics,omitempty"`
+	Query      string `json:"query,omitempty"`
+	TimeField  string `json:"timeField,omitempty"`
+	BucketAggs []struct {
+		ID       int    `json:"id"`
+		Field    string `json:"field"`
+		Type     string `json:"type"`
+		Settings struct {
+			Interval    string `json:"interval"`
+			MinDocCount int    `json:"min_doc_count"`
+		} `json:"settings"`
+	} `json:"bucketAggs,omitempty"`
 }
 
 // NewDashlist initializes panel with a dashlist panel.
