@@ -108,8 +108,9 @@ type (
 		TimeFrom        *string         `json:"timeFrom"`
 		TimeShift       *string         `json:"timeShift"`
 		Tooltip         struct {
-			Shared    bool   `json:"shared"`
-			ValueType string `json:"value_type"`
+			Shared       bool   `json:"shared"`
+			ValueType    string `json:"value_type"`
+			MsResolution string `json:"msResolution,omitempty"` // was added in Grafana 3.x
 		} `json:"tooltip"`
 		XAxis    bool     `json:"x-axis"`
 		YAxis    bool     `json:"y-axis"`
