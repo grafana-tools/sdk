@@ -115,6 +115,16 @@ type (
 		XAxis    bool     `json:"x-axis"`
 		YAxis    bool     `json:"y-axis"`
 		YFormats []string `json:"y_formats"`
+		Xaxis    struct {
+			Show bool `json:"show"`
+		} `json:"xaxis"` // was added in Grafana 3.x
+		Yaxes []struct {
+			Format  string `json:"format"`
+			LogBase int    `json:"logBase"`
+			Max     int    `json:"max,omitempty"`
+			Min     int    `json:"min"`
+			Show    bool   `json:"show"`
+		} `json:"yaxes"` // was added in Grafana 3.x
 	}
 	TablePanel struct {
 		Columns []column `json:"columns"`
