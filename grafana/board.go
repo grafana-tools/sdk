@@ -52,7 +52,7 @@ type (
 			List []annotation `json:"list"`
 		} `json:"annotations"`
 		Refresh       *BoolString `json:"refresh,omitempty"`
-		SchemaVersion uint        `json:"schemiaVersion"`
+		SchemaVersion uint        `json:"schemaVersion"`
 		Version       uint        `json:"version"`
 		Links         []link      `json:"links"`
 		Time          struct {
