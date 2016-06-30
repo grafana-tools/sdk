@@ -39,6 +39,10 @@ func main() {
 		fmt.Fprintf(os.Stderr, fmt.Sprintf("%s\n", err))
 		os.Exit(1)
 	}
+	filesInDir, err = ioutil.ReadDir(".")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, fmt.Sprintf("%s\n", err))
+	}
 	for _, file := range filesInDir {
 		if strings.HasSuffix(file.Name(), ".json") {
 			if rawDS, err = ioutil.ReadFile(file.Name()); err != nil {
