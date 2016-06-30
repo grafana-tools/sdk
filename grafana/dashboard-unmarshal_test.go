@@ -92,3 +92,14 @@ func TestUnmarshal_DashboardWithGraphWithTargets26(t *testing.T) {
 		t.Errorf("panel has 2 targets but got %s", len(panel.GraphPanel.Targets))
 	}
 }
+
+func TestUnmarshal_DashboardWithEmptyPanels30(t *testing.T) {
+	var board Board
+	raw, _ := ioutil.ReadFile("../testdata/dashboard-with-default-panels-grafana-3.0.json")
+
+	err := json.Unmarshal(raw, &board)
+
+	if err != nil {
+		t.Error(err)
+	}
+}
