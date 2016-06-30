@@ -121,8 +121,8 @@ type (
 		Yaxes []struct {
 			Format  string `json:"format"`
 			LogBase int    `json:"logBase"`
-			Max     int    `json:"max,omitempty"`
-			Min     int    `json:"min"`
+			Max     *int   `json:"max"`
+			Min     *int   `json:"min"`
 			Show    bool   `json:"show"`
 		} `json:"yaxes"` // was added in Grafana 3.x
 	}
