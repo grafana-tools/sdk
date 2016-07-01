@@ -1,12 +1,5 @@
 package grafana
 
-import (
-	"bytes"
-	"encoding/json"
-	"errors"
-	"strconv"
-)
-
 /*
  Copyleft 2016 Alexander I.Grafov <grafov@gmail.com>
 
@@ -25,6 +18,13 @@ import (
 
  ॐ तारे तुत्तारे तुरे स्व
 */
+
+import (
+	"bytes"
+	"encoding/json"
+	"errors"
+	"strconv"
+)
 
 type BoolString struct {
 	Flag  bool
