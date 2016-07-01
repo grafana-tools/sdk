@@ -96,6 +96,100 @@ func TestStackVal_MarshalJSON_GotString(t *testing.T) {
 	}
 }
 
+func TestBoolInt_UnmarshalJSON_GotTrue(t *testing.T) {
+	var sampleOut struct {
+		Val BoolInt `json:"val"`
+	}
+	var sampleIn = []byte(`{"val":true}`)
+
+	json.Unmarshal(sampleIn, &sampleOut)
+
+	if !sampleOut.Val.Flag {
+		t.Errorf("should be true but got false")
+	}
+	if sampleOut.Val.Value != nil {
+		t.Error("int value should be empty")
+	}
+}
+
+func TestBoolInt_UnmarshalJSON_GotFalse(t *testing.T) {
+	var sampleOut struct {
+		Val BoolInt `json:"val"`
+	}
+	var sampleIn = []byte(`{"val":false}`)
+
+	json.Unmarshal(sampleIn, &sampleOut)
+
+	if sampleOut.Val.Flag {
+		t.Errorf("should be false but got true")
+	}
+	if sampleOut.Val.Value != nil {
+		t.Error("int value should be empty")
+	}
+}
+
+func TestBoolInt_UnmarshalJSON_GotInt(t *testing.T) {
+	var sampleOut struct {
+		Val BoolInt `json:"val"`
+	}
+	var sampleIn = []byte(`{"val":123456789}`)
+
+	json.Unmarshal(sampleIn, &sampleOut)
+
+	if sampleOut.Val.Flag {
+		t.Error("should be false but got true")
+	}
+	if sampleOut.Val.Value == nil {
+		t.Fatalf("should be 123456789 but got nil")
+	}
+	if *sampleOut.Val.Value != 123456789 {
+		t.Errorf("should be 123456789 but got %v", sampleOut.Val.Value)
+	}
+}
+
+func TestBoolInt_MarshalJSON_GotTrue(t *testing.T) {
+	var sampleInp struct {
+		Val BoolInt `json:"val"`
+	}
+	sampleInp.Val.Flag = true
+	var sampleOut = []byte(`{"val":true}`)
+
+	data, _ := json.Marshal(sampleInp)
+
+	if bytes.Compare(data, sampleOut) != 0 {
+		t.Errorf("should be %s but got %s", sampleOut, data)
+	}
+}
+
+func TestBoolInt_MarshalJSON_GotFalse(t *testing.T) {
+	var sampleInp struct {
+		Val BoolInt `json:"val"`
+	}
+	sampleInp.Val.Flag = false
+	var sampleOut = []byte(`{"val":false}`)
+
+	data, _ := json.Marshal(sampleInp)
+
+	if bytes.Compare(data, sampleOut) != 0 {
+		t.Errorf("should be %s but got %s", sampleOut, data)
+	}
+}
+
+func TestBoolInt_MarshalJSON_GotInt(t *testing.T) {
+	var sampleInp struct {
+		Val BoolInt `json:"val"`
+	}
+	var i int64 = 123456789
+	sampleInp.Val.Value = &i
+	var sampleOut = []byte(`{"val":123456789}`)
+
+	data, _ := json.Marshal(sampleInp)
+
+	if bytes.Compare(data, sampleOut) != 0 {
+		t.Errorf("should be %s but got %s", sampleOut, data)
+	}
+}
+
 func TestNewGraph(t *testing.T) {
 	var title = "Sample Title"
 
