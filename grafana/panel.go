@@ -20,10 +20,8 @@ package grafana
 */
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
-	"strconv"
 )
 
 // Each panel may be one of these types.
@@ -211,81 +209,6 @@ type (
 		NullPointMode *string     `json:"nullPointMode,omitempty"`
 	}
 )
-
-type BoolString struct {
-	Flag  bool
-	Value string
-}
-
-func (s *BoolString) UnmarshalJSON(raw []byte) error {
-	if raw == nil || bytes.Compare(raw, []byte(`"null"`)) == 0 {
-		return nil
-	}
-	var (
-		tmp string
-		err error
-	)
-	if raw[0] != '"' {
-		if bytes.Compare(raw, []byte("true")) == 0 {
-			s.Flag = true
-			return nil
-		}
-		if bytes.Compare(raw, []byte("false")) == 0 {
-			return nil
-		}
-		return errors.New("bad boolean value provided")
-	}
-	if err = json.Unmarshal(raw, &tmp); err != nil {
-		return err
-	}
-	s.Value = tmp
-	return nil
-}
-
-func (s BoolString) MarshalJSON() ([]byte, error) {
-	if s.Value != "" {
-		var buf bytes.Buffer
-		buf.WriteRune('"')
-		buf.WriteString(s.Value)
-		buf.WriteRune('"')
-		return buf.Bytes(), nil
-	}
-	return strconv.AppendBool([]byte{}, s.Flag), nil
-}
-
-type BoolInt struct {
-	Flag  bool
-	Value *int64
-}
-
-func (s *BoolInt) UnmarshalJSON(raw []byte) error {
-	if raw == nil || bytes.Compare(raw, []byte(`"null"`)) == 0 {
-		return nil
-	}
-	var (
-		tmp int64
-		err error
-	)
-	if tmp, err = strconv.ParseInt(string(raw), 10, 64); err != nil {
-		if bytes.Compare(raw, []byte("true")) == 0 {
-			s.Flag = true
-			return nil
-		}
-		if bytes.Compare(raw, []byte("false")) == 0 {
-			return nil
-		}
-		return errors.New("bad value provided")
-	}
-	s.Value = &tmp
-	return nil
-}
-
-func (s BoolInt) MarshalJSON() ([]byte, error) {
-	if s.Value != nil {
-		return strconv.AppendInt([]byte{}, *s.Value, 10), nil
-	}
-	return strconv.AppendBool([]byte{}, s.Flag), nil
-}
 
 // for a table
 type (
