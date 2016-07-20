@@ -13,10 +13,12 @@ DSL part is unfinished yet so it will be published later.
 
 ## Demo utilities
 
-Autograf includes a couple of demo apps for show how to use `client` and `grafana` API:
+Autograf includes several of demo apps for show how to use `client` and `grafana` API:
 
-* [backup-dashboards](cmd/backup-dashboards) — just saves all your dashboards as JSON-files.
-* [backup-datasources](cmd/backup-datasources) — just saves all your datasources as JSON-files.
+* [backup-dashboards](cmd/backup-dashboards) — saves all your dashboards as JSON-files.
+* [backup-datasources](cmd/backup-datasources) — saves all your datasources as JSON-files.
+* [import-datasources](cmd/import-datasources) — imports datasources from JSON-files.
+* [import-dashboards](cmd/import-dashboards) — imports dashboards from JSON-files.
 
 You need Grafana API key with _admin rights_ for using these utilities.
 
