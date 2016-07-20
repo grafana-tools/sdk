@@ -95,7 +95,11 @@ func ExampleNewBoard() {
 	//           },
 	//           "x-axis": true,
 	//           "y-axis": true,
-	//           "y_formats": null
+	//           "y_formats": null,
+	//           "xaxis": {
+	//             "show": false
+	//           },
+	//           "yaxes": null
 	//         },
 	//         {
 	//           "id": 2,
@@ -163,7 +167,11 @@ func ExampleNewBoard() {
 	//           },
 	//           "x-axis": true,
 	//           "y-axis": true,
-	//           "y_formats": null
+	//           "y_formats": null,
+	//           "xaxis": {
+	//             "show": false
+	//           },
+	//           "yaxes": null
 	//         }
 	//       ]
 	//     }
@@ -174,7 +182,7 @@ func ExampleNewBoard() {
 	//   "annotations": {
 	//     "list": null
 	//   },
-	//   "schemiaVersion": 0,
+	//   "schemaVersion": 0,
 	//   "version": 0,
 	//   "links": null,
 	//   "time": {
