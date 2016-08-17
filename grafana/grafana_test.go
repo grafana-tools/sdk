@@ -22,7 +22,7 @@ func ExampleNewBoard() {
 	data, _ := json.MarshalIndent(board, "", "  ")
 	fmt.Printf("%s", data)
 	// Output:
-	// 	{
+	// {
 	//   "id": 1,
 	//   "title": "Sample dashboard title",
 	//   "originalTitle": "",
@@ -49,6 +49,7 @@ func ExampleNewBoard() {
 	//           "type": "graph",
 	//           "error": false,
 	//           "isNew": true,
+	//           "editable": false,
 	//           "aliasColors": null,
 	//           "bars": false,
 	//           "fill": 0,
@@ -110,6 +111,7 @@ func ExampleNewBoard() {
 	//           "type": "graph",
 	//           "error": false,
 	//           "isNew": true,
+	//           "editable": false,
 	//           "aliasColors": null,
 	//           "bars": false,
 	//           "fill": 0,
