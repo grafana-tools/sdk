@@ -66,11 +66,13 @@ type (
 			Text     string `json:"text"`
 			Value    string `json:"value"`
 		} `json:"scopedVars,omitempty"`
-		Transparent bool     `json:"transparent"`
-		MinSpan     *float32 `json:"minSpan,omitempty"` // templating options
-		Type        string   `json:"type"`
-		Error       bool     `json:"error"`
-		IsNew       bool     `json:"isNew"`
+		Transparent      bool     `json:"transparent"`
+		MinSpan          *float32 `json:"minSpan,omitempty"` // templating options
+		Type             string   `json:"type"`
+		Error            bool     `json:"error"`
+		IsNew            bool     `json:"isNew"`
+		Editable         bool     `json:"editable"`
+		HideTimeOverride *bool    `json:"hideTimeOverride,omitempty"`
 	}
 	panelType  int8
 	GraphPanel struct {
@@ -169,6 +171,13 @@ type (
 		ValueName     string     `json:"valueName"`
 		Targets       []Target   `json:"targets,omitempty"`
 		Thresholds    string     `json:"thresholds"`
+		Gauge         struct {
+			MaxValue         int  `json:"maxValue"`
+			MinValue         int  `json:"minValue"`
+			Show             bool `json:"show"`
+			ThresholdLabels  bool `json:"thresholdLabels"`
+			ThresholdMarkers bool `json:"thresholdMarkers"`
+		}
 	}
 	DashlistPanel struct {
 		Mode  string   `json:"mode"`
