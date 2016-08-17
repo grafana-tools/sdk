@@ -165,7 +165,7 @@ type (
 			Full      bool    `json:"full,omitempty"`
 			LineColor *string `json:"lineColor,omitempty"`
 			Show      bool    `json:"show,omitempty"`
-		} `json:"sparkline"`
+		} `json:"sparkline,omitempty"`
 		ValueFontSize string     `json:"valueFontSize"`
 		ValueMaps     []valueMap `json:"valueMaps"`
 		ValueName     string     `json:"valueName"`
@@ -177,7 +177,7 @@ type (
 			Show             bool `json:"show"`
 			ThresholdLabels  bool `json:"thresholdLabels"`
 			ThresholdMarkers bool `json:"thresholdMarkers"`
-		}
+		} `json:"gauge,omitempty"`
 	}
 	DashlistPanel struct {
 		Mode  string   `json:"mode"`
