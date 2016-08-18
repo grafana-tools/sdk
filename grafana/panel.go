@@ -31,6 +31,7 @@ const (
 	GraphType
 	TableType
 	TextType
+	PluginlistType
 	SinglestatType
 )
 
@@ -47,8 +48,10 @@ type (
 		*TextPanel
 		*SinglestatPanel
 		*DashlistPanel
+		*PluginlistPanel
 		*CustomPanel
 	}
+	panelType   int8
 	commonPanel struct {
 		OfType     panelType `json:"-"` // it required for defining type of the panel
 		ID         uint      `json:"id"`
@@ -74,7 +77,6 @@ type (
 		Editable         bool     `json:"editable"`
 		HideTimeOverride *bool    `json:"hideTimeOverride,omitempty"`
 	}
-	panelType  int8
 	GraphPanel struct {
 		AliasColors interface{} `json:"aliasColors"` // XXX
 		Bars        bool        `json:"bars"`
@@ -184,6 +186,9 @@ type (
 		Limit uint     `json:"limit"`
 		Query string   `json:"query"`
 		Tags  []string `json:"tags"`
+	}
+	PluginlistPanel struct {
+		Limit int `json:"limit,omitempty"`
 	}
 	CustomPanel map[string]interface{}
 )
@@ -360,6 +365,22 @@ func NewSinglestat(title string) *Panel {
 			Renderer: &render,
 			IsNew:    true},
 		SinglestatPanel: &SinglestatPanel{}}
+}
+
+// NewPluginlist initializes panel with a singlestat panel.
+func NewPluginlist(title string) *Panel {
+	if title == "" {
+		title = "Panel Title"
+	}
+	render := "flot"
+	return &Panel{
+		commonPanel: commonPanel{
+			OfType:   PluginlistType,
+			Title:    title,
+			Type:     "pluginlist",
+			Renderer: &render,
+			IsNew:    true},
+		PluginlistPanel: &PluginlistPanel{}}
 }
 
 // NewCustom initializes panel with a singlestat panel.
@@ -583,6 +604,12 @@ func (p *Panel) MarshalJSON() ([]byte, error) {
 			DashlistPanel
 		}{p.commonPanel, *p.DashlistPanel}
 		return json.Marshal(outDashlist)
+	case PluginlistType:
+		var outPluginlist = struct {
+			commonPanel
+			PluginlistPanel
+		}{p.commonPanel, *p.PluginlistPanel}
+		return json.Marshal(outPluginlist)
 	case CustomType:
 		var outCustom = struct {
 			commonPanel
