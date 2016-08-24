@@ -83,8 +83,7 @@ func (r *Instance) put(query string, params url.Values, body []byte) ([]byte, in
 		req.Header.Set("Content-Type", "application/json")
 	}
 	req.Header.Set("User-Agent", "autograf")
-	client := &http.Client{Timeout: requestTimeout}
-	resp, err := client.Do(req)
+	resp, err := r.client.Do(req)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -104,8 +103,7 @@ func (r *Instance) post(query string, params url.Values, body []byte) ([]byte, i
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("User-Agent", "autograf")
-	client := &http.Client{Timeout: requestTimeout}
-	resp, err := client.Do(req)
+	resp, err := r.client.Do(req)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -121,8 +119,7 @@ func (r *Instance) delete(query string) ([]byte, error) {
 	req.Header.Set("Authorization", r.key)
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("User-Agent", "autograf")
-	client := &http.Client{Timeout: requestTimeout}
-	resp, err := client.Do(req)
+	resp, err := r.client.Do(req)
 	if err != nil {
 		return nil, err
 	}
