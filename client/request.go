@@ -27,12 +27,15 @@ import (
 	"net/url"
 )
 
-var HTTPClient = http.Client{}
+// DefaultHTTPClient initialized Grafana with appropriate conditions.
+// It allows you globally redefine HTTP client.
+var DefaultHTTPClient = http.DefaultClient
 
 // Instance of Grafana.
 type Instance struct {
 	baseURL string
 	key     string
+	client  *http.Client
 }
 
 type StatusMessage struct {
@@ -44,8 +47,8 @@ type StatusMessage struct {
 }
 
 // New keeps request data.
-func New(apiURL, apiKey string) *Instance {
-	return &Instance{baseURL: apiURL, key: fmt.Sprintf("Bearer %s", apiKey)}
+func New(apiURL, apiKey string, client *http.Client) *Instance {
+	return &Instance{baseURL: apiURL, key: fmt.Sprintf("Bearer %s", apiKey), client: client}
 }
 
 func (r *Instance) get(query string, params url.Values) ([]byte, int, error) {
@@ -58,8 +61,7 @@ func (r *Instance) get(query string, params url.Values) ([]byte, int, error) {
 	req.Header.Set("Authorization", r.key)
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("User-Agent", "autograf")
-	client := &HTTPClient
-	resp, err := client.Do(req)
+	resp, err := r.client.Do(req)
 	if err != nil {
 		return nil, 0, err
 	}
