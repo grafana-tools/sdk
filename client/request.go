@@ -25,10 +25,9 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"time"
 )
 
-const requestTimeout = 10 * time.Second
+var HTTPClient = http.Client{}
 
 // Instance of Grafana.
 type Instance struct {
@@ -59,7 +58,7 @@ func (r *Instance) get(query string, params url.Values) ([]byte, int, error) {
 	req.Header.Set("Authorization", r.key)
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("User-Agent", "autograf")
-	client := &http.Client{Timeout: requestTimeout}
+	client := &HTTPClient
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, 0, err
