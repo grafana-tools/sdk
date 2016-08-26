@@ -34,7 +34,7 @@ func main() {
 		fmt.Fprint(os.Stderr, "Usage:  import-datasources http://grafana.host:3000 api-key-string-here\n")
 		os.Exit(0)
 	}
-	c := client.New(os.Args[1], os.Args[2])
+	c := client.New(os.Args[1], os.Args[2], client.DefaultHTTPClient)
 	if datasources, err = c.GetAllDatasources(); err != nil {
 		fmt.Fprintf(os.Stderr, fmt.Sprintf("%s\n", err))
 		os.Exit(1)

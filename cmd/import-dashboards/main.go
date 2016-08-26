@@ -33,7 +33,7 @@ func main() {
 		fmt.Fprint(os.Stderr, "Usage: import-dashboards http://grafana.host:3000 api-key-string-here\n")
 		os.Exit(0)
 	}
-	c := client.New(os.Args[1], os.Args[2])
+	c := client.New(os.Args[1], os.Args[2], client.DefaultHTTPClient)
 	filesInDir, err = ioutil.ReadDir(".")
 	if err != nil {
 		log.Fatal(err)

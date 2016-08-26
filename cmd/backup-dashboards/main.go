@@ -27,7 +27,7 @@ func main() {
 		fmt.Fprint(os.Stderr, "Usage:  backup-dashboards http://grafana.host:3000 api-key-string-here\n")
 		os.Exit(0)
 	}
-	c := client.New(os.Args[1], os.Args[2])
+	c := client.New(os.Args[1], os.Args[2], client.DefaultHTTPClient)
 	if boardLinks, err = c.SearchDashboards("", false); err != nil {
 		fmt.Fprintf(os.Stderr, fmt.Sprintf("%s\n", err))
 		os.Exit(1)
