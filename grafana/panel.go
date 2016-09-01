@@ -83,17 +83,18 @@ type (
 		Fill        int         `json:"fill"`
 		Grid        grid        `json:"grid"`
 		Legend      struct {
-			AlignAsTable bool `json:"alignAsTable"`
-			Avg          bool `json:"avg"`
-			Current      bool `json:"current"`
-			HideEmpty    bool `json:"hideEmpty"`
-			HideZero     bool `json:"hideZero"`
-			Max          bool `json:"max"`
-			Min          bool `json:"min"`
-			RightSide    bool `json:"rightSide"`
-			Show         bool `json:"show"`
-			Total        bool `json:"total"`
-			Values       bool `json:"values"`
+			AlignAsTable bool  `json:"alignAsTable"`
+			Avg          bool  `json:"avg"`
+			Current      bool  `json:"current"`
+			HideEmpty    bool  `json:"hideEmpty"`
+			HideZero     bool  `json:"hideZero"`
+			Max          bool  `json:"max"`
+			Min          bool  `json:"min"`
+			RightSide    bool  `json:"rightSide"`
+			Show         bool  `json:"show"`
+			Total        bool  `json:"total"`
+			Values       bool  `json:"values"`
+			SideWidth    *uint `json:"sideWidth,omitempty"`
 		} `json:"legend,omitempty"`
 		LeftYAxisLabel  *string         `json:"leftYAxisLabel,omitempty"`
 		RightYAxisLabel *string         `json:"rightYAxisLabel,omitempty"`
