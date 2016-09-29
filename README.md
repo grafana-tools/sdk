@@ -42,7 +42,7 @@ changed):
     ./panels/my-graph  # inserts template from a file
     source src4
 
-# Installation
+# Installation [![Build Status](https://travis-ci.org/grafov/autograf.svg?branch=master)](https://travis-ci.org/grafov/autograf)
 
 For use in your Go apps just install packages separately:
 
