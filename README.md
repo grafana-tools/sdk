@@ -60,7 +60,7 @@ Sample utility that just saves all dashboards from Grafana to JSON files in a cu
 
     go install github.com/grafov/autograf/grafana/cmd/backup-dashboards
 
-## Roadmap
+## Roadmap [![Coverage Status](https://coveralls.io/repos/github/grafov/autograf/badge.svg?branch=master)](https://coveralls.io/github/grafov/autograf?branch=master)
 
 ### Major targets
 
