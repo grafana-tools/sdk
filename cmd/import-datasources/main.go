@@ -1,14 +1,30 @@
+// This is a simple example of usage of Grafana client
+// for importing datasources from a bunch of JSON files (current dir used).
+// You are can export datasources with backup-datasources utitity.
+// NOTE: old datasources with same names will be silently overrided!
+//
+// Usage:
+//   import-datasousces http://grafana.host:3000 api-key-string-here
+//
+// You need get API key with Admin rights from your Grafana!
 package main
 
-/* This is a simple example of usage of Grafana client
-for importing datasources from a bunch of JSON files (current dir used).
-You are can export datasources with backup-datasources utitity.
-NOTE: old datasources with same names will be silently overrided!
+/*
+   Copyright 2016 Alexander I.Grafov <grafov@gmail.com>
 
-Usage:
-  import-datasousces http://grafana.host:3000 api-key-string-here
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
 
-You need get API key with Admin rights from your Grafana!
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+   ॐ तारे तुत्तारे तुरे स्व
 */
 
 import (
