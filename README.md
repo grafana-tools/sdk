@@ -24,9 +24,9 @@ You need Grafana API key with _admin rights_ for using these utilities.
 
 ## Thoughts about DSL
 
-Work on DSL syntax and translator in progress not much yet to say about it. I want something simple in plain text
-for describing dashboards instead of mapping them 1:1 to Grafana objects. Short sample how it may look (syntax may be
-changed):
+Work on DSL and translator in progress so not much to say about it yet. I want something with syntax short for writing
+and clean for reading for describing dashboards in a style of programming language. Instead of mapping them 1:1 to JSON 
+syntax of Grafana objects. The short sample how it may look:
 
     # Example of a board with a panel
     board The sample dashboard
