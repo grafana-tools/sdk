@@ -29,20 +29,27 @@ for describing dashboards instead of mapping them 1:1 to Grafana objects. Short 
 changed):
 
     # Example of a board with a panel
-    board Sample title
+    board The sample dashboard
 
-	# define new source
-    source src4
-    prometheus http://127.1:9090
+	# Example how define new sources in the loop:
+	repeat (0..3) as $srv:
+      source PromSrc$srv
+      prometheus http://127.1:9090
 
-    graph Example graph №1
-    expr go_goroutines{job="test"}
-    repeat expr for scr1, src2, src3
+	# This example defines the set of panels with different sources.
+	var n = 0
+	for $handlers as handler:
+	  $n++
+	  panel Sample number $n
+	  type graph
+	  query my_response_time_metric{instance="host$n",handler="$handler"}
+	  if $n < 4:
+	    datasource PromSrc$n
+	  else:
+		datasource Prom0
 
-    ./panels/my-graph  # inserts template from a file
-    source src4
 
-# Installation [![Build Status](https://travis-ci.org/grafov/autograf.svg?branch=master)](https://travis-ci.org/grafov/autograf)
+## Installation [![Build Status](https://travis-ci.org/grafov/autograf.svg?branch=master)](https://travis-ci.org/grafov/autograf)
 
 For use in your Go apps just install packages separately:
 
