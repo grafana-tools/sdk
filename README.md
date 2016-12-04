@@ -1,4 +1,4 @@
-# Autograf is a dashboard constructor for Grafana [![Build Status](https://drone.io/github.com/grafov/autograf/status.png)](https://drone.io/github.com/grafov/autograf/latest)
+# Autograf is a dashboard constructor for Grafana [![Go Report Card](https://goreportcard.com/badge/github.com/grafov/autograf)](https://goreportcard.com/report/github.com/grafov/autograf)
 
 [Grafana](http://grafana.org) is flexible and usable for exploring and visualizing data. But UI of Grafana is not very suitable for repetitive operations with large number of objects on multiple dashboards. Aim of Autograf project is help with maintaining a large set of dashboards and datasources in an automated way. Autograf will not try to be a replacement for native Grafana methods of automation (templating variables, repeatable panels and scripted dashboards) but it complement them with own way.
 
@@ -49,7 +49,7 @@ syntax of Grafana objects. The short sample how it may look:
 		datasource Prom0
 
 
-## Installation [![Build Status](https://travis-ci.org/grafov/autograf.svg?branch=master)](https://travis-ci.org/grafov/autograf)
+## Installation [![Build Status](https://travis-ci.org/grafov/autograf.svg?branch=master)](https://travis-ci.org/grafov/autograf) [![Build Status](https://drone.io/github.com/grafov/autograf/status.png)](https://drone.io/github.com/grafov/autograf/latest)
 
 For use in your Go apps just install packages separately:
 
