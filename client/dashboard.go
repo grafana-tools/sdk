@@ -206,8 +206,12 @@ func (r *Instance) SetRawDashboard(raw []byte) error {
 		resp    StatusMessage
 		code    int
 		err     error
+		buf     bytes.Buffer
 	)
-	if rawResp, code, err = r.post("api/dashboards/db", nil, raw); err != nil {
+	buf.WriteString(`{"dashboard":`)
+	buf.Write(raw)
+	buf.WriteString(`}`)
+	if rawResp, code, err = r.post("api/dashboards/db", nil, buf.Bytes()); err != nil {
 		return err
 	}
 	if err = json.Unmarshal(rawResp, &resp); err != nil {
