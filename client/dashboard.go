@@ -212,6 +212,7 @@ func (r *Instance) SetRawDashboard(raw []byte) error {
 	if err = json.Unmarshal(raw, &plain); err != nil {
 		return err
 	}
+	// TODO(axel) fragile place, refactor it
 	plain["id"] = 0
 	raw, _ = json.Marshal(plain)
 	buf.WriteString(`{"dashboard":`)
