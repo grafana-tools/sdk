@@ -207,7 +207,13 @@ func (r *Instance) SetRawDashboard(raw []byte) error {
 		code    int
 		err     error
 		buf     bytes.Buffer
+		plain   = make(map[string]interface{})
 	)
+	if err = json.Unmarshal(raw, &plain); err != nil {
+		return err
+	}
+	plain["id"] = 0
+	raw, _ = json.Marshal(plain)
 	buf.WriteString(`{"dashboard":`)
 	buf.Write(raw)
 	buf.WriteString(`, "overwrite": true}`)
