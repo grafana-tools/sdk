@@ -210,7 +210,7 @@ func (r *Instance) SetRawDashboard(raw []byte) error {
 	)
 	buf.WriteString(`{"dashboard":`)
 	buf.Write(raw)
-	buf.WriteString(`}`)
+	buf.WriteString(`, "overwrite": true}`)
 	if rawResp, code, err = r.post("api/dashboards/db", nil, buf.Bytes()); err != nil {
 		return err
 	}
