@@ -196,6 +196,32 @@ func (r *Instance) SetDashboard(board grafana.Board, overwrite bool) error {
 	return nil
 }
 
+// SetRawDashboard updates existing dashboard or creates a new one.
+// Contrary to SetDashboard() it accepts raw JSON instead of grafana.Board structure.
+// Grafana only can create or update a dashboard in a database. File dashboards
+// may be only loaded with HTTP API but not created or updated.
+func (r *Instance) SetRawDashboard(raw []byte) error {
+	var (
+		rawResp []byte
+		resp    StatusMessage
+		code    int
+		err     error
+	)
+	if rawResp, code, err = r.post("api/dashboards/db", nil, raw); err != nil {
+		return err
+	}
+	if err = json.Unmarshal(rawResp, &resp); err != nil {
+		return err
+	}
+	switch code {
+	case 401:
+		return fmt.Errorf("%d %s", code, *resp.Message)
+	case 412:
+		return fmt.Errorf("%d %s", code, *resp.Message)
+	}
+	return nil
+}
+
 // DeleteDashboard deletes dashboard that selected by slug string.
 // Grafana only can delete a dashboard in a database. File dashboards
 // may be only loaded with HTTP API but not deteled.
