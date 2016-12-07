@@ -127,6 +127,7 @@ type (
 			Min     *int   `json:"min"`
 			Show    bool   `json:"show"`
 		} `json:"yaxes"` // was added in Grafana 3.x
+		Decimals *int `json:"decimals,omitempty"` // seems it was added in Grafana 3.x
 	}
 	TablePanel struct {
 		Columns []column `json:"columns"`
