@@ -138,6 +138,7 @@ type (
 		Styles    []columnStyle `json:"styles"`
 		Transform string        `json:"transform"`
 		Targets   []Target      `json:"targets,omitempty"`
+		Scroll    bool          `json:"scroll"` // from grafana 3.x
 	}
 	TextPanel struct {
 		Content    string `json:"content"`
