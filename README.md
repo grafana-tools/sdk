@@ -4,8 +4,8 @@
 *Badges of external services broken yet because of old paths!*
 
 SDK for Go language offers a library for interacting with [Grafana](http://grafana.org) server from Go applications.
-It realizes the many of [HTTP REST API](http://docs.grafana.org/reference/http_api) calls but beside them
-it allows create Grafana objects (dashboards, panels, datasources) locally and manipulate them for
+It realizes many of [HTTP REST API](http://docs.grafana.org/reference/http_api) calls but beside them
+it allows creating of Grafana objects (dashboards, panels, datasources) locally and manipulating them for
 constructing dashboards programmatically.
 It was made foremost for [autograf](https://github.com/grafana-tools/autograf) project but later separated 
 from it and moved to this new repository because the library is useful per se.
@@ -19,18 +19,17 @@ The library includes several demo apps for showing API usage:
 
 You need Grafana API key with _admin rights_ for using these utilities.
 
-## Installation [![Build Status](https://travis-ci.org/grafov/autograf.svg?branch=master)](https://travis-ci.org/grafov/autograf) [![Build Status](https://drone.io/github.com/grafov/autograf/status.png)](https://drone.io/github.com/grafov/autograf/latest)
+## Installation [![Build Status](https://travis-ci.org/grafana-tools/sdk.svg?branch=master)](https://travis-ci.org/grafana-tools/sdk) [![Build Status](https://drone.io/github.com/grafov/autograf/status.png)](https://drone.io/github.com/grafov/autograf/latest)
 
-For use in your Go apps just install packages separately:
+Of course Go development environment should be set up first. Then:
 
-    go get github.com/grafana-tools/sdk/grafana
-    go get github.com/grafana-tools/sdk/client
+    go get github.com/grafana-tools/sdk
 
-Single external dependency required for `grafana` package:
+Single external dependency required:
 
     go get github.com/gosimple/slug
 
-— "slugify" URLs is a simple task but this package used in Grafana server so it used
+The "slugify" for URLs is a simple task but this package used in Grafana server so it used
 here for compatibility reasons.
 
 ## Status of REST API realization
