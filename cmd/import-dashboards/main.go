@@ -59,7 +59,7 @@ func main() {
 				log.Println(err)
 				continue
 			}
-			var board Board
+			var board sdk.Board
 			if err = json.Unmarshal(rawBoard, &board); err != nil {
 				log.Println(err)
 				continue
