@@ -1,19 +1,18 @@
-# Autograf is a dashboard constructor for Grafana [![Go Report Card](https://goreportcard.com/badge/github.com/grafov/autograf)](https://goreportcard.com/report/github.com/grafov/autograf)
+# Grafana SDK
 
-[Grafana](http://grafana.org) is flexible and usable for exploring and visualizing data. But UI of Grafana is not very suitable for repetitive operations with large number of objects on multiple dashboards. Aim of Autograf project is help with maintaining a large set of dashboards and datasources in an automated way. Autograf will not try to be a replacement for native Grafana methods of automation (templating variables, repeatable panels and scripted dashboards) but it complement them with own way.
+*These libraries just moved out from https://github.com/grafov/autograf repository.*
+*Paths not fixed yet so they in non working state!*
 
-This project is in early stage of development. Firstly it offers a way for processing dashboards in Go apps and interacting with Grafana instances. This part of project is already usable. Secondly it will offer DSL for constructing dashboards. I think plain blocks of text without complex nesting will enough for representing Grafana board-row-panel concept.
+SDK for Go language offers a way for interacting with [Grafana](http://grafana.org) server from Go applications.
 
-Currently there are two packages:
+Currently it consists of two packages:
 
 * `grafana` [![GoDoc](https://godoc.org/github.com/grafov/autograf/grafana?status.svg)](https://godoc.org/github.com/grafov/autograf/grafana) defines structures of Grafana and it may be used separately in Go apps for custom dashboards handling.
 * `client` [![GoDoc](https://godoc.org/github.com/grafov/autograf/client?status.svg)](https://godoc.org/github.com/grafov/autograf/client) realizes [HTTP REST API](http://docs.grafana.org/reference/http_api). It also may be used separately for integrating Go apps with Grafana. It uses `grafana` package for keeping loaded dashboards and defines its own types for keeping users/orgs and other auxilary structures used in Grafana API.
 
-DSL part is unfinished yet so it will be published later.
-
 ## Demo utilities
 
-Autograf includes several of demo apps for show how to use `client` and `grafana` API:
+The library includes several demo apps for showing how to use `client` and `grafana` API:
 
 * [backup-dashboards](cmd/backup-dashboards) — saves all your dashboards as JSON-files.
 * [backup-datasources](cmd/backup-datasources) — saves all your datasources as JSON-files.
@@ -22,39 +21,12 @@ Autograf includes several of demo apps for show how to use `client` and `grafana
 
 You need Grafana API key with _admin rights_ for using these utilities.
 
-## Thoughts about DSL
-
-Work on DSL and translator in progress so not much to say about it yet. I want something with syntax short for writing
-and clean for reading for describing dashboards in a style of programming language. Instead of mapping them 1:1 to JSON 
-syntax of Grafana objects. The short sample how it may look:
-
-    # Example of a board with a panel
-    board The sample dashboard
-
-	# Example how define new sources in the loop:
-	repeat (0..3) as $srv:
-      source PromSrc$srv
-      prometheus http://127.1:9090
-
-	# This example defines the set of panels with different sources.
-	var n = 0
-	for $handlers as handler:
-	  $n++
-	  panel Sample number $n
-	  type graph
-	  query my_response_time_metric{instance="host$n",handler="$handler"}
-	  if $n < 4:
-	    datasource PromSrc$n
-	  else:
-		datasource Prom0
-
-
 ## Installation [![Build Status](https://travis-ci.org/grafov/autograf.svg?branch=master)](https://travis-ci.org/grafov/autograf) [![Build Status](https://drone.io/github.com/grafov/autograf/status.png)](https://drone.io/github.com/grafov/autograf/latest)
 
 For use in your Go apps just install packages separately:
 
-    go get github.com/grafov/autograf/grafana
-    go get github.com/grafov/autograf/client
+    go get github.com/grafana-tools/grafana
+    go get github.com/grafana-tools/client
 
 Single external dependency required for `grafana` package:
 
@@ -63,21 +35,10 @@ Single external dependency required for `grafana` package:
 — "slugify" URLs is a simple task but this package used in Grafana server so it used
 here for compatibility reasons.
 
-Sample utility that just saves all dashboards from Grafana to JSON files in a current dir:
-
-    go install github.com/grafov/autograf/grafana/cmd/backup-dashboards
-
 ## Roadmap [![Coverage Status](https://coveralls.io/repos/github/grafov/autograf/badge.svg?branch=master)](https://coveralls.io/github/grafov/autograf?branch=master)
-
-### Major targets
 
 * `[DONE]` Realize data structures used in a default Grafana installation for data visualizing (dashboards, datasources, panels, variables, annotations).
 * `[PROGRESS]` Support all functions of Grafana REST API for manipulating dashboards and datasources.
-* `[PROGRESS]` Realize DSL for defining dashboards in a plain text format.
-* Import dashboards or single panels from running Grafana instances and convert them to DSL.
-
-### Minor targets
-
 * Support functions of Grafana REST API for manipulating users and organizations.
 
 ## Collection of Grafana tools in Golang
@@ -88,7 +49,3 @@ Sample utility that just saves all dashboards from Grafana to JSON files in a cu
 * [github.com/raintank/memo](https://github.com/raintank/memo) — send slack mentions to Grafana annotations.
 * [github.com/retzkek/grafctl](https://github.com/retzkek/grafctl) — backup/restore/track dashboards with git.
 
-### Projects offered DSL or helper tools for Grafana in other languages
-
-* [github.com/jakubplichta/grafana-dashboard-builder](https://github.com/jakubplichta/grafana-dashboard-builder) Python tool for building Grafana dashboards in YAML.
-* [github.com/m110/grafcli](https://github.com/m110/grafcli) Python tool for managing Grafana in CLI. It querying Grafana backends directly. The project abandoned in alpha state for a long time.
