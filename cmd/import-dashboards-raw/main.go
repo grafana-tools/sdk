@@ -1,4 +1,4 @@
-// This is a simple example of usage of Grafana client
+// This is a simple example of usage of Grafana sdk
 // for importing dashboards from a bunch of JSON files (current dir used).
 // This example uses SetRawDashboard() and doesn't unmarshal input JSONs.
 //
@@ -36,7 +36,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/grafov/autograf/client"
+	"github.com/grafana-tools/sdk"
 )
 
 func main() {
@@ -49,7 +49,7 @@ func main() {
 		fmt.Fprint(os.Stderr, "Usage: import-dashboards http://grafana.host:3000 api-key-string-here\n")
 		os.Exit(0)
 	}
-	c := client.New(os.Args[1], os.Args[2], client.DefaultHTTPClient)
+	c := sdk.NewClient(os.Args[1], os.Args[2], sdk.DefaultHTTPClient)
 	filesInDir, err = ioutil.ReadDir(".")
 	if err != nil {
 		log.Fatal(err)

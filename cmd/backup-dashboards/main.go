@@ -29,21 +29,21 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/grafov/autograf/client"
+	"github.com/grafana-tools/sdk"
 )
 
 func main() {
 	var (
-		boardLinks []client.FoundBoard
+		boardLinks []sdk.FoundBoard
 		rawBoard   []byte
-		meta       client.BoardProperties
+		meta       sdk.BoardProperties
 		err        error
 	)
 	if len(os.Args) != 3 {
 		fmt.Fprint(os.Stderr, "Usage:  backup-dashboards http://grafana.host:3000 api-key-string-here\n")
 		os.Exit(0)
 	}
-	c := client.New(os.Args[1], os.Args[2], client.DefaultHTTPClient)
+	c := sdk.NewClient(os.Args[1], os.Args[2], sdk.DefaultHTTPClient)
 	if boardLinks, err = c.SearchDashboards("", false); err != nil {
 		fmt.Fprintf(os.Stderr, fmt.Sprintf("%s\n", err))
 		os.Exit(1)

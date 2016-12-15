@@ -3,7 +3,7 @@
 // It really useful for Grafana backups!
 //
 // Usage:
-//   backup-dashboards http://grafana.host:3000 api-key-string-here
+//   backup-dashboards http://sdk.host:3000 api-key-string-here
 package main
 
 /*
@@ -31,22 +31,21 @@ import (
 	"os"
 
 	"github.com/gosimple/slug"
-	"github.com/grafov/autograf/client"
-	"github.com/grafov/autograf/grafana"
+	"github.com/grafana-tools/sdk"
 )
 
 func main() {
 	var (
-		datasources []grafana.Datasource
+		datasources []sdk.Datasource
 		dsPacked    []byte
-		meta        client.BoardProperties
+		meta        sdk.BoardProperties
 		err         error
 	)
 	if len(os.Args) != 3 {
-		fmt.Fprint(os.Stderr, "Usage:  backup-datasources http://grafana.host:3000 api-key-string-here\n")
+		fmt.Fprint(os.Stderr, "Usage:  backup-datasources http://sdk.host:3000 api-key-string-here\n")
 		os.Exit(0)
 	}
-	c := client.New(os.Args[1], os.Args[2], client.DefaultHTTPClient)
+	c := sdk.NewClient(os.Args[1], os.Args[2], sdk.DefaultHTTPClient)
 	if datasources, err = c.GetAllDatasources(); err != nil {
 		fmt.Fprintf(os.Stderr, fmt.Sprintf("%s\n", err))
 		os.Exit(1)

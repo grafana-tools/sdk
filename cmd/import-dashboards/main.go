@@ -4,7 +4,7 @@
 // NOTE: old dashboards with same names will be silently overrided!
 //
 // Usage:
-//   import-dashboards http://grafana.host:3000 api-key-string-here
+//   import-dashboards http://sdk host:3000 api-key-string-here
 //
 // You need get API key with Admin rights from your Grafana!
 package main
@@ -35,8 +35,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/grafov/autograf/client"
-	"github.com/grafov/autograf/grafana"
+	"github.com/grafana-tools/sdk"
 )
 
 func main() {
@@ -46,10 +45,10 @@ func main() {
 		err        error
 	)
 	if len(os.Args) != 3 {
-		fmt.Fprint(os.Stderr, "Usage: import-dashboards http://grafana.host:3000 api-key-string-here\n")
+		fmt.Fprint(os.Stderr, "Usage: import-dashboards http://grafana-host:3000 api-key-string-here\n")
 		os.Exit(0)
 	}
-	c := client.New(os.Args[1], os.Args[2], client.DefaultHTTPClient)
+	c := sdk.NewClient(os.Args[1], os.Args[2], sdk.DefaultHTTPClient)
 	filesInDir, err = ioutil.ReadDir(".")
 	if err != nil {
 		log.Fatal(err)
@@ -60,7 +59,7 @@ func main() {
 				log.Println(err)
 				continue
 			}
-			var board grafana.Board
+			var board Board
 			if err = json.Unmarshal(rawBoard, &board); err != nil {
 				log.Println(err)
 				continue

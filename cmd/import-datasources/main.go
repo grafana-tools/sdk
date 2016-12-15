@@ -4,7 +4,7 @@
 // NOTE: old datasources with same names will be silently overrided!
 //
 // Usage:
-//   import-datasousces http://grafana.host:3000 api-key-string-here
+//   import-datasousces http://sdk.host:3000 api-key-string-here
 //
 // You need get API key with Admin rights from your Grafana!
 package main
@@ -32,25 +32,24 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-
-	"github.com/grafov/autograf/client"
-	"github.com/grafov/autograf/grafana"
 	"strings"
+
+	"github.com/grafana-tools/sdk"
 )
 
 func main() {
 	var (
-		datasources []grafana.Datasource
+		datasources []sdk.Datasource
 		filesInDir  []os.FileInfo
 		rawDS       []byte
-		status      client.StatusMessage
+		status      sdk.StatusMessage
 		err         error
 	)
 	if len(os.Args) != 3 {
-		fmt.Fprint(os.Stderr, "Usage:  import-datasources http://grafana.host:3000 api-key-string-here\n")
+		fmt.Fprint(os.Stderr, "Usage:  import-datasources http://sdk-host:3000 api-key-string-here\n")
 		os.Exit(0)
 	}
-	c := client.New(os.Args[1], os.Args[2], client.DefaultHTTPClient)
+	c := sdk.NewClient(os.Args[1], os.Args[2], sdk.DefaultHTTPClient)
 	if datasources, err = c.GetAllDatasources(); err != nil {
 		fmt.Fprintf(os.Stderr, fmt.Sprintf("%s\n", err))
 		os.Exit(1)
@@ -65,7 +64,7 @@ func main() {
 				fmt.Fprint(os.Stderr, fmt.Sprintf("%s\n", err))
 				continue
 			}
-			var newDS grafana.Datasource
+			var newDS sdk.Datasource
 			if err = json.Unmarshal(rawDS, &newDS); err != nil {
 				fmt.Fprint(os.Stderr, fmt.Sprintf("%s\n", err))
 				continue
