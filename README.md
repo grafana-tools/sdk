@@ -10,6 +10,15 @@ constructing dashboards programmatically.
 It was made foremost for [autograf](https://github.com/grafana-tools/autograf) project but later separated 
 from it and moved to this new repository because the library is useful per se.
 
+## Design principles
+
+1. SDK offers client functionality so it covers Grafana REST API with its requests and responses as close as possible.
+1. SDK maps Grafana objects (dashboard, row, panel, datasource) to similar Go structures but not follows exactly all Grafana abstractions.
+1. It doesn't use logging, instead API functions can return errors where it need.
+1. No external deps except Go stdlib. Another exception is URL slugify, SDK uses external lib "slug" for algorithm compatibility — that is the same package that Grafana server uses.
+
+## Examples
+
 The library includes several demo apps for showing API usage:
 
 * [backup-dashboards](cmd/backup-dashboards) — saves all your dashboards as JSON-files.
