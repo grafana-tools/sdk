@@ -1,10 +1,12 @@
 # Grafana SDK
 
 *These libraries just moved out from https://github.com/grafov/autograf repository.*
-*Paths not fixed yet so they in non working state!*
+*Badges of external services broken yet because of old paths!*
 
 SDK for Go language offers a library for interacting with [Grafana](http://grafana.org) server from Go applications.
 It realizes the many of [HTTP REST API](http://docs.grafana.org/reference/http_api). 
+It was made for [autograf](https://github.com/grafana-tools/autograf) project but later separated 
+from it and moved to this new repository because the library is useful per se.
 
 The library includes several demo apps for showing API usage:
 
