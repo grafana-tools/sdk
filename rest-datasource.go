@@ -1,4 +1,4 @@
-package client
+package sdk
 
 /*
    Copyright 2016 Alexander I.Grafov <grafov@gmail.com>
@@ -21,14 +21,12 @@ package client
 import (
 	"encoding/json"
 	"fmt"
-
-	"github.com/grafov/autograf/grafana"
 )
 
-func (r *Instance) GetAllDatasources() ([]grafana.Datasource, error) {
+func (r *Instance) GetAllDatasources() ([]Datasource, error) {
 	var (
 		raw  []byte
-		dss  []grafana.Datasource
+		dss  []Datasource
 		code int
 		err  error
 	)
@@ -42,7 +40,7 @@ func (r *Instance) GetAllDatasources() ([]grafana.Datasource, error) {
 	return dss, err
 }
 
-func (r *Instance) CreateDatasource(ds grafana.Datasource) (StatusMessage, error) {
+func (r *Instance) CreateDatasource(ds Datasource) (StatusMessage, error) {
 	var (
 		raw  []byte
 		resp StatusMessage
@@ -60,7 +58,7 @@ func (r *Instance) CreateDatasource(ds grafana.Datasource) (StatusMessage, error
 	return resp, nil
 }
 
-func (r *Instance) UpdateDatasource(ds grafana.Datasource) (StatusMessage, error) {
+func (r *Instance) UpdateDatasource(ds Datasource) (StatusMessage, error) {
 	var (
 		raw  []byte
 		resp StatusMessage

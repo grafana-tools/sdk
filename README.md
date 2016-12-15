@@ -3,16 +3,10 @@
 *These libraries just moved out from https://github.com/grafov/autograf repository.*
 *Paths not fixed yet so they in non working state!*
 
-SDK for Go language offers a way for interacting with [Grafana](http://grafana.org) server from Go applications.
+SDK for Go language offers a library for interacting with [Grafana](http://grafana.org) server from Go applications.
+It realizes the many of [HTTP REST API](http://docs.grafana.org/reference/http_api). 
 
-Currently it consists of two packages:
-
-* `grafana` [![GoDoc](https://godoc.org/github.com/grafov/autograf/grafana?status.svg)](https://godoc.org/github.com/grafov/autograf/grafana) defines structures of Grafana and it may be used separately in Go apps for custom dashboards handling.
-* `client` [![GoDoc](https://godoc.org/github.com/grafov/autograf/client?status.svg)](https://godoc.org/github.com/grafov/autograf/client) realizes [HTTP REST API](http://docs.grafana.org/reference/http_api). It also may be used separately for integrating Go apps with Grafana. It uses `grafana` package for keeping loaded dashboards and defines its own types for keeping users/orgs and other auxilary structures used in Grafana API.
-
-## Demo utilities
-
-The library includes several demo apps for showing how to use `client` and `grafana` API:
+The library includes several demo apps for showing API usage:
 
 * [backup-dashboards](cmd/backup-dashboards) — saves all your dashboards as JSON-files.
 * [backup-datasources](cmd/backup-datasources) — saves all your datasources as JSON-files.
@@ -25,8 +19,8 @@ You need Grafana API key with _admin rights_ for using these utilities.
 
 For use in your Go apps just install packages separately:
 
-    go get github.com/grafana-tools/grafana
-    go get github.com/grafana-tools/client
+    go get github.com/grafana-tools/sdk/grafana
+    go get github.com/grafana-tools/sdk/client
 
 Single external dependency required for `grafana` package:
 
@@ -35,11 +29,53 @@ Single external dependency required for `grafana` package:
 — "slugify" URLs is a simple task but this package used in Grafana server so it used
 here for compatibility reasons.
 
+## Status of REST API realization
+
+Currently implemented only create/update/delete operations for dashboards and datasources. Other functions in progress. State of misc API parts noted below.
+
+### Authorization
+
+Only API tokens implemented.
+
+### Dashboards
+
+Partially implemented.
+
+### Datasources
+
+Partially implemented.
+
+### Organizations
+
+Not implemented.
+
+### Users
+
+Partially implemented.
+
+### Snapshots
+
+Not implemented.
+
+### Frontend settings
+
+Not implemented.
+
+### Login
+
+Not implemented.
+
+### Admin
+
+Not implemented.
+
+
 ## Roadmap [![Coverage Status](https://coveralls.io/repos/github/grafov/autograf/badge.svg?branch=master)](https://coveralls.io/github/grafov/autograf?branch=master)
 
 * `[DONE]` Realize data structures used in a default Grafana installation for data visualizing (dashboards, datasources, panels, variables, annotations).
 * `[PROGRESS]` Support all functions of Grafana REST API for manipulating dashboards and datasources.
 * Support functions of Grafana REST API for manipulating users and organizations.
+
 
 ## Collection of Grafana tools in Golang
 

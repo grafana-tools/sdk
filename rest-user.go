@@ -1,4 +1,4 @@
-package client
+package sdk
 
 /*
    Copyright 2016 Alexander I.Grafov <grafov@gmail.com>
@@ -23,15 +23,6 @@ import (
 	"encoding/json"
 	"fmt"
 )
-
-type User struct {
-	Login          string `json:"login"`
-	Name           string `json:"name"`
-	Email          string `json:"email"`
-	Theme          string `json:"theme"`
-	OrgID          int    `json:"orgId"`
-	IsGrafanaAdmin bool   `json:"isGrafanaAdmin"`
-}
 
 // GetUser get an actual user.
 func (r *Instance) GetUser() (User, error) {

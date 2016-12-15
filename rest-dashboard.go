@@ -1,4 +1,4 @@
-package client
+package sdk
 
 /*
    Copyright 2016 Alexander I.Grafov <grafov@gmail.com>
@@ -26,8 +26,6 @@ import (
 	"net/url"
 	"strings"
 	"time"
-
-	"github.com/grafov/autograf/grafana"
 )
 
 // BoardProperties keeps metadata of a dashboard.
@@ -52,36 +50,36 @@ type BoardProperties struct {
 // For dashboards from a filesystem set "file/" prefix for slug. By default dashboards from
 // a database assumed. Database dashboards may have "db/" prefix or may have not, it will
 // be appended automatically.
-func (r *Instance) GetDashboard(slug string) (grafana.Board, BoardProperties, error) {
+func (r *Instance) GetDashboard(slug string) (Board, BoardProperties, error) {
 	var (
 		raw    []byte
 		result struct {
 			Meta  BoardProperties `json:"meta"`
-			Board grafana.Board   `json:"dashboard"`
+			Board Board           `json:"dashboard"`
 		}
 		code int
 		err  error
 	)
 	slug, _ = setPrefix(slug)
 	if raw, code, err = r.get(fmt.Sprintf("api/dashboards/%s", slug), nil); err != nil {
-		return grafana.Board{}, BoardProperties{}, err
+		return Board{}, BoardProperties{}, err
 	}
 	if code != 200 {
-		return grafana.Board{}, BoardProperties{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
+		return Board{}, BoardProperties{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	dec := json.NewDecoder(bytes.NewReader(raw))
 	dec.UseNumber()
 	if err := dec.Decode(&result); err != nil {
-		return grafana.Board{}, BoardProperties{}, fmt.Errorf("unmarshal board with meta: %s\n%s", err, raw)
+		return Board{}, BoardProperties{}, fmt.Errorf("unmarshal board with meta: %s\n%s", err, raw)
 	}
 	return result.Board, result.Meta, err
 }
 
 // GetRawDashboard loads a dashboard JSON from Grafana instance along with metadata for a dashboard.
-// Contrary to GetDashboard() it not unpack loaded JSON to grafana.Board structure. Instead it
+// Contrary to GetDashboard() it not unpack loaded JSON to Board structure. Instead it
 // returns it as byte slice. It guarantee that data of dashboard returned untouched by conversion
-// with grafana.Board so no matter how properly fields from a current version of Grafana mapped to
-// our grafana.Board fields. It useful for backuping purposes when you want a dashboard exactly with
+// with Board so no matter how properly fields from a current version of Grafana mapped to
+// our Board fields. It useful for backuping purposes when you want a dashboard exactly with
 // same data as it exported by Grafana.
 //
 // For dashboards from a filesystem set "file/" prefix for slug. By default dashboards from
@@ -158,12 +156,12 @@ func (r *Instance) SearchDashboards(query string, starred bool, tags ...string) 
 // newer version or with same dashboard title.
 // Grafana only can create or update a dashboard in a database. File dashboards
 // may be only loaded with HTTP API but not created or updated.
-func (r *Instance) SetDashboard(board grafana.Board, overwrite bool) error {
+func (r *Instance) SetDashboard(board Board, overwrite bool) error {
 	var (
 		isBoardFromDB bool
 		newBoard      struct {
-			Dashboard grafana.Board `json:"dashboard"`
-			Overwrite bool          `json:"overwrite"`
+			Dashboard Board `json:"dashboard"`
+			Overwrite bool  `json:"overwrite"`
 		}
 		raw  []byte
 		resp StatusMessage
@@ -197,7 +195,7 @@ func (r *Instance) SetDashboard(board grafana.Board, overwrite bool) error {
 }
 
 // SetRawDashboard updates existing dashboard or creates a new one.
-// Contrary to SetDashboard() it accepts raw JSON instead of grafana.Board structure.
+// Contrary to SetDashboard() it accepts raw JSON instead of Board structure.
 // Grafana only can create or update a dashboard in a database. File dashboards
 // may be only loaded with HTTP API but not created or updated.
 func (r *Instance) SetRawDashboard(raw []byte) error {

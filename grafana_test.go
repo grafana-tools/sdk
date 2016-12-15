@@ -1,19 +1,19 @@
-package grafana_test
+package sdk_test
 
 import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/grafov/autograf/grafana"
+	"github.com/grafana-tools/sdk"
 )
 
 func ExampleNewBoard() {
-	board := grafana.NewBoard("Sample dashboard title")
+	board := sdk.NewBoard("Sample dashboard title")
 	board.ID = 1
 	row1 := board.AddRow("Sample row title")
-	row1.Add(grafana.NewGraph("Sample graph"))
-	graphWithDs := grafana.NewGraph("Sample graph 2")
-	target := grafana.Target{
+	row1.Add(sdk.NewGraph("Sample graph"))
+	graphWithDs := sdk.NewGraph("Sample graph 2")
+	target := sdk.Target{
 		RefID:      "A",
 		Datasource: "Sample Source 1",
 		Expr:       "sample request 1"}
