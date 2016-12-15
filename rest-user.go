@@ -25,7 +25,7 @@ import (
 )
 
 // GetUser get an actual user.
-func (r *Instance) GetUser() (User, error) {
+func (r *Client) GetUser() (User, error) {
 	var (
 		raw  []byte
 		user User
@@ -47,7 +47,7 @@ func (r *Instance) GetUser() (User, error) {
 }
 
 // GetUsers get all users.
-func (r *Instance) GetUsers() ([]User, error) {
+func (r *Client) GetUsers() ([]User, error) {
 	var (
 		raw   []byte
 		users []User

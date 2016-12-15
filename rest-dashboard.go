@@ -50,7 +50,7 @@ type BoardProperties struct {
 // For dashboards from a filesystem set "file/" prefix for slug. By default dashboards from
 // a database assumed. Database dashboards may have "db/" prefix or may have not, it will
 // be appended automatically.
-func (r *Instance) GetDashboard(slug string) (Board, BoardProperties, error) {
+func (r *Client) GetDashboard(slug string) (Board, BoardProperties, error) {
 	var (
 		raw    []byte
 		result struct {
@@ -85,7 +85,7 @@ func (r *Instance) GetDashboard(slug string) (Board, BoardProperties, error) {
 // For dashboards from a filesystem set "file/" prefix for slug. By default dashboards from
 // a database assumed. Database dashboards may have "db/" prefix or may have not, it will
 // be appended automatically.
-func (r *Instance) GetRawDashboard(slug string) ([]byte, BoardProperties, error) {
+func (r *Client) GetRawDashboard(slug string) ([]byte, BoardProperties, error) {
 	var (
 		raw    []byte
 		result struct {
@@ -122,7 +122,7 @@ type FoundBoard struct {
 
 // SearchDashboards search dashboards by substring of their title. It allows restrict the result set with
 // only starred dashboards and only for tags (logical OR applied to multiple tags).
-func (r *Instance) SearchDashboards(query string, starred bool, tags ...string) ([]FoundBoard, error) {
+func (r *Client) SearchDashboards(query string, starred bool, tags ...string) ([]FoundBoard, error) {
 	var (
 		raw    []byte
 		boards []FoundBoard
@@ -156,7 +156,7 @@ func (r *Instance) SearchDashboards(query string, starred bool, tags ...string) 
 // newer version or with same dashboard title.
 // Grafana only can create or update a dashboard in a database. File dashboards
 // may be only loaded with HTTP API but not created or updated.
-func (r *Instance) SetDashboard(board Board, overwrite bool) error {
+func (r *Client) SetDashboard(board Board, overwrite bool) error {
 	var (
 		isBoardFromDB bool
 		newBoard      struct {
@@ -198,7 +198,7 @@ func (r *Instance) SetDashboard(board Board, overwrite bool) error {
 // Contrary to SetDashboard() it accepts raw JSON instead of Board structure.
 // Grafana only can create or update a dashboard in a database. File dashboards
 // may be only loaded with HTTP API but not created or updated.
-func (r *Instance) SetRawDashboard(raw []byte) error {
+func (r *Client) SetRawDashboard(raw []byte) error {
 	var (
 		rawResp []byte
 		resp    StatusMessage
@@ -234,7 +234,7 @@ func (r *Instance) SetRawDashboard(raw []byte) error {
 // DeleteDashboard deletes dashboard that selected by slug string.
 // Grafana only can delete a dashboard in a database. File dashboards
 // may be only loaded with HTTP API but not deteled.
-func (r *Instance) DeleteDashboard(slug string) (StatusMessage, error) {
+func (r *Client) DeleteDashboard(slug string) (StatusMessage, error) {
 	var (
 		isBoardFromDB bool
 		raw           []byte

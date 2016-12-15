@@ -23,7 +23,7 @@ import (
 	"fmt"
 )
 
-func (r *Instance) GetAllDatasources() ([]Datasource, error) {
+func (r *Client) GetAllDatasources() ([]Datasource, error) {
 	var (
 		raw  []byte
 		dss  []Datasource
@@ -40,7 +40,7 @@ func (r *Instance) GetAllDatasources() ([]Datasource, error) {
 	return dss, err
 }
 
-func (r *Instance) CreateDatasource(ds Datasource) (StatusMessage, error) {
+func (r *Client) CreateDatasource(ds Datasource) (StatusMessage, error) {
 	var (
 		raw  []byte
 		resp StatusMessage
@@ -58,7 +58,7 @@ func (r *Instance) CreateDatasource(ds Datasource) (StatusMessage, error) {
 	return resp, nil
 }
 
-func (r *Instance) UpdateDatasource(ds Datasource) (StatusMessage, error) {
+func (r *Client) UpdateDatasource(ds Datasource) (StatusMessage, error) {
 	var (
 		raw  []byte
 		resp StatusMessage
@@ -76,7 +76,7 @@ func (r *Instance) UpdateDatasource(ds Datasource) (StatusMessage, error) {
 	return resp, nil
 }
 
-func (r *Instance) DeleteDatasource(id uint) (StatusMessage, error) {
+func (r *Client) DeleteDatasource(id uint) (StatusMessage, error) {
 	var (
 		raw   []byte
 		reply StatusMessage
