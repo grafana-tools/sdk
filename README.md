@@ -10,7 +10,19 @@ constructing dashboards programmatically.
 It was made foremost for [autograf](https://github.com/grafana-tools/autograf) project but later separated 
 from it and moved to this new repository because the library is useful per se.
 
-## Design principles
+Grafana operates with Javascript objects on client side so on first view Go language looks alien thing here.
+And Grafana has GUI with detailed options for panel customization so in many cases you don't need additional automatization.
+But in situations when you operates on hundreds of dashboards programming generation of them become not bad idea.
+And SDK that allow you import/export, create, modify and validate Grafana structures is very helpful. 
+Golang is good enough choice for operations with JSON though it may be subject of discuss. 
+Positives of this choice is strong typization in Go that help validate objects alongside with high speed of execution and nice concurrency patterns. 
+Negative aspect the same: the strong typization that add more verbosity to JSON parsing in comparing with Javascript or for an example with scripting languages like Python. 
+But with SDK you already have ready for use structures and methods so generation of JSONs become simple. 
+Anyway Grafana server made in Golang that prove concept for applicability of Go for that kind of tasks.
+
+And of course if you write applications in Golang and integrate them with Grafana then client SDK for Go will be uniquely useful.
+
+## Library design principles
 
 1. SDK offers client functionality so it covers Grafana REST API with its requests and responses as close as possible.
 1. SDK maps Grafana objects (dashboard, row, panel, datasource) to similar Go structures but not follows exactly all Grafana abstractions.
