@@ -31,6 +31,24 @@ And of course if you write applications in Golang and integrate them with Grafan
 
 ## Examples
 
+```go
+	board := sdk.NewBoard("Sample dashboard title")
+	board.ID = 1
+	row1 := board.AddRow("Sample row title")
+	row1.Add(sdk.NewGraph("Sample graph"))
+	graph := sdk.NewGraph("Sample graph 2")
+	target := sdk.Target{
+		RefID:      "A",
+		Datasource: "Sample Source 1",
+		Expr:       "sample request 1"}
+	graph.AddTarget(&target)
+	row1.Add(graph)
+	c := sdk.NewClient("http://grafana.host", "grafana-api-key", sdk.DefaultHTTPClient)	
+	if err = c.SetDashboard(board, false); err != nil {
+		fmt.Printf("error on uploading dashboard %s", board.Title)
+	}
+```	
+
 The library includes several demo apps for showing API usage:
 
 * [backup-dashboards](cmd/backup-dashboards) — saves all your dashboards as JSON-files.
