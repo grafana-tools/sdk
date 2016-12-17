@@ -251,7 +251,7 @@ func (r *Client) DeleteDashboard(slug string) (StatusMessage, error) {
 	return reply, err
 }
 
-// implicitely use dashboards from Grafana DB not from a file system
+// implicitly use dashboards from Grafana DB not from a file system
 func setPrefix(slug string) (string, bool) {
 	if strings.HasPrefix(slug, "db") {
 		return slug, true
