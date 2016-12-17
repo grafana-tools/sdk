@@ -1,4 +1,4 @@
-# Grafana SDK
+# Grafana SDK [![Go Report Card](https://goreportcard.com/badge/github.com/grafana-tools/sdk)](https://goreportcard.com/report/github.com/grafana-tools/sdk)
 
 *These libraries just moved out from https://github.com/grafov/autograf repository.*
 *Badges of external services broken yet because of old paths!*
