@@ -58,7 +58,7 @@ The library includes several demo apps for showing API usage:
 
 You need Grafana API key with _admin rights_ for using these utilities.
 
-## Installation [![Build Status](https://travis-ci.org/grafana-tools/sdk.svg?branch=master)](https://travis-ci.org/grafana-tools/sdk) [![Build Status](https://drone.io/github.com/grafov/autograf/status.png)](https://drone.io/github.com/grafov/autograf/latest)
+## Installation [![Build Status](https://travis-ci.org/grafana-tools/sdk.svg?branch=master)](https://travis-ci.org/grafana-tools/sdk)
 
 Of course Go development environment should be set up first. Then:
 
@@ -71,7 +71,7 @@ Single external dependency required:
 The "slugify" for URLs is a simple task but this package used in Grafana server so it used
 here for compatibility reasons.
 
-## Status of REST API realization
+## Status of REST API realization [![Coverage Status](https://coveralls.io/repos/github/grafana-tools/sdk/badge.svg?branch=master)](https://coveralls.io/github/grafana-tools/sdk?branch=master)
 
 Currently implemented only create/update/delete operations for dashboards and datasources. Other functions in progress. State of misc API parts noted below.
 
@@ -112,7 +112,7 @@ Not implemented.
 Not implemented.
 
 
-## Roadmap [![Coverage Status](https://coveralls.io/repos/github/grafov/autograf/badge.svg?branch=master)](https://coveralls.io/github/grafov/autograf?branch=master)
+## Roadmap
 
 * `[DONE]` Realize data structures used in a default Grafana installation for data visualizing (dashboards, datasources, panels, variables, annotations).
 * `[PROGRESS]` Support all functions of Grafana REST API for manipulating dashboards and datasources.
