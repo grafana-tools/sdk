@@ -29,7 +29,7 @@ And of course if you write applications in Golang and integrate them with Grafan
 1. It doesn't use logging, instead API functions can return errors where it need.
 1. No external deps except Go stdlib. Another exception is URL slugify, SDK uses external lib "slug" for algorithm compatibility — that is the same package that Grafana server uses.
 
-## Examples
+## Examples [![GoDoc](https://godoc.org/github.com/grafana-tools/sdk?status.svg)](https://godoc.org/github.com/grafana-tools/sdk)
 
 ```go
 	board := sdk.NewBoard("Sample dashboard title")
