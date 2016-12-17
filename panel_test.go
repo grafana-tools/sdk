@@ -406,7 +406,7 @@ func TestPanel_ElasticsearchSource_ParsedTargets(t *testing.T) {
 		t.Fatalf("should be \"elasticsearch\" but nil")
 	}
 	if *graph.GraphPanel.Targets[0].DsType != "elasticsearch" {
-		t.Errorf("should be \"elasticsearch\" but %s", graph.GraphPanel.Targets[0].DsType)
+		t.Errorf("should be \"elasticsearch\" but %s", *graph.GraphPanel.Targets[0].DsType)
 	}
 
 }
