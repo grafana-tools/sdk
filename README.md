@@ -3,24 +3,40 @@
 *These libraries just moved out from https://github.com/grafov/autograf repository.*
 *Badges of external services broken yet because of old paths!*
 
-SDK for Go language offers a library for interacting with [Grafana](http://grafana.org) server from Go applications.
-It realizes many of [HTTP REST API](http://docs.grafana.org/reference/http_api) calls but beside them
-it allows creating of Grafana objects (dashboards, panels, datasources) locally and manipulating them for
-constructing dashboards programmatically.
-It was made foremost for [autograf](https://github.com/grafana-tools/autograf) project but later separated 
-from it and moved to this new repository because the library is useful per se.
+SDK for Go language offers a library for interacting with
+[Grafana](http://grafana.org) server from Go applications.  It
+realizes many of
+[HTTP REST API](http://docs.grafana.org/reference/http_api) calls for
+administration, client, organizations. Beside of them it allows
+creating of Grafana objects (dashboards, panels, datasources) locally
+and manipulating them for constructing dashboards programmatically.
+It would be helpful for massive operations on a large set of
+dashboards for example.
 
-Grafana operates with Javascript objects on client side so on first view Go language looks alien thing here.
-And Grafana has GUI with detailed options for panel customization so in many cases you don't need additional automatization.
-But in situations when you operates on hundreds of dashboards programming generation of them become not bad idea.
-And SDK that allow you import/export, create, modify and validate Grafana structures is very helpful. 
-Golang is good enough choice for operations with JSON though it may be subject of discuss. 
-Positives of this choice is strong typization in Go that help validate objects alongside with high speed of execution and nice concurrency patterns. 
-Negative aspect the same: the strong typization that add more verbosity to JSON parsing in comparing with Javascript or for an example with scripting languages like Python. 
-But with SDK you already have ready for use structures and methods so generation of JSONs become simple. 
-Anyway Grafana server made in Golang that prove concept for applicability of Go for that kind of tasks.
+It was made foremost for
+[autograf](https://github.com/grafana-tools/autograf) project but
+later separated from it and moved to this new repository because the
+library is useful per se.
 
-And of course if you write applications in Golang and integrate them with Grafana then client SDK for Go will be uniquely useful.
+Grafana operates with Javascript objects on client side so on first
+view Go language looks alien thing here.  And Grafana has GUI with
+detailed options for panel customization so in many cases you don't
+need additional automatization.  But in situations when you operates
+on hundreds of dashboards programming generation of them become not
+bad idea.  And SDK that allow you import/export, create, modify and
+validate Grafana structures is very helpful.  Golang is good enough
+choice for operations with JSON though it may be subject of discuss.
+Positives of this choice is strong typization in Go that help validate
+objects alongside with high speed of execution and nice concurrency
+patterns.  Negative aspect the same: the strong typization that add
+more verbosity to JSON parsing in comparing with Javascript or for an
+example with scripting languages like Python.  But with SDK you
+already have ready for use structures and methods so generation of
+JSONs become simple.  Anyway Grafana server made in Golang that prove
+concept for applicability of Go for that kind of tasks.
+
+And of course if you write applications in Golang and integrate them
+with Grafana then client SDK for Go will be uniquely useful.
 
 ## Library design principles
 
@@ -68,12 +84,14 @@ Single external dependency required:
 
     go get github.com/gosimple/slug
 
-The "slugify" for URLs is a simple task but this package used in Grafana server so it used
-here for compatibility reasons.
+The "slugify" for URLs is a simple task but this package used in
+Grafana server so it used here for compatibility reasons.
 
 ## Status of REST API realization [![Coverage Status](https://coveralls.io/repos/github/grafana-tools/sdk/badge.svg?branch=master)](https://coveralls.io/github/grafana-tools/sdk?branch=master)
 
-Currently implemented only create/update/delete operations for dashboards and datasources. Other functions in progress. State of misc API parts noted below.
+Currently implemented only create/update/delete operations for
+dashboards and datasources. Other functions in progress. State of misc
+API parts noted below.
 
 ### Authorization
 
