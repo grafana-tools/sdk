@@ -46,8 +46,8 @@ func (r *Client) GetUser() (User, error) {
 	return user, err
 }
 
-// GetUsers get all users.
-func (r *Client) GetUsers() ([]User, error) {
+// GetAllUsers get all users.
+func (r *Client) GetAllUsers() ([]User, error) {
 	var (
 		raw   []byte
 		users []User
