@@ -94,7 +94,6 @@ Made mostly for Grafana 3.x, works with Grafana 4.x but need more tests.
 
 Work on full API implementation still in progress. Currently
 implemented only create/update/delete operations for dashboards and
-
 datasources. State of misc API parts noted below.
 
 <!--- 
