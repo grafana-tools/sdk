@@ -23,10 +23,11 @@ import (
 	"fmt"
 )
 
+// GetAllDatasources loads all datasources.
 func (r *Client) GetAllDatasources() ([]Datasource, error) {
 	var (
 		raw  []byte
-		dss  []Datasource
+		ds   []Datasource
 		code int
 		err  error
 	)
@@ -36,10 +37,29 @@ func (r *Client) GetAllDatasources() ([]Datasource, error) {
 	if code != 200 {
 		return nil, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
-	err = json.Unmarshal(raw, &dss)
-	return dss, err
+	err = json.Unmarshal(raw, &ds)
+	return ds, err
 }
 
+// GetDatasource gets an datasource by ID.
+func (r *Client) GetDatasource(id uint) (Datasource, error) {
+	var (
+		raw  []byte
+		ds   Datasource
+		code int
+		err  error
+	)
+	if raw, code, err = r.get(fmt.Sprintf("api/datasources", id), nil); err != nil {
+		return ds, err
+	}
+	if code != 200 {
+		return ds, fmt.Errorf("HTTP error %d: returns %s", code, raw)
+	}
+	err = json.Unmarshal(raw, &ds)
+	return ds, err
+}
+
+// CreateDatasource creates a new datasource.
 func (r *Client) CreateDatasource(ds Datasource) (StatusMessage, error) {
 	var (
 		raw  []byte
@@ -58,6 +78,7 @@ func (r *Client) CreateDatasource(ds Datasource) (StatusMessage, error) {
 	return resp, nil
 }
 
+// UpdateDatasource updates a datasource from data passed in argument.
 func (r *Client) UpdateDatasource(ds Datasource) (StatusMessage, error) {
 	var (
 		raw  []byte
@@ -76,6 +97,7 @@ func (r *Client) UpdateDatasource(ds Datasource) (StatusMessage, error) {
 	return resp, nil
 }
 
+// DeleteDatasource deletes an existing datasource by ID.
 func (r *Client) DeleteDatasource(id uint) (StatusMessage, error) {
 	var (
 		raw   []byte

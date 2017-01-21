@@ -47,7 +47,7 @@ func (r *Client) GetActualUser() (User, error) {
 }
 
 // GetUser gets an user by ID.
-func (r *Client) GetUser(id int) (User, error) {
+func (r *Client) GetUser(id uint) (User, error) {
 	var (
 		raw  []byte
 		user User
