@@ -24,8 +24,8 @@ import (
 	"fmt"
 )
 
-// GetUser get an actual user.
-func (r *Client) GetUser() (User, error) {
+// GetActualUser gets an actual user.
+func (r *Client) GetActualUser() (User, error) {
 	var (
 		raw  []byte
 		user User
@@ -46,7 +46,29 @@ func (r *Client) GetUser() (User, error) {
 	return user, err
 }
 
-// GetAllUsers get all users.
+// GetUser gets an user by ID.
+func (r *Client) GetUser(id int) (User, error) {
+	var (
+		raw  []byte
+		user User
+		code int
+		err  error
+	)
+	if raw, code, err = r.get(fmt.Sprintf("api/users/%d", id), nil); err != nil {
+		return user, err
+	}
+	if code != 200 {
+		return user, fmt.Errorf("HTTP error %d: returns %s", code, raw)
+	}
+	dec := json.NewDecoder(bytes.NewReader(raw))
+	dec.UseNumber()
+	if err := dec.Decode(&user); err != nil {
+		return user, fmt.Errorf("unmarshal user: %s\n%s", err, raw)
+	}
+	return user, err
+}
+
+// GetAllUsers gets all users.
 func (r *Client) GetAllUsers() ([]User, error) {
 	var (
 		raw   []byte
