@@ -23,6 +23,6 @@ type User struct {
 	Name           string `json:"name"`
 	Email          string `json:"email"`
 	Theme          string `json:"theme"`
-	OrgID          int    `json:"orgId"`
+	OrgID          uint   `json:"orgId"`
 	IsGrafanaAdmin bool   `json:"isGrafanaAdmin"`
 }
