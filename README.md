@@ -1,3 +1,5 @@
+<!--*- mode:markdown;mode:orgtbl -*-->
+
 # Grafana SDK [![Go Report Card](https://goreportcard.com/badge/github.com/grafana-tools/sdk)](https://goreportcard.com/report/github.com/grafana-tools/sdk)
 
 SDK for Go language offers a library for interacting with
@@ -92,44 +94,35 @@ Made mostly for Grafana 3.x, works with Grafana 4.x but need more tests.
 
 Work on full API implementation still in progress. Currently
 implemented only create/update/delete operations for dashboards and
+
 datasources. State of misc API parts noted below.
 
-### Authorization
+<!--- 
+#+ORGTBL: SEND status orgtbl-to-gfm
+| API               | Status          |
+|-------------------+-----------------|
+| Authorization     | API tokens      |
+| Dashboards        | partially       |
+| Organizations     | not implemented |
+| Users             | partially       |
+| User              | partially       |
+| Snapshots         | not implemented |
+| Frontend settings | not implemented |
+| Admin             | not implemented |
+-->
 
-Only API tokens implemented.
-
-### Dashboards
-
-Partially implemented.
-
-### Datasources
-
-Partially implemented.
-
-### Organizations
-
-Not implemented.
-
-### Users
-
-Partially implemented.
-
-### Snapshots
-
-Not implemented.
-
-### Frontend settings
-
-Not implemented.
-
-### Login
-
-Not implemented.
-
-### Admin
-
-Not implemented.
-
+<!--- BEGIN RECEIVE ORGTBL status -->
+| API | Status |
+|---|---|
+| Authorization | API tokens |
+| Dashboards | partially |
+| Organizations | not implemented |
+| Users | partially |
+| User | partially |
+| Snapshots | not implemented |
+| Frontend settings | not implemented |
+| Admin | not implemented |
+<!--- END RECEIVE ORGTBL status -->
 
 ## Roadmap
 
