@@ -24,6 +24,7 @@ import (
 )
 
 // GetAllDatasources loads all datasources.
+// It reflects GET /api/datasources API call.
 func (r *Client) GetAllDatasources() ([]Datasource, error) {
 	var (
 		raw  []byte
@@ -42,6 +43,7 @@ func (r *Client) GetAllDatasources() ([]Datasource, error) {
 }
 
 // GetDatasource gets an datasource by ID.
+// It reflects GET /api/datasources/:datasourceId API call.
 func (r *Client) GetDatasource(id uint) (Datasource, error) {
 	var (
 		raw  []byte
@@ -60,6 +62,7 @@ func (r *Client) GetDatasource(id uint) (Datasource, error) {
 }
 
 // CreateDatasource creates a new datasource.
+// It reflects POST /api/datasources API call.
 func (r *Client) CreateDatasource(ds Datasource) (StatusMessage, error) {
 	var (
 		raw  []byte
@@ -79,6 +82,7 @@ func (r *Client) CreateDatasource(ds Datasource) (StatusMessage, error) {
 }
 
 // UpdateDatasource updates a datasource from data passed in argument.
+// It reflects PUT /api/datasources/:datasourceId API call.
 func (r *Client) UpdateDatasource(ds Datasource) (StatusMessage, error) {
 	var (
 		raw  []byte
@@ -98,6 +102,7 @@ func (r *Client) UpdateDatasource(ds Datasource) (StatusMessage, error) {
 }
 
 // DeleteDatasource deletes an existing datasource by ID.
+// It reflects DELETE /api/datasources/:datasourceId API call.
 func (r *Client) DeleteDatasource(id uint) (StatusMessage, error) {
 	var (
 		raw   []byte
@@ -109,4 +114,23 @@ func (r *Client) DeleteDatasource(id uint) (StatusMessage, error) {
 	}
 	err = json.Unmarshal(raw, &reply)
 	return reply, err
+}
+
+// GetDatasourceTypes gets all available plugins for the datasources.
+// It reflects GET /api/datasources/plugins API call.
+func (r *Client) GetDatasourceTypes() (map[string]DatasourceType, error) {
+	var (
+		raw     []byte
+		dsTypes = make(map[string]DatasourceType)
+		code    int
+		err     error
+	)
+	if raw, code, err = r.get("api/datasources/plugins", nil); err != nil {
+		return nil, err
+	}
+	if code != 200 {
+		return nil, fmt.Errorf("HTTP error %d: returns %s", code, raw)
+	}
+	err = json.Unmarshal(raw, &dsTypes)
+	return dsTypes, err
 }

@@ -98,29 +98,33 @@ datasources. State of misc API parts noted below.
 
 <!--- 
 #+ORGTBL: SEND status orgtbl-to-gfm
-| API               | Status          |
-|-------------------+-----------------|
-| Authorization     | API tokens      |
-| Dashboards        | partially       |
-| Organizations     | not implemented |
-| Users             | partially       |
-| User              | partially       |
-| Snapshots         | not implemented |
-| Frontend settings | not implemented |
-| Admin             | not implemented |
+| API                    | Status          |
+|------------------------+-----------------|
+| Authorization          | only API tokens |
+| Dashboards             | partially       |
+| Datasources            | +               |
+| Organization (current) | -               |
+| Organizations          | -               |
+| Users                  | partially       |
+| User (actual)          | partially       |
+| Snapshots              | -               |
+| Frontend settings      | -               |
+| Admin                  | -               |
 -->
 
 <!--- BEGIN RECEIVE ORGTBL status -->
 | API | Status |
 |---|---|
-| Authorization | API tokens |
+| Authorization | only API tokens |
 | Dashboards | partially |
-| Organizations | not implemented |
+| Datasources | + |
+| Organization (current) | - |
+| Organizations | - |
 | Users | partially |
-| User | partially |
-| Snapshots | not implemented |
-| Frontend settings | not implemented |
-| Admin | not implemented |
+| User (actual) | partially |
+| Snapshots | - |
+| Frontend settings | - |
+| Admin | - |
 <!--- END RECEIVE ORGTBL status -->
 
 ## Roadmap

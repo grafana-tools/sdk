@@ -36,3 +36,15 @@ type Datasource struct {
 	IsDefault         bool        `json:"isDefault"`
 	JSONData          interface{} `json:"jsonData"`
 }
+
+type DatasourceType struct {
+	Metrics  bool   `json:"metrics"`
+	Module   string `json:"module"`
+	Name     string `json:"name"`
+	Partials struct {
+		Query string `json:"query"`
+	} `json:"datasource"`
+	PluginType  string `json:"pluginType"`
+	ServiceName string `json:"serviceName"`
+	Type        string `json:"type"`
+}
