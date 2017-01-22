@@ -37,6 +37,8 @@ type Datasource struct {
 	JSONData          interface{} `json:"jsonData"`
 }
 
+// Datasource type as described in
+// http://docs.grafana.org/reference/http_api/#available-data-source-types
 type DatasourceType struct {
 	Metrics  bool   `json:"metrics"`
 	Module   string `json:"module"`
