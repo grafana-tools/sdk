@@ -80,8 +80,8 @@ type (
 		AliasColors interface{} `json:"aliasColors"` // XXX
 		Bars        bool        `json:"bars"`
 		Fill        int         `json:"fill"`
-		Grid        grid        `json:"grid"`
-		Legend      struct {
+		//		Grid        grid        `json:"grid"` obsoleted in 4.1 by xaxis and yaxis
+		Legend struct {
 			AlignAsTable bool  `json:"alignAsTable"`
 			Avg          bool  `json:"avg"`
 			Current      bool  `json:"current"`
@@ -117,17 +117,9 @@ type (
 		XAxis    bool     `json:"x-axis"`
 		YAxis    bool     `json:"y-axis"`
 		YFormats []string `json:"y_formats"`
-		Xaxis    struct {
-			Show bool `json:"show"`
-		} `json:"xaxis"` // was added in Grafana 3.x
-		Yaxes []struct {
-			Format  string `json:"format"`
-			LogBase int    `json:"logBase"`
-			Max     *int   `json:"max"`
-			Min     *int   `json:"min"`
-			Show    bool   `json:"show"`
-		} `json:"yaxes"` // was added in Grafana 3.x
-		Decimals *uint `json:"decimals,omitempty"` // seems it was added in Grafana 3.x
+		Xaxis    yaxis    `json:"xaxis"` // was added in Grafana 4.x?
+		Yaxes    []yaxis  `json:"yaxes"` // was added in Grafana 4.x?
+		Decimals *uint    `json:"decimals,omitempty"`
 	}
 	TablePanel struct {
 		Columns []column `json:"columns"`
@@ -197,6 +189,8 @@ type (
 
 // for a graph panel
 type (
+	// TODO look at schema versions carefully
+	// grid was obsoleted by xaxis and yaxes
 	grid struct {
 		LeftLogBase     *int     `json:"leftLogBase"`
 		LeftMax         *int     `json:"leftMax"`
@@ -209,6 +203,19 @@ type (
 		Threshold2      *float64 `json:"threshold2"`
 		Threshold2Color string   `json:"threshold2Color"`
 		ThresholdLine   bool     `json:"thresholdLine"`
+	}
+	xaxis struct {
+		Mode   string      `json:"mode"`
+		Name   interface{} `json:"name"` // TODO what is this?
+		Show   bool        `json:"show"`
+		Values *[]string   `json:"values,omitempty"`
+	}
+	yaxis struct {
+		Format  string `json:"format"`
+		LogBase int    `json:"logBase"`
+		Max     *int   `json:"max"`
+		Min     *int   `json:"min"`
+		Show    bool   `json:"show"`
 	}
 	serieOverride struct {
 		Alias         string      `json:"alias"`
