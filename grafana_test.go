@@ -53,19 +53,6 @@ func ExampleNewBoard() {
 	//           "aliasColors": null,
 	//           "bars": false,
 	//           "fill": 0,
-	//           "grid": {
-	//             "leftLogBase": null,
-	//             "leftMax": null,
-	//             "leftMin": null,
-	//             "rightLogBase": null,
-	//             "rightMax": null,
-	//             "rightMin": null,
-	//             "threshold1": null,
-	//             "threshold1Color": "",
-	//             "threshold2": null,
-	//             "threshold2Color": "",
-	//             "thresholdLine": false
-	//           },
 	//           "legend": {
 	//             "alignAsTable": false,
 	//             "avg": false,
@@ -98,6 +85,10 @@ func ExampleNewBoard() {
 	//           "y-axis": true,
 	//           "y_formats": null,
 	//           "xaxis": {
+	//             "format": "",
+	//             "logBase": 0,
+	//             "max": null,
+	//             "min": null,
 	//             "show": false
 	//           },
 	//           "yaxes": null
@@ -115,19 +106,6 @@ func ExampleNewBoard() {
 	//           "aliasColors": null,
 	//           "bars": false,
 	//           "fill": 0,
-	//           "grid": {
-	//             "leftLogBase": null,
-	//             "leftMax": null,
-	//             "leftMin": null,
-	//             "rightLogBase": null,
-	//             "rightMax": null,
-	//             "rightMin": null,
-	//             "threshold1": null,
-	//             "threshold1Color": "",
-	//             "threshold2": null,
-	//             "threshold2Color": "",
-	//             "thresholdLine": false
-	//           },
 	//           "legend": {
 	//             "alignAsTable": false,
 	//             "avg": false,
@@ -171,6 +149,10 @@ func ExampleNewBoard() {
 	//           "y-axis": true,
 	//           "y_formats": null,
 	//           "xaxis": {
+	//             "format": "",
+	//             "logBase": 0,
+	//             "max": null,
+	//             "min": null,
 	//             "show": false
 	//           },
 	//           "yaxes": null
@@ -196,4 +178,5 @@ func ExampleNewBoard() {
 	//     "time_options": null
 	//   }
 	// }
+
 }
