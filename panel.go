@@ -211,11 +211,11 @@ type (
 		Values *[]string   `json:"values,omitempty"`
 	}
 	yaxis struct {
-		Format  string `json:"format"`
-		LogBase int    `json:"logBase"`
-		Max     *int   `json:"max"`
-		Min     *int   `json:"min"`
-		Show    bool   `json:"show"`
+		Format  string     `json:"format"`
+		LogBase int        `json:"logBase"`
+		Max     *IntString `json:"max"`
+		Min     *IntString `json:"min"`
+		Show    bool       `json:"show"`
 	}
 	serieOverride struct {
 		Alias         string      `json:"alias"`

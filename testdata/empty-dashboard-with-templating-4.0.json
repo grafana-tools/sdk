@@ -1,0 +1,113 @@
+{
+  "id": 7,
+  "title": "Empty dashboard with templating (4.0)",
+  "originalTitle": "Empty dashboard with templating (4.0)",
+  "tags": [],
+  "style": "dark",
+  "timezone": "browser",
+  "editable": true,
+  "sharedCrosshair": true,
+  "hideControls": false,
+  "time": {
+    "from": "now-3h",
+    "to": "now"
+  },
+  "timepicker": {
+    "now": true,
+    "refresh_intervals": [
+      "1m"
+    ],
+    "time_options": [
+      "5m"
+    ]
+  },
+  "templating": {
+    "list": [
+      {
+        "allFormat": "glob",
+        "allValue": null,
+        "current": {
+          "tags": [],
+          "text": "one",
+          "value": "one"
+        },
+        "datasource": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": "Label",
+        "multi": false,
+        "multiFormat": "glob",
+        "name": "param",
+        "options": [
+          {
+            "selected": false,
+            "text": "one",
+            "value": "one"
+          }
+        ],
+        "query": "one",
+        "refresh": 0,
+        "regex": "",
+        "type": "custom"
+      },
+      {
+        "allFormat": "",
+        "current": {
+          "text": "Some Prometheus",
+          "value": "Some Prometheus"
+        },
+        "datasource": null,
+        "hide": 2,
+        "includeAll": false,
+        "label": "Data Source",
+        "multi": false,
+        "multiFormat": "",
+        "name": "datasource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "/^Some Prometheus$/i",
+        "type": "datasource"
+      },
+      {
+        "auto": true,
+        "auto_count": 200,
+        "auto_min": "30s",
+        "current": {
+          "text": "auto",
+          "value": "$__auto_interval"
+        },
+        "datasource": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": "Interval",
+        "multi": false,
+        "name": "interval",
+        "options": [
+          {
+            "text": "auto",
+            "value": "$__auto_interval",
+            "selected": true
+          }
+        ],
+        "query": "30s,1m,5m,1h,6h,1d",
+        "refresh": 2,
+        "type": "interval"
+      }
+    ]
+  },
+  "refresh": "5m",
+  "schemaVersion": 1,
+  "version": 1,
+  "gnetId": null,
+  "rows": [
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [],
+      "title": "Row"
+    }
+  ],
+  "editMode": false
+}

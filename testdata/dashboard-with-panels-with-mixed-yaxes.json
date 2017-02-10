@@ -1,0 +1,240 @@
+{
+  "id": 8,
+  "title": "Sample dashboard with empty panels",
+  "tags": [],
+  "style": "dark",
+  "timezone": "browser",
+  "editable": true,
+  "sharedCrosshair": true,
+  "hideControls": true,
+  "time": {
+    "from": "now-3h",
+    "to": "now"
+  },
+  "timepicker": {
+    "now": true,
+    "refresh_intervals": [
+      "5s"
+    ],
+    "time_options": [
+      "5m"
+    ]
+  },
+  "templating": {
+    "list": []
+  },
+  "refresh": "5m",
+  "schemaVersion": 1,
+  "version": 1,
+  "gnetId": null,
+  "rows": [
+    {
+      "title": "Row",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": "Some Prometheus",
+          "editable": false,
+          "error": false,
+          "fill": 10,
+          "grid": {
+            "leftLogBase": null,
+            "leftMax": null,
+            "leftMin": null,
+            "rightLogBase": null,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "",
+            "threshold2": null,
+            "threshold2Color": "",
+            "thresholdLine": false
+          },
+          "height": "220",
+          "id": 3,
+          "isNew": false,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "hideEmpty": false,
+            "hideZero": false,
+            "max": true,
+            "min": true,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 450,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 0,
+          "links": [],
+          "nullPointMode": "null as zero",
+          "percentage": true,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": false,
+          "targets": [
+            {
+              "datasource": "",
+              "expr": "some_expression",
+              "interval": "1m",
+              "intervalFactor": 1,
+              "legendFormat": "",
+              "refId": "B",
+              "step": 60
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Some panel",
+          "tooltip": {
+            "shared": true,
+            "value_type": "cumulative",
+            "sort": 0,
+            "msResolution": false
+          },
+          "transparent": false,
+          "type": "graph",
+          "x-axis": false,
+          "xaxis": {
+            "show": true,
+            "mode": "time",
+            "name": null,
+            "values": []
+          },
+          "y-axis": false,
+          "y_formats": null,
+          "yaxes": [
+            {
+              "format": "short",
+              "logBase": 1,
+              "max": "100",
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "thresholds": []
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": "Some Prometheus",
+          "editable": false,
+          "error": false,
+          "fill": 5,
+          "grid": {
+            "leftLogBase": null,
+            "leftMax": null,
+            "leftMin": null,
+            "rightLogBase": null,
+            "rightMax": null,
+            "rightMin": null,
+            "threshold1": null,
+            "threshold1Color": "",
+            "threshold2": null,
+            "threshold2Color": "",
+            "thresholdLine": false
+          },
+          "height": "220px",
+          "id": 4,
+          "isNew": false,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "hideEmpty": false,
+            "hideZero": false,
+            "max": true,
+            "min": true,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 450,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null as zero",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": false,
+          "targets": [
+            {
+              "datasource": "",
+              "expr": "some_expression",
+              "interval": "1m",
+              "intervalFactor": 1,
+              "legendFormat": "",
+              "refId": "B",
+              "step": 60
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "One more panel",
+          "tooltip": {
+            "shared": true,
+            "value_type": "individual",
+            "sort": 0,
+            "msResolution": false
+          },
+          "transparent": false,
+          "type": "graph",
+          "x-axis": false,
+          "xaxis": {
+            "show": true,
+            "mode": "time",
+            "name": null,
+            "values": []
+          },
+          "y-axis": false,
+          "y_formats": null,
+          "yaxes": [
+            {
+              "format": "short",
+              "logBase": 1,
+              "max": null,
+              "min": 0,
+              "show": true
+            },
+            {
+              "format": "short",
+              "logBase": 1,
+              "max": 50,
+              "min": null,
+              "show": true
+            }
+          ],
+          "thresholds": []
+        }
+      ],
+      "showTitle": false,
+      "titleSize": "h6",
+      "height": "150px",
+      "repeat": null,
+      "repeatRowId": null,
+      "repeatIteration": null,
+      "collapse": false
+    }
+  ]
+}

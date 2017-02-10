@@ -116,3 +116,63 @@ func TestUnmarshal_DashboardWithEmptyPanels30(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+func TestUnmarshal_DashboardWithHiddenTemplates(t *testing.T) {
+	var board Board
+	raw, _ := ioutil.ReadFile("testdata/empty-dashboard-with-templating-4.0.json")
+
+	err := json.Unmarshal(raw, &board)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	if board.Templating.List[1].Hide != TemplatingHideVariable {
+		t.Errorf("templating has hidden variable '%d', got %d", TemplatingHideVariable, board.Templating.List[1].Hide)
+	}
+}
+
+func TestUnmarshal_DashboardWithMixedYaxes(t *testing.T) {
+	var board Board
+	raw, _ := ioutil.ReadFile("testdata/dashboard-with-panels-with-mixed-yaxes.json")
+
+	err := json.Unmarshal(raw, &board)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	p1, p2 := board.Rows[0].Panels[0], board.Rows[0].Panels[1]
+	min1, max1 := p1.Yaxes[0].Min, p1.Yaxes[0].Max
+	min2, max2 := p1.Yaxes[1].Min, p1.Yaxes[1].Max
+	min3, max3 := p2.Yaxes[0].Min, p2.Yaxes[0].Max
+	min4, max4 := p2.Yaxes[1].Min, p2.Yaxes[1].Max
+
+	if min1.Value != 0 || min1.Valid != true {
+		t.Errorf("panel #1 has wrong min value: %d, expected: %d", min1.Value, 0)
+	}
+	if max1.Value != 100 || max1.Valid != true {
+		t.Errorf("panel #1 has wrong max value: %d, expected: %d", max1.Value, 100)
+	}
+
+	if min2 != nil {
+		t.Errorf("panel #1 has wrong min value: %v, expected: %v", min2, nil)
+	}
+	if max2 != nil  {
+		t.Errorf("panel #1 has wrong max value: %v, expected: %v", max2, nil)
+	}
+
+	if min3.Value != 0 || min3.Valid != true {
+		t.Errorf("panel #2 has wrong min value: %d, expected: %d", min3.Value, 0)
+	}
+	if max3 != nil {
+		t.Errorf("panel #2 has wrong max value: %v, expected: %v", max3, nil)
+	}
+
+	if min4 != nil {
+		t.Errorf("panel #2 has wrong min value: %v, expected: %v", min4, nil)
+	}
+	if max4.Value != 50 || max4.Valid != true {
+		t.Errorf("panel #1 has wrong max value: %d, expected: %d", max4.Value, 100)
+	}
+}

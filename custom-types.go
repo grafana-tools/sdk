@@ -23,6 +23,7 @@ import (
 	"encoding/json"
 	"errors"
 	"strconv"
+	"strings"
 )
 
 type BoolString struct {
@@ -98,4 +99,58 @@ func (s BoolInt) MarshalJSON() ([]byte, error) {
 		return strconv.AppendInt([]byte{}, *s.Value, 10), nil
 	}
 	return strconv.AppendBool([]byte{}, s.Flag), nil
+}
+
+func NewIntString(i int64) *IntString {
+	return &IntString{
+		Value: i,
+		Valid: true,
+	}
+}
+
+// IntString represents special type for json values that could be strings or ints: 100 or "100"
+type IntString struct {
+	Value int64
+	Valid bool
+}
+
+// UnmarshalJSON implements custom unmarshalling for IntString type
+func (v *IntString) UnmarshalJSON(raw []byte) error {
+	if raw == nil || bytes.Equal(raw, []byte(`"null"`)) {
+		return nil
+	}
+
+	if rune(raw[0]) == '"' {
+		strVal := strings.Trim(string(raw), `"`)
+
+		i, err := strconv.Atoi(strVal)
+		if err != nil {
+			return err
+		}
+
+		v.Value = int64(i)
+		v.Valid = true
+
+		return nil
+	}
+
+	i, err := strconv.Atoi(string(raw))
+	if err != nil {
+		return err
+	}
+
+	v.Value = int64(i)
+	v.Valid = true
+
+	return nil
+}
+
+// MarshalJSON implements custom marshalling for IntString type
+func (v *IntString) MarshalJSON() ([]byte, error) {
+	if v.Valid {
+		strVal := strconv.Itoa(int(v.Value))
+		return []byte(strVal), nil
+	}
+
+	return []byte(`"null"`), nil
 }
