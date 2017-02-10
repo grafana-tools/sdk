@@ -30,6 +30,13 @@ var (
 	boardID uint
 )
 
+// Constants for templating
+const (
+	TemplatingHideNone = iota
+	TemplatingHideLabel
+	TemplatingHideVariable
+)
+
 type (
 	// Board represents Grafana dashboard.
 	Board struct {
@@ -81,6 +88,7 @@ type (
 		Regex       string   `json:"regex"`
 		Current     current  `json:"current"`
 		Label       string   `json:"label"`
+		Hide        uint8    `json:"hide"`
 	}
 	// for templateVar
 	option struct {
