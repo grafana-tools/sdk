@@ -158,7 +158,7 @@ func TestUnmarshal_DashboardWithMixedYaxes(t *testing.T) {
 	if min2 != nil {
 		t.Errorf("panel #1 has wrong min value: %v, expected: %v", min2, nil)
 	}
-	if max2 != nil  {
+	if max2 != nil {
 		t.Errorf("panel #1 has wrong max value: %v, expected: %v", max2, nil)
 	}
 
