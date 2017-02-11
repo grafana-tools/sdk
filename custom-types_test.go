@@ -19,9 +19,9 @@ package sdk
 */
 
 import (
+	"bytes"
 	"encoding/json"
 	"testing"
-	"bytes"
 )
 
 func TestIntString_Unmarshal(t *testing.T) {
@@ -54,4 +54,3 @@ func TestIntString_Marshal(t *testing.T) {
 		t.Error("Marshalled IntString is not valid: expected '100', got:", string(body))
 	}
 }
-
