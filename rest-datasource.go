@@ -51,7 +51,7 @@ func (r *Client) GetDatasource(id uint) (Datasource, error) {
 		code int
 		err  error
 	)
-	if raw, code, err = r.get(fmt.Sprintf("api/datasources", id), nil); err != nil {
+	if raw, code, err = r.get(fmt.Sprintf("api/datasources/%d", id), nil); err != nil {
 		return ds, err
 	}
 	if code != 200 {
