@@ -88,13 +88,14 @@ Grafana server so it used here for compatibility reasons.
 
 ## Grafana server compability
 
-Made mostly for Grafana 3.x, works with Grafana 4.x but need more tests.
+Made mostly for Grafana 3.x, works with Grafana 4.x but need more
+tests. Full support for Grafana 4.x is on the way.
 
 ## Status of REST API realization [![Coverage Status](https://coveralls.io/repos/github/grafana-tools/sdk/badge.svg?branch=master)](https://coveralls.io/github/grafana-tools/sdk?branch=master)
 
 Work on full API implementation still in progress. Currently
 implemented only create/update/delete operations for dashboards and
-datasources. State of misc API parts noted below.
+datasources. State of support for misc API parts noted below.
 
 <!--- 
 #+ORGTBL: SEND status orgtbl-to-gfm
