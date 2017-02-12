@@ -39,10 +39,16 @@ with Grafana then client SDK for Go will be uniquely useful.
 
 ## Library design principles
 
-1. SDK offers client functionality so it covers Grafana REST API with its requests and responses as close as possible.
-1. SDK maps Grafana objects (dashboard, row, panel, datasource) to similar Go structures but not follows exactly all Grafana abstractions.
-1. It doesn't use logging, instead API functions can return errors where it need.
-1. No external deps except Go stdlib. Another exception is URL slugify, SDK uses external lib "slug" for algorithm compatibility — that is the same package that Grafana server uses.
+1. SDK offers client functionality so it covers Grafana REST API with
+   its requests and responses as close as possible.
+1. SDK maps Grafana objects (dashboard, row, panel, datasource) to
+   similar Go structures but not follows exactly all Grafana
+   abstractions.
+1. It doesn't use logging, instead API functions can return errors
+   where it need.
+1. No external deps except Go stdlib. Another exception is URL
+   slugify, SDK uses external lib "slug" for algorithm compatibility —
+   that is the same package that Grafana server uses.
 
 ## Examples [![GoDoc](https://godoc.org/github.com/grafana-tools/sdk?status.svg)](https://godoc.org/github.com/grafana-tools/sdk)
 
@@ -104,7 +110,7 @@ datasources. State of support for misc API parts noted below.
 | Authorization          | only API tokens |
 | Dashboards             | partially       |
 | Datasources            | +               |
-| Organization (current) | -               |
+| Organization (current) | partially       |
 | Organizations          | -               |
 | Users                  | partially       |
 | User (actual)          | partially       |

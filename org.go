@@ -19,6 +19,11 @@ package sdk
 */
 
 type Org struct {
-	Id   int64
-	Name string
+	Id   int64  `json:"id"`
+	Name string `json:"name"`
+}
+
+type OrgUser struct {
+	LoginOrEmail *string `json:"loginOrEmail,omitempty"`
+	Role         *string `json:"role,omitempty"`
 }
