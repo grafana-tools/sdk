@@ -125,7 +125,7 @@ datasources. State of support for misc API parts noted below.
 | Authorization | only API tokens |
 | Dashboards | partially |
 | Datasources | + |
-| Organization (current) | - |
+| Organization (current) | partially |
 | Organizations | - |
 | Users | partially |
 | User (actual) | partially |
