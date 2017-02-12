@@ -109,7 +109,7 @@ func (r *Client) DeleteDatasource(id uint) (StatusMessage, error) {
 		reply StatusMessage
 		err   error
 	)
-	if raw, err = r.delete(fmt.Sprintf("api/datasources/%d", id)); err != nil {
+	if raw, _, err = r.delete(fmt.Sprintf("api/datasources/%d", id)); err != nil {
 		return StatusMessage{}, err
 	}
 	err = json.Unmarshal(raw, &reply)
