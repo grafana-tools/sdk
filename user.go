@@ -20,44 +20,21 @@ package sdk
 
 const (
 	RoleAdmin  = "Admin"
-	RoleViewer = "Viewer"
 	RoleEditor = "Editor"
+	RoleViewer = "Viewer"
 )
 
-// User represents fields that common for global and group users
+// User represents fields for both global and group users.
 type User struct {
-	GlobalUser
-	OrgUser
-	Login *string `json:"login,omitempty"`
-	Email *string `json:"email,omitempty"`
-	OrgID uint    `json:"orgId"`
-}
-
-// XXX maybe common type?
-type UserF struct {
-	Id      *uint64 `json:"id,omitempty"`
-	Login   *string `json:"login,omitempty"`
-	Email   *string `json:"email,omitempty"`
-	orgID   uint    `json:"orgId,omitempty"`
-	Orgs    []uint  `json:"-"`
-	Name    string  `json:"name"`
-	Theme   string  `json:"theme"`
-	IsAdmin bool    `json:"isAdmin"`
-}
-
-// GlobalUser represents fields that unique for global users
-type GlobalUser struct {
 	Id             *uint64 `json:"id,omitempty"`
+	Login          *string `json:"login,omitempty"`
+	Email          *string `json:"email,omitempty"`
+	orgID          uint    `json:"orgId,omitempty"`
+	Orgs           []uint  `json:"-"`
 	Name           string  `json:"name"`
 	Theme          string  `json:"theme"`
-	isGrafanaAdmin *bool   `json:"isGrafanaAdmin,omitempty"` // GET by ID uses that field but others use IsAdmin
 	IsAdmin        bool    `json:"isAdmin"`
-}
-
-// OrgUser represents fields that unique for group users
-type OrgUser struct {
-	UserID *uint   `json:"userId,omitempty"`
-	Role   *string `json:"role,omitempty"`
+	isGrafanaAdmin *bool   `json:"isGrafanaAdmin,omitempty"` // GET by ID uses that field but others use IsAdmin
 }
 
 // NewUser creates a structure for a new user.
