@@ -40,69 +40,72 @@ const (
 type (
 	// Board represents Grafana dashboard.
 	Board struct {
-		ID              uint     `json:"id"`
-		Slug            string   `json:"-"`
-		Title           string   `json:"title"`
-		OriginalTitle   string   `json:"originalTitle"`
-		Tags            []string `json:"tags"`
-		Style           string   `json:"style"`
-		Timezone        string   `json:"timezone"`
-		Editable        bool     `json:"editable"`
-		HideControls    bool     `json:"hideControls" graf:"hide-controls"`
-		SharedCrosshair bool     `json:"sharedCrosshair" graf:"shared-crosshair"`
-		Rows            []*Row   `json:"rows"`
-		Templating      struct {
-			List []templateVar `json:"list"`
-		} `json:"templating"`
-		Annotations struct {
-			List []annotation `json:"list"`
+		ID              uint       `json:"id,omitempty"`
+		Slug            string     `json:"slug"`
+		Title           string     `json:"title"`
+		OriginalTitle   string     `json:"originalTitle"`
+		Tags            []string   `json:"tags"`
+		Style           string     `json:"style"`
+		Timezone        string     `json:"timezone"`
+		Editable        bool       `json:"editable"`
+		HideControls    bool       `json:"hideControls" graf:"hide-controls"`
+		SharedCrosshair bool       `json:"sharedCrosshair" graf:"shared-crosshair"`
+		Rows            []*Row     `json:"rows"`
+		Templating      Templating `json:"templating"`
+		Annotations     struct {
+			List []Annotation `json:"list"`
 		} `json:"annotations"`
 		Refresh       *BoolString `json:"refresh,omitempty"`
 		SchemaVersion uint        `json:"schemaVersion"`
 		Version       uint        `json:"version"`
 		Links         []link      `json:"links"`
-		Time          struct {
-			From string `json:"from"`
-			To   string `json:"to"`
-		} `json:"time"`
-		Timepicker struct {
-			Now              *bool    `json:"now,omitempty"`
-			RefreshIntervals []string `json:"refresh_intervals"`
-			TimeOptions      []string `json:"time_options"`
-		} `json:"timepicker"`
-		lastPanelID uint
+		Time          Time        `json:"time"`
+		Timepicker    Timepicker  `json:"timepicker"`
+		lastPanelID   uint
 	}
-	templateVar struct {
+	Time struct {
+		From string `json:"from"`
+		To   string `json:"to"`
+	}
+	Timepicker struct {
+		Now              *bool    `json:"now,omitempty"`
+		RefreshIntervals []string `json:"refresh_intervals"`
+		TimeOptions      []string `json:"time_options"`
+	}
+	Templating struct {
+		List []TemplateVar `json:"list"`
+	}
+	TemplateVar struct {
 		Name        string   `json:"name"`
 		Type        string   `json:"type"`
 		Auto        bool     `json:"auto,omitempty"`
 		AutoCount   *int     `json:"auto_count,omitempty"`
 		Datasource  *string  `json:"datasource"`
 		Refresh     BoolInt  `json:"refresh"`
-		Options     []option `json:"options"`
+		Options     []Option `json:"options"`
 		IncludeAll  bool     `json:"includeAll"`
 		AllFormat   string   `json:"allFormat"`
 		Multi       bool     `json:"multi"`
 		MultiFormat string   `json:"multiFormat"`
 		Query       string   `json:"query"`
 		Regex       string   `json:"regex"`
-		Current     current  `json:"current"`
+		Current     Current  `json:"current"`
 		Label       string   `json:"label"`
 		Hide        uint8    `json:"hide"`
 	}
 	// for templateVar
-	option struct {
+	Option struct {
 		Text     string `json:"text"`
 		Value    string `json:"value"`
 		Selected bool   `json:"selected"`
 	}
 	// for templateVar
-	current struct {
+	Current struct {
 		Tags  []*string   `json:"tags,omitempty"`
 		Text  string      `json:"text"`
 		Value interface{} `json:"value"` // TODO select more precise type
 	}
-	annotation struct {
+	Annotation struct {
 		Name       string  `json:"name"`
 		Datasource *string `json:"datasource"`
 		ShowLine   bool    `json:"showLine"`
@@ -206,7 +209,7 @@ func (b *Board) AddRow(title string) *Row {
 		Collapse: false,
 		Editable: true,
 		Height:   "250px",
-		board:    b}
+	}
 	b.Rows = append(b.Rows, row)
 	return row
 }

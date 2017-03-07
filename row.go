@@ -26,59 +26,60 @@ type Row struct {
 	Editable  bool    `json:"editable"`
 	Height    height  `json:"height"`
 	Panels    []Panel `json:"panels"`
-	board     *Board
 }
 
+var lastPanelID uint
+
 func (r *Row) Add(panel *Panel) {
-	r.board.lastPanelID++
-	panel.ID = r.board.lastPanelID
+	lastPanelID++
+	panel.ID = lastPanelID
 	r.Panels = append(r.Panels, *panel)
 }
 
 func (r *Row) AddDashlist(data *DashlistPanel) {
-	r.board.lastPanelID++
+	lastPanelID++
 	panel := NewDashlist("")
-	panel.ID = r.board.lastPanelID
+	panel.ID = lastPanelID
 	panel.DashlistPanel = data
 	r.Panels = append(r.Panels, *panel)
 }
 
 func (r *Row) AddGraph(data *GraphPanel) {
-	r.board.lastPanelID++
+	lastPanelID++
 	panel := NewGraph("")
-	panel.ID = r.board.lastPanelID
+	panel.ID = lastPanelID
 	panel.GraphPanel = data
 	r.Panels = append(r.Panels, *panel)
 }
 
 func (r *Row) AddTable(data *TablePanel) {
-	r.board.lastPanelID++
+	lastPanelID++
 	panel := NewTable("")
-	panel.ID = r.board.lastPanelID
+	panel.ID = lastPanelID
 	panel.TablePanel = data
 	r.Panels = append(r.Panels, *panel)
 }
 
 func (r *Row) AddText(data *TextPanel) {
-	r.board.lastPanelID++
+	lastPanelID++
 	panel := NewText("")
-	panel.ID = r.board.lastPanelID
+	panel.ID = lastPanelID
 	panel.TextPanel = data
 	r.Panels = append(r.Panels, *panel)
 }
 
 func (r *Row) AddSinglestat(data *SinglestatPanel) {
-	r.board.lastPanelID++
+	lastPanelID++
 	panel := NewSinglestat("")
-	panel.ID = r.board.lastPanelID
+	panel.ID = lastPanelID
 	panel.SinglestatPanel = data
 	r.Panels = append(r.Panels, *panel)
 }
 
 func (r *Row) AddCustom(data *CustomPanel) {
-	r.board.lastPanelID++
+	lastPanelID++
 	panel := NewCustom("")
-	panel.ID = r.board.lastPanelID
+	panel.ID = lastPanelID
 	panel.CustomPanel = data
 	r.Panels = append(r.Panels, *panel)
 }

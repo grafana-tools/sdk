@@ -95,31 +95,32 @@ type (
 			Values       bool  `json:"values"`
 			SideWidth    *uint `json:"sideWidth,omitempty"`
 		} `json:"legend,omitempty"`
-		LeftYAxisLabel  *string         `json:"leftYAxisLabel,omitempty"`
-		RightYAxisLabel *string         `json:"rightYAxisLabel,omitempty"`
-		Lines           bool            `json:"lines"`
-		Linewidth       uint            `json:"linewidth"`
-		NullPointMode   string          `json:"nullPointMode"`
-		Percentage      bool            `json:"percentage"`
-		Pointradius     int             `json:"pointradius"`
-		Points          bool            `json:"points"`
-		SeriesOverrides []serieOverride `json:"seriesOverrides"`
-		Stack           bool            `json:"stack"`
-		SteppedLine     bool            `json:"steppedLine"`
-		Targets         []Target        `json:"targets,omitempty"`
-		TimeFrom        *string         `json:"timeFrom"`
-		TimeShift       *string         `json:"timeShift"`
-		Tooltip         struct {
-			Shared       bool   `json:"shared"`
-			ValueType    string `json:"value_type"`
-			MsResolution bool   `json:"msResolution,omitempty"` // was added in Grafana 3.x
-		} `json:"tooltip"`
-		XAxis    bool     `json:"x-axis"`
-		YAxis    bool     `json:"y-axis"`
-		YFormats []string `json:"y_formats"`
-		Xaxis    yaxis    `json:"xaxis"` // was added in Grafana 4.x?
-		Yaxes    []yaxis  `json:"yaxes"` // was added in Grafana 4.x?
-		Decimals *uint    `json:"decimals,omitempty"`
+		LeftYAxisLabel  *string          `json:"leftYAxisLabel,omitempty"`
+		RightYAxisLabel *string          `json:"rightYAxisLabel,omitempty"`
+		Lines           bool             `json:"lines"`
+		Linewidth       uint             `json:"linewidth"`
+		NullPointMode   string           `json:"nullPointMode"`
+		Percentage      bool             `json:"percentage"`
+		Pointradius     int              `json:"pointradius"`
+		Points          bool             `json:"points"`
+		SeriesOverrides []SeriesOverride `json:"seriesOverrides,omitempty"`
+		Stack           bool             `json:"stack"`
+		SteppedLine     bool             `json:"steppedLine"`
+		Targets         []Target         `json:"targets,omitempty"`
+		TimeFrom        *string          `json:"timeFrom,omitempty"`
+		TimeShift       *string          `json:"timeShift,omitempty"`
+		Tooltip         Tooltip          `json:"tooltip"`
+		XAxis           bool             `json:"x-axis,omitempty"`
+		YAxis           bool             `json:"y-axis,omitempty"`
+		YFormats        []string         `json:"y_formats,omitempty"`
+		Xaxis           Axis             `json:"xaxis"` // was added in Grafana 4.x?
+		Yaxes           []Axis           `json:"yaxes"` // was added in Grafana 4.x?
+		Decimals        *uint            `json:"decimals,omitempty"`
+	}
+	Tooltip struct {
+		Shared       bool   `json:"shared"`
+		ValueType    string `json:"value_type"`
+		MsResolution bool   `json:"msResolution,omitempty"` // was added in Grafana 3.x
 	}
 	TablePanel struct {
 		Columns []column `json:"columns"`
@@ -210,14 +211,14 @@ type (
 		Show   bool        `json:"show"`
 		Values *[]string   `json:"values,omitempty"`
 	}
-	yaxis struct {
+	Axis struct {
 		Format  string     `json:"format"`
 		LogBase int        `json:"logBase"`
-		Max     *IntString `json:"max"`
-		Min     *IntString `json:"min"`
+		Max     *IntString `json:"max,omitempty"`
+		Min     *IntString `json:"min,omitempty"`
 		Show    bool       `json:"show"`
 	}
-	serieOverride struct {
+	SeriesOverride struct {
 		Alias         string      `json:"alias"`
 		Bars          *bool       `json:"bars,omitempty"`
 		Color         *string     `json:"color,omitempty"`
@@ -261,14 +262,14 @@ type valueMap struct {
 // for an any panel
 type Target struct {
 	RefID      string `json:"refId"`
-	Datasource string `json:"datasource"`
+	Datasource string `json:"datasource,omitempty"`
 
 	// For Prometheus
-	Expr           string `json:"expr"`
-	IntervalFactor int    `json:"intervalFactor"`
-	Interval       string `json:"interval"`
-	Step           int    `json:"step"`
-	LegendFormat   string `json:"legendFormat"`
+	Expr           string `json:"expr,omitempty"`
+	IntervalFactor int    `json:"intervalFactor,omitempty"`
+	Interval       string `json:"interval,omitempty"`
+	Step           int    `json:"step,omitempty"`
+	LegendFormat   string `json:"legendFormat,omitempty"`
 
 	// For Elasticsearch
 	DsType  *string `json:"dsType,omitempty"`
@@ -288,6 +289,9 @@ type Target struct {
 			MinDocCount int    `json:"min_doc_count"`
 		} `json:"settings"`
 	} `json:"bucketAggs,omitempty"`
+
+	// For Graphite
+	Target string `json:"target,omitempty"`
 }
 
 // NewDashlist initializes panel with a dashlist panel.
