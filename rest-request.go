@@ -21,9 +21,11 @@ package sdk
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"path"
 )
 
 // DefaultHTTPClient initialized Grafana with appropriate conditions.
@@ -71,9 +73,9 @@ func (r *Client) delete(query string) ([]byte, int, error) {
 	return r.doRequest("DELETE", query, nil, nil)
 }
 
-func (r *Client) doRequest(method, query string, params url.Values, buf *bytes.Buffer) ([]byte, int, error) {
+func (r *Client) doRequest(method, query string, params url.Values, buf io.Reader) ([]byte, int, error) {
 	u, _ := url.Parse(r.baseURL)
-	u.Path = query
+	u.Path = path.Join(u.Path, query)
 	if params != nil {
 		u.RawQuery = params.Encode()
 	}
