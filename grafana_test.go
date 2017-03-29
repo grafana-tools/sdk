@@ -24,6 +24,7 @@ func ExampleNewBoard() {
 	// Output:
 	// {
 	//   "id": 1,
+	//   "slug": "",
 	//   "title": "Sample dashboard title",
 	//   "originalTitle": "",
 	//   "tags": null,
@@ -72,23 +73,17 @@ func ExampleNewBoard() {
 	//           "percentage": false,
 	//           "pointradius": 5,
 	//           "points": false,
-	//           "seriesOverrides": null,
 	//           "stack": false,
 	//           "steppedLine": false,
-	//           "timeFrom": null,
-	//           "timeShift": null,
 	//           "tooltip": {
 	//             "shared": false,
 	//             "value_type": ""
 	//           },
 	//           "x-axis": true,
 	//           "y-axis": true,
-	//           "y_formats": null,
 	//           "xaxis": {
 	//             "format": "",
 	//             "logBase": 0,
-	//             "max": null,
-	//             "min": null,
 	//             "show": false
 	//           },
 	//           "yaxes": null
@@ -125,34 +120,24 @@ func ExampleNewBoard() {
 	//           "percentage": false,
 	//           "pointradius": 5,
 	//           "points": false,
-	//           "seriesOverrides": null,
 	//           "stack": false,
 	//           "steppedLine": false,
 	//           "targets": [
 	//             {
 	//               "refId": "A",
 	//               "datasource": "Sample Source 1",
-	//               "expr": "sample request 1",
-	//               "intervalFactor": 0,
-	//               "interval": "",
-	//               "step": 0,
-	//               "legendFormat": ""
+	//               "expr": "sample request 1"
 	//             }
 	//           ],
-	//           "timeFrom": null,
-	//           "timeShift": null,
 	//           "tooltip": {
 	//             "shared": false,
 	//             "value_type": ""
 	//           },
 	//           "x-axis": true,
 	//           "y-axis": true,
-	//           "y_formats": null,
 	//           "xaxis": {
 	//             "format": "",
 	//             "logBase": 0,
-	//             "max": null,
-	//             "min": null,
 	//             "show": false
 	//           },
 	//           "yaxes": null
@@ -178,5 +163,4 @@ func ExampleNewBoard() {
 	//     "time_options": null
 	//   }
 	// }
-
 }
