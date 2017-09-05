@@ -26,6 +26,7 @@ import (
 	"net/http"
 	"net/url"
 	"path"
+	"strings"
 )
 
 // DefaultHTTPClient initialized Grafana with appropriate conditions.
@@ -34,9 +35,10 @@ var DefaultHTTPClient = http.DefaultClient
 
 // Client uses Grafana REST API for interacting with Grafana server.
 type Client struct {
-	baseURL string
-	key     string
-	client  *http.Client
+	baseURL   string
+	key       string
+	basicAuth bool
+	client    *http.Client
 }
 
 // StatusMessage reflects status message as it returned by Grafana REST API.
@@ -48,9 +50,20 @@ type StatusMessage struct {
 	Status  *string `json:"resp"`
 }
 
-// NewClient initializes client for interacting with an instance of Grafana server.
-func NewClient(apiURL, apiKey string, client *http.Client) *Client {
-	return &Client{baseURL: apiURL, key: fmt.Sprintf("Bearer %s", apiKey), client: client}
+// NewClient initializes client for interacting with an instance of Grafana server;
+// apiKeyOrBasicAuth accepts either 'username:password' basic authentication credentials,
+// or a Grafana API key
+func NewClient(apiURL, apiKeyOrBasicAuth string, client *http.Client) *Client {
+	key := ""
+	basicAuth := strings.Contains(apiKeyOrBasicAuth, ":")
+	baseURL, _ := url.Parse(apiURL)
+	if !basicAuth {
+		key = fmt.Sprintf("Bearer %s", apiKeyOrBasicAuth)
+	} else {
+		parts := strings.Split(apiKeyOrBasicAuth, ":")
+		baseURL.User = url.UserPassword(parts[0], parts[1])
+	}
+	return &Client{baseURL: baseURL.String(), basicAuth: basicAuth, key: key, client: client}
 }
 
 func (r *Client) get(query string, params url.Values) ([]byte, int, error) {
@@ -80,7 +93,9 @@ func (r *Client) doRequest(method, query string, params url.Values, buf io.Reade
 		u.RawQuery = params.Encode()
 	}
 	req, err := http.NewRequest(method, u.String(), buf)
-	req.Header.Set("Authorization", r.key)
+	if !r.basicAuth {
+		req.Header.Set("Authorization", r.key)
+	}
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("User-Agent", "autograf")
