@@ -27,6 +27,26 @@ import (
 	"net/http"
 )
 
+// CreateOrg creates a new organization
+// It reflects POST /api/orgs
+func (r *Client) CreateOrg(org Org) (StatusMessage, error) {
+	var (
+		raw  []byte
+		resp StatusMessage
+		err  error
+	)
+	if raw, err = json.Marshal(org); err != nil {
+		return StatusMessage{}, err
+	}
+	if raw, _, err = r.post("api/orgs", nil, raw); err != nil {
+		return StatusMessage{}, err
+	}
+	if err = json.Unmarshal(raw, &resp); err != nil {
+		return StatusMessage{}, err
+	}
+	return resp, nil
+}
+
 // GetActualOrg gets current organization.
 // It reflects GET /api/org API call.
 func (r *Client) GetActualOrg() (Org, error) {
@@ -39,6 +59,54 @@ func (r *Client) GetActualOrg() (Org, error) {
 	if raw, code, err = r.get("api/org", nil); err != nil {
 		return org, err
 	}
+	if code != http.StatusOK {
+		return org, fmt.Errorf("HTTP error %d: returns %s", code, raw)
+	}
+	dec := json.NewDecoder(bytes.NewReader(raw))
+	dec.UseNumber()
+	if err := dec.Decode(&org); err != nil {
+		return org, fmt.Errorf("unmarshal org: %s\n%s", err, raw)
+	}
+	return org, err
+}
+
+// GetOrgById gets organization by organization Id
+// It reflects GET /api/orgs/:orgId
+func (r *Client) GetOrgById(oid uint) (Org, error) {
+	var (
+		raw  []byte
+		org  Org
+		code int
+		err  error
+	)
+	if raw, code, err = r.get(fmt.Sprintf("api/orgs/%d", oid), nil); err != nil {
+		return org, err
+	}
+
+	if code != http.StatusOK {
+		return org, fmt.Errorf("HTTP error %d: returns %s", code, raw)
+	}
+	dec := json.NewDecoder(bytes.NewReader(raw))
+	dec.UseNumber()
+	if err := dec.Decode(&org); err != nil {
+		return org, fmt.Errorf("unmarshal org: %s\n%s", err, raw)
+	}
+	return org, err
+}
+
+// GetOrgByOrgName gets organization by organization Id
+// It reflects GET /api/orgs/:orgId
+func (r *Client) GetOrgByOrgName(name string) (Org, error) {
+	var (
+		raw  []byte
+		org  Org
+		code int
+		err  error
+	)
+	if raw, code, err = r.get(fmt.Sprintf("api/orgs/%s", name), nil); err != nil {
+		return org, err
+	}
+
 	if code != http.StatusOK {
 		return org, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
@@ -92,6 +160,46 @@ func (r *Client) GetActualOrgUsers() ([]User, error) {
 	return users, err
 }
 
+// AddUserToActualOrg creates a new organization
+// It reflects POST /api/org/users
+func (r *Client) AddUserToActualOrg(user User) (StatusMessage, error) {
+	var (
+		raw  []byte
+		resp StatusMessage
+		err  error
+	)
+	if raw, err = json.Marshal(user); err != nil {
+		return StatusMessage{}, err
+	}
+	if raw, _, err = r.post("api/org/users", nil, raw); err != nil {
+		return StatusMessage{}, err
+	}
+	if err = json.Unmarshal(raw, &resp); err != nil {
+		return StatusMessage{}, err
+	}
+	return resp, nil
+}
+
+// UpdateUser updates the existing user
+// It reflects POST /api/org/users/:userId
+func (r *Client) UpdateUser(user User, uid uint) (StatusMessage, error) {
+	var (
+		raw  []byte
+		resp StatusMessage
+		err  error
+	)
+	if raw, err = json.Marshal(user); err != nil {
+		return StatusMessage{}, err
+	}
+	if raw, _, err = r.post(fmt.Sprintf("api/org/users/%s", uid), nil, raw); err != nil {
+		return StatusMessage{}, err
+	}
+	if err = json.Unmarshal(raw, &resp); err != nil {
+		return StatusMessage{}, err
+	}
+	return resp, nil
+}
+
 // DeleteActualOrgUser delete user in actual organisation.
 // It reflects DELETE /api/org/users/:userId API call.
 func (r *Client) DeleteActualOrgUser(uid uint) (StatusMessage, error) {
@@ -101,6 +209,24 @@ func (r *Client) DeleteActualOrgUser(uid uint) (StatusMessage, error) {
 		err   error
 	)
 	if raw, _, err = r.delete(fmt.Sprintf("api/org/%d", uid)); err != nil {
+		return StatusMessage{}, err
+	}
+	err = json.Unmarshal(raw, &reply)
+	return reply, err
+}
+
+// AddUserToOrg add user to organization with id
+// It reflects POST /api/orgs/:orgId/users API call.
+func (r *Client) AddUserToOrg(user UserRole, oid uint) (StatusMessage, error) {
+	var (
+		raw   []byte
+		reply StatusMessage
+		err   error
+	)
+	if raw, err = json.Marshal(user); err != nil {
+		return StatusMessage{}, err
+	}
+	if raw, _, err = r.post(fmt.Sprintf("api/orgs/%d/users", oid), nil, raw); err != nil {
 		return StatusMessage{}, err
 	}
 	err = json.Unmarshal(raw, &reply)
