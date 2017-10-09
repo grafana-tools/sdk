@@ -44,6 +44,7 @@ type Client struct {
 // StatusMessage reflects status message as it returned by Grafana REST API.
 type StatusMessage struct {
 	ID      *uint   `json:"id"`
+        OrgID   *uint   `json:"orgId"`
 	Message *string `json:"message"`
 	Slug    *string `json:"slug"`
 	Version *int    `json:"version"`
