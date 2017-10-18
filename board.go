@@ -62,6 +62,7 @@ type (
 		Time          Time        `json:"time"`
 		Timepicker    Timepicker  `json:"timepicker"`
 		lastPanelID   uint
+		GraphTooltip  int `json:"graphTooltip,omitempty"`
 	}
 	Time struct {
 		From string `json:"from"`
