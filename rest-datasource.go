@@ -92,7 +92,7 @@ func (r *Client) UpdateDatasource(ds Datasource) (StatusMessage, error) {
 	if raw, err = json.Marshal(ds); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, _, err = r.post(fmt.Sprintf("api/datasources/%d", ds.ID), nil, raw); err != nil {
+	if raw, _, err = r.put(fmt.Sprintf("api/datasources/%d", ds.ID), nil, raw); err != nil {
 		return StatusMessage{}, err
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
