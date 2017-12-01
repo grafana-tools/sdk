@@ -93,6 +93,7 @@ type (
 		Current     Current  `json:"current"`
 		Label       string   `json:"label"`
 		Hide        uint8    `json:"hide"`
+		Sort        int      `json:"sort"`
 	}
 	// for templateVar
 	Option struct {
