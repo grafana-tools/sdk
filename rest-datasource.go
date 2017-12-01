@@ -136,6 +136,21 @@ func (r *Client) DeleteDatasource(id uint) (StatusMessage, error) {
 	return reply, err
 }
 
+// DeleteDatasourceByName deletes an existing datasource by Name.
+// It reflects DELETE /api/datasources/name/:datasourceName API call.
+func (r *Client) DeleteDatasourceByName(name string) (StatusMessage, error) {
+	var (
+		raw   []byte
+		reply StatusMessage
+		err   error
+	)
+	if raw, _, err = r.delete(fmt.Sprintf("api/datasources/name/%s", name)); err != nil {
+		return StatusMessage{}, err
+	}
+	err = json.Unmarshal(raw, &reply)
+	return reply, err
+}
+
 // GetDatasourceTypes gets all available plugins for the datasources.
 // It reflects GET /api/datasources/plugins API call.
 func (r *Client) GetDatasourceTypes() (map[string]DatasourceType, error) {
