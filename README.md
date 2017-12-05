@@ -85,12 +85,14 @@ Of course Go development environment should be set up first. Then:
 
     go get github.com/grafana-tools/sdk
 
-Single external dependency required:
+Dependency packages have included into
+distro. [govendor](https://github.com/kardianos/govendor) utility used
+for vendoring.  The single dependency now is:
 
     go get github.com/gosimple/slug
 
 The "slugify" for URLs is a simple task but this package used in
-Grafana server so it used here for compatibility reasons.
+Grafana server so it used in the SDK for the compatibility reasons.
 
 ## Grafana server compability
 
