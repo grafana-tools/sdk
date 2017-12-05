@@ -61,6 +61,26 @@ func (r *Client) GetDatasource(id uint) (Datasource, error) {
 	return ds, err
 }
 
+
+// GetDatasourceByName gets an datasource by Name.
+// It reflects GET /api/datasources/name/:datasourceName API call.
+func (r *Client) GetDatasourceByName(name string) (Datasource, error) {
+	var (
+		raw  []byte
+		ds   Datasource
+		code int
+		err  error
+	)
+	if raw, code, err = r.get(fmt.Sprintf("api/datasources/name/%s", name), nil); err != nil {
+		return ds, err
+	}
+	if code != 200 {
+		return ds, fmt.Errorf("HTTP error %d: returns %s", code, raw)
+	}
+	err = json.Unmarshal(raw, &ds)
+	return ds, err
+}
+
 // CreateDatasource creates a new datasource.
 // It reflects POST /api/datasources API call.
 func (r *Client) CreateDatasource(ds Datasource) (StatusMessage, error) {
@@ -110,6 +130,21 @@ func (r *Client) DeleteDatasource(id uint) (StatusMessage, error) {
 		err   error
 	)
 	if raw, _, err = r.delete(fmt.Sprintf("api/datasources/%d", id)); err != nil {
+		return StatusMessage{}, err
+	}
+	err = json.Unmarshal(raw, &reply)
+	return reply, err
+}
+
+// DeleteDatasourceByName deletes an existing datasource by Name.
+// It reflects DELETE /api/datasources/name/:datasourceName API call.
+func (r *Client) DeleteDatasourceByName(name string) (StatusMessage, error) {
+	var (
+		raw   []byte
+		reply StatusMessage
+		err   error
+	)
+	if raw, _, err = r.delete(fmt.Sprintf("api/datasources/name/%s", name)); err != nil {
 		return StatusMessage{}, err
 	}
 	err = json.Unmarshal(raw, &reply)
