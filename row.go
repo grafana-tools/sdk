@@ -24,7 +24,7 @@ type Row struct {
 	ShowTitle bool    `json:"showTitle"`
 	Collapse  bool    `json:"collapse"`
 	Editable  bool    `json:"editable"`
-	Height    height  `json:"height"`
+	Height    Height  `json:"height"`
 	Panels    []Panel `json:"panels"`
 }
 
