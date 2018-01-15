@@ -137,11 +137,11 @@ type link struct {
 	URL         *string  `json:"url,omitempty"`
 }
 
-// height of rows maybe passed as number (ex 200) or
+// Height of rows maybe passed as number (ex 200) or
 // as string (ex "200px") or empty string
-type height string
+type Height string
 
-func (h *height) UnmarshalJSON(raw []byte) error {
+func (h *Height) UnmarshalJSON(raw []byte) error {
 	if raw == nil || bytes.Compare(raw, []byte(`"null"`)) == 0 {
 		return nil
 	}
@@ -152,7 +152,7 @@ func (h *height) UnmarshalJSON(raw []byte) error {
 	}
 	var tmp string
 	err := json.Unmarshal(raw, &tmp)
-	*h = height(tmp)
+	*h = Height(tmp)
 	return err
 }
 
