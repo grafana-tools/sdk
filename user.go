@@ -24,5 +24,11 @@ type User struct {
 	Email          string `json:"email"`
 	Theme          string `json:"theme"`
 	OrgID          uint   `json:"orgId"`
+	Password       string `json:"password"`
 	IsGrafanaAdmin bool   `json:"isGrafanaAdmin"`
+}
+
+type UserRole struct {
+	LoginOrEmail string `json:"loginOrEmail"`
+	Role         string `json:"role"`
 }
