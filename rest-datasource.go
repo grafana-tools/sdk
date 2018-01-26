@@ -61,7 +61,6 @@ func (r *Client) GetDatasource(id uint) (Datasource, error) {
 	return ds, err
 }
 
-
 // GetDatasourceByName gets an datasource by Name.
 // It reflects GET /api/datasources/name/:datasourceName API call.
 func (r *Client) GetDatasourceByName(name string) (Datasource, error) {
@@ -168,23 +167,4 @@ func (r *Client) GetDatasourceTypes() (map[string]DatasourceType, error) {
 	}
 	err = json.Unmarshal(raw, &dsTypes)
 	return dsTypes, err
-}
-
-// GetDatasource gets an datasource by name.
-// It reflects GET /api/datasources/name/:name API call.
-func (r *Client) GetDatasourceByName(name string) (Datasource, error) {
-	var (
-		raw  []byte
-		ds   Datasource
-		code int
-		err  error
-	)
-	if raw, code, err = r.get(fmt.Sprintf("api/datasources/name/%s", name), nil); err != nil {
-		return ds, err
-	}
-	if code != 200 {
-		return ds, fmt.Errorf("HTTP error %d: returns %s", code, raw)
-	}
-	err = json.Unmarshal(raw, &ds)
-	return ds, err
 }
