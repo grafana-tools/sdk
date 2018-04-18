@@ -19,6 +19,7 @@ package sdk
 */
 
 type User struct {
+	ID             uint   `json:"id"`
 	Login          string `json:"login"`
 	Name           string `json:"name"`
 	Email          string `json:"email"`
@@ -31,4 +32,11 @@ type User struct {
 type UserRole struct {
 	LoginOrEmail string `json:"loginOrEmail"`
 	Role         string `json:"role"`
+}
+
+type PageUsers struct {
+	TotalCount int    `json:"totalCount"`
+	Users      []User `json:"users"`
+	Page       int    `json:"page"`
+	PerPage    int    `json:"perPage"`
 }
