@@ -26,6 +26,7 @@ type Row struct {
 	Editable  bool    `json:"editable"`
 	Height    Height  `json:"height"`
 	Panels    []Panel `json:"panels"`
+	Repeat    *string `json:"repeat"`
 }
 
 var lastPanelID uint
