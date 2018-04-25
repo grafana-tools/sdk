@@ -162,13 +162,13 @@ func (r *Client) GetActualOrgUsers() ([]User, error) {
 
 // AddUserToActualOrg creates a new organization
 // It reflects POST /api/org/users
-func (r *Client) AddUserToActualOrg(user User) (StatusMessage, error) {
+func (r *Client) AddUserToActualOrg(userRole UserRole) (StatusMessage, error) {
 	var (
 		raw  []byte
 		resp StatusMessage
 		err  error
 	)
-	if raw, err = json.Marshal(user); err != nil {
+	if raw, err = json.Marshal(userRole); err != nil {
 		return StatusMessage{}, err
 	}
 	if raw, _, err = r.post("api/org/users", nil, raw); err != nil {
