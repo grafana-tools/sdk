@@ -61,7 +61,6 @@ func (r *Client) GetDatasource(id uint) (Datasource, error) {
 	return ds, err
 }
 
-
 // GetDatasourceByName gets an datasource by Name.
 // It reflects GET /api/datasources/name/:datasourceName API call.
 func (r *Client) GetDatasourceByName(name string) (Datasource, error) {
