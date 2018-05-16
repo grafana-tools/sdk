@@ -1,6 +1,6 @@
-package sdk
-
 // +build draft
+
+package sdk
 
 /*
    Copyright 2016-2017 Alexander I.Grafov <grafov@gmail.com>
