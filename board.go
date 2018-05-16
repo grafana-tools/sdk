@@ -41,6 +41,7 @@ type (
 	// Board represents Grafana dashboard.
 	Board struct {
 		ID              uint       `json:"id,omitempty"`
+		UID             string     `json:"uid,omitempty"`
 		Slug            string     `json:"slug"`
 		Title           string     `json:"title"`
 		OriginalTitle   string     `json:"originalTitle"`
@@ -86,6 +87,7 @@ type (
 		Options     []Option `json:"options"`
 		IncludeAll  bool     `json:"includeAll"`
 		AllFormat   string   `json:"allFormat"`
+		AllValue    string   `json:"allValue"`
 		Multi       bool     `json:"multi"`
 		MultiFormat string   `json:"multiFormat"`
 		Query       string   `json:"query"`
