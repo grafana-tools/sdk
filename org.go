@@ -19,11 +19,14 @@ package sdk
 */
 
 type Org struct {
-	Id   int64  `json:"id"`
+	ID   uint   `json:"id"`
 	Name string `json:"name"`
 }
 
 type OrgUser struct {
-	LoginOrEmail *string `json:"loginOrEmail,omitempty"`
-	Role         *string `json:"role,omitempty"`
+	ID    uint   `json:"id"`
+	OrgId uint   `json:"orgId"`
+	Email string `json:"email"`
+	Login string `json:"login"`
+	Role  string `json:"role"`
 }
