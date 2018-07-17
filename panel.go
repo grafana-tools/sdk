@@ -289,6 +289,7 @@ type Target struct {
 	Step           int    `json:"step,omitempty"`
 	LegendFormat   string `json:"legendFormat,omitempty"`
 	Instant        bool   `json:"instant,omitempty"`
+	Format         string `json:"format,omitempty"`
 
 	// For Elasticsearch
 	DsType  *string `json:"dsType,omitempty"`
