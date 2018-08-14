@@ -48,39 +48,50 @@ type (
 		*SinglestatPanel
 		*DashlistPanel
 		*PluginlistPanel
+		*RowPanel
 		*CustomPanel
 	}
 	panelType   int8
 	commonPanel struct {
-		OfType     panelType `json:"-"` // it required for defining type of the panel
-		ID         uint      `json:"id"`
-		Title      string    `json:"title"`                // general
-		Span       float32   `json:"span"`                 // general
-		Links      []link    `json:"links,omitempty"`      // general
-		Datasource *string   `json:"datasource,omitempty"` // metrics
-		Height     *string   `json:"height,omitempty"`     // general
-		Renderer   *string   `json:"renderer,omitempty"`   // display styles
-		Repeat     *string   `json:"repeat,omitempty"`     // templating options
-		//RepeatIteration *int64   `json:"repeatIteration,omitempty"`
+		Datasource *string `json:"datasource,omitempty"` // metrics
+		Editable   bool    `json:"editable"`
+		Error      bool    `json:"error"`
+		GridPos    struct {
+			H *int `json:"h,omitempty"`
+			W *int `json:"w,omitempty"`
+			X *int `json:"x,omitempty"`
+			Y *int `json:"y,omitempty"`
+		} `json:"gridPos,omitempty"`
+		Height           *string   `json:"height,omitempty"` // general
+		HideTimeOverride *bool     `json:"hideTimeOverride,omitempty"`
+		ID               uint      `json:"id"`
+		IsNew            bool      `json:"isNew"`
+		Links            []link    `json:"links,omitempty"`    // general
+		MinSpan          *float32  `json:"minSpan,omitempty"`  // templating options
+		OfType           panelType `json:"-"`                  // it required for defining type of the panel
+		Renderer         *string   `json:"renderer,omitempty"` // display styles
+		Repeat           *string   `json:"repeat,omitempty"`   // templating options
+		// RepeatIteration *int64   `json:"repeatIteration,omitempty"`
 		RepeatPanelID *uint `json:"repeatPanelId,omitempty"`
 		ScopedVars    map[string]struct {
 			Selected bool   `json:"selected"`
 			Text     string `json:"text"`
 			Value    string `json:"value"`
 		} `json:"scopedVars,omitempty"`
-		Transparent      bool     `json:"transparent"`
-		MinSpan          *float32 `json:"minSpan,omitempty"` // templating options
-		Type             string   `json:"type"`
-		Error            bool     `json:"error"`
-		IsNew            bool     `json:"isNew"`
-		Editable         bool     `json:"editable"`
-		HideTimeOverride *bool    `json:"hideTimeOverride,omitempty"`
+		Span        float32 `json:"span"`  // general
+		Title       string  `json:"title"` // general
+		Transparent bool    `json:"transparent"`
+		Type        string  `json:"type"`
 	}
 	GraphPanel struct {
 		AliasColors interface{} `json:"aliasColors"` // XXX
 		Bars        bool        `json:"bars"`
+		DashLength  *uint       `json:"dashLength,omitempty"`
+		Dashes      *bool       `json:"dashes,omitempty"`
+		Decimals    *uint       `json:"decimals,omitempty"`
 		Fill        int         `json:"fill"`
 		//		Grid        grid        `json:"grid"` obsoleted in 4.1 by xaxis and yaxis
+
 		Legend struct {
 			AlignAsTable bool  `json:"alignAsTable"`
 			Avg          bool  `json:"avg"`
@@ -91,19 +102,20 @@ type (
 			Min          bool  `json:"min"`
 			RightSide    bool  `json:"rightSide"`
 			Show         bool  `json:"show"`
+			SideWidth    *uint `json:"sideWidth,omitempty"`
 			Total        bool  `json:"total"`
 			Values       bool  `json:"values"`
-			SideWidth    *uint `json:"sideWidth,omitempty"`
 		} `json:"legend,omitempty"`
 		LeftYAxisLabel  *string          `json:"leftYAxisLabel,omitempty"`
-		RightYAxisLabel *string          `json:"rightYAxisLabel,omitempty"`
 		Lines           bool             `json:"lines"`
 		Linewidth       uint             `json:"linewidth"`
 		NullPointMode   string           `json:"nullPointMode"`
 		Percentage      bool             `json:"percentage"`
 		Pointradius     int              `json:"pointradius"`
 		Points          bool             `json:"points"`
+		RightYAxisLabel *string          `json:"rightYAxisLabel,omitempty"`
 		SeriesOverrides []SeriesOverride `json:"seriesOverrides,omitempty"`
+		SpaceLength     *uint            `json:"spaceLength,omitempty"`
 		Stack           bool             `json:"stack"`
 		SteppedLine     bool             `json:"steppedLine"`
 		Targets         []Target         `json:"targets,omitempty"`
@@ -115,7 +127,6 @@ type (
 		YFormats        []string         `json:"y_formats,omitempty"`
 		Xaxis           Axis             `json:"xaxis"` // was added in Grafana 4.x?
 		Yaxes           []Axis           `json:"yaxes"` // was added in Grafana 4.x?
-		Decimals        *uint            `json:"decimals,omitempty"`
 	}
 	Tooltip struct {
 		Shared       bool   `json:"shared"`
@@ -152,30 +163,33 @@ type (
 		ColorBackground bool     `json:"colorBackground"`
 		Decimals        int      `json:"decimals"`
 		Format          string   `json:"format"`
-		MaxDataPoints   *int     `json:"maxDataPoints,omitempty"`
-		NullPointMode   string   `json:"nullPointMode"`
-		Postfix         *string  `json:"postfix,omitempty"`
-		Prefix          *string  `json:"prefix,omitempty"`
-		PostfixFontSize *string  `json:"postfixFontSize,omitempty"`
-		PrefixFontSize  *string  `json:"prefixFontSize,omitempty"`
-		SparkLine       struct {
-			FillColor *string `json:"fillColor,omitempty"`
-			Full      bool    `json:"full,omitempty"`
-			LineColor *string `json:"lineColor,omitempty"`
-			Show      bool    `json:"show,omitempty"`
-		} `json:"sparkline,omitempty"`
-		ValueFontSize string     `json:"valueFontSize"`
-		ValueMaps     []valueMap `json:"valueMaps"`
-		ValueName     string     `json:"valueName"`
-		Targets       []Target   `json:"targets,omitempty"`
-		Thresholds    string     `json:"thresholds"`
-		Gauge         struct {
+		Gauge           struct {
 			MaxValue         int  `json:"maxValue"`
 			MinValue         int  `json:"minValue"`
 			Show             bool `json:"show"`
 			ThresholdLabels  bool `json:"thresholdLabels"`
 			ThresholdMarkers bool `json:"thresholdMarkers"`
 		} `json:"gauge,omitempty"`
+		MappingType     *uint       `json:"mappingType,omitempty"`
+		MappingTypes    []*MapType  `json:"mappingTypes,omitempty"`
+		MaxDataPoints   *int        `json:"maxDataPoints,omitempty"`
+		NullPointMode   string      `json:"nullPointMode"`
+		Postfix         *string     `json:"postfix,omitempty"`
+		PostfixFontSize *string     `json:"postfixFontSize,omitempty"`
+		Prefix          *string     `json:"prefix,omitempty"`
+		PrefixFontSize  *string     `json:"prefixFontSize,omitempty"`
+		RangeMaps       []*RangeMap `json:"rangeMaps,omitempty"`
+		SparkLine       struct {
+			FillColor *string `json:"fillColor,omitempty"`
+			Full      bool    `json:"full,omitempty"`
+			LineColor *string `json:"lineColor,omitempty"`
+			Show      bool    `json:"show,omitempty"`
+		} `json:"sparkline,omitempty"`
+		Targets       []Target   `json:"targets,omitempty"`
+		Thresholds    string     `json:"thresholds"`
+		ValueFontSize string     `json:"valueFontSize"`
+		ValueMaps     []valueMap `json:"valueMaps"`
+		ValueName     string     `json:"valueName"`
 	}
 	DashlistPanel struct {
 		Mode  string   `json:"mode"`
@@ -185,6 +199,9 @@ type (
 	}
 	PluginlistPanel struct {
 		Limit int `json:"limit,omitempty"`
+	}
+	RowPanel struct {
+		Panels []Panel
 	}
 	CustomPanel map[string]interface{}
 )
@@ -271,6 +288,8 @@ type Target struct {
 	Interval       string `json:"interval,omitempty"`
 	Step           int    `json:"step,omitempty"`
 	LegendFormat   string `json:"legendFormat,omitempty"`
+	Instant        bool   `json:"instant,omitempty"`
+	Format         string `json:"format,omitempty"`
 
 	// For Elasticsearch
 	DsType  *string `json:"dsType,omitempty"`
@@ -295,6 +314,17 @@ type Target struct {
 
 	// For Graphite
 	Target string `json:"target,omitempty"`
+}
+
+type MapType struct {
+	Name  *string `json:"name,omitempty"`
+	Value *int    `json:"value,omitempty"`
+}
+
+type RangeMap struct {
+	From *string `json:"from,omitempty"`
+	Text *string `json:"text,omitempty"`
+	To   *string `json:"to,omitempty"`
 }
 
 // NewDashlist initializes panel with a dashlist panel.

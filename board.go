@@ -51,6 +51,7 @@ type (
 		Editable        bool       `json:"editable"`
 		HideControls    bool       `json:"hideControls" graf:"hide-controls"`
 		SharedCrosshair bool       `json:"sharedCrosshair" graf:"shared-crosshair"`
+		Panels          []*Panel   `json:"panels"`
 		Rows            []*Row     `json:"rows"`
 		Templating      Templating `json:"templating"`
 		Annotations     struct {
