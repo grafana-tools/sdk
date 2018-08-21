@@ -259,6 +259,7 @@ type (
 		Value    string `json:"value"`
 	}
 	columnStyle struct {
+		Alias      *string   `json:"alias"`
 		DateFormat *string   `json:"dateFormat,omitempty"`
 		Pattern    string    `json:"pattern"`
 		Type       string    `json:"type"`
