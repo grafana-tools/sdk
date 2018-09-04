@@ -172,7 +172,7 @@ type (
 		} `json:"gauge,omitempty"`
 		MappingType     *uint       `json:"mappingType,omitempty"`
 		MappingTypes    []*MapType  `json:"mappingTypes,omitempty"`
-		MaxDataPoints   *int        `json:"maxDataPoints,omitempty"`
+		MaxDataPoints   *IntString  `json:"maxDataPoints,omitempty"`
 		NullPointMode   string      `json:"nullPointMode"`
 		Postfix         *string     `json:"postfix,omitempty"`
 		PostfixFontSize *string     `json:"postfixFontSize,omitempty"`
