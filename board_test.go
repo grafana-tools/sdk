@@ -1,4 +1,4 @@
-package sdk
+package sdk_test
 
 /*
    Copyright 2016 Alexander I.Grafov <grafov@gmail.com>
@@ -18,10 +18,14 @@ package sdk
    ॐ तारे तुत्तारे तुरे स्व
 */
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/grafana-tools/sdk"
+)
 
 func TestAddTags(t *testing.T) {
-	b := NewBoard("Sample")
+	b := sdk.NewBoard("Sample")
 
 	b.AddTags("1", "2", "3")
 
@@ -31,7 +35,7 @@ func TestAddTags(t *testing.T) {
 }
 
 func TestBoardRemoveTags_Existent(t *testing.T) {
-	b := NewBoard("Sample")
+	b := sdk.NewBoard("Sample")
 	b.AddTags("1", "2", "3", "4")
 
 	b.RemoveTags("1", "2")
@@ -42,7 +46,7 @@ func TestBoardRemoveTags_Existent(t *testing.T) {
 }
 
 func TestBoardRemoveTags_NonExistent(t *testing.T) {
-	b := NewBoard("Sample")
+	b := sdk.NewBoard("Sample")
 	b.AddTags("1", "2")
 
 	b.RemoveTags("3", "4")
@@ -53,7 +57,7 @@ func TestBoardRemoveTags_NonExistent(t *testing.T) {
 }
 
 func TestBoardRemoveTags_WhenNoTags(t *testing.T) {
-	b := NewBoard("Sample")
+	b := sdk.NewBoard("Sample")
 
 	b.RemoveTags("1", "2")
 
@@ -63,7 +67,7 @@ func TestBoardRemoveTags_WhenNoTags(t *testing.T) {
 }
 
 func TestBoardHasTag_TagExists(t *testing.T) {
-	b := NewBoard("Sample")
+	b := sdk.NewBoard("Sample")
 	b.AddTags("1", "2", "3")
 
 	if !b.HasTag("2") {
@@ -72,7 +76,7 @@ func TestBoardHasTag_TagExists(t *testing.T) {
 }
 
 func TestBoardHasTag_TagNotExists(t *testing.T) {
-	b := NewBoard("Sample")
+	b := sdk.NewBoard("Sample")
 	b.AddTags("1", "2")
 
 	if b.HasTag("3") {

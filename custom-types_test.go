@@ -1,4 +1,4 @@
-package sdk
+package sdk_test
 
 /*
    Copyright 2016 Alexander I.Grafov <grafov@gmail.com>
@@ -22,10 +22,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"testing"
+
+	"github.com/grafana-tools/sdk"
 )
 
 func TestIntString_Unmarshal(t *testing.T) {
-	var i IntString
+	var i sdk.IntString
 	raw := []byte(`100`)
 
 	err := json.Unmarshal(raw, &i)
@@ -43,7 +45,7 @@ func TestIntString_Unmarshal(t *testing.T) {
 }
 
 func TestIntString_Marshal(t *testing.T) {
-	i := NewIntString(100)
+	i := sdk.NewIntString(100)
 
 	body, err := json.Marshal(i)
 	if err != nil {
