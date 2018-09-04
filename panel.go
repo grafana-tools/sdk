@@ -230,11 +230,11 @@ type (
 		Values *[]string   `json:"values,omitempty"`
 	}
 	Axis struct {
-		Format  string     `json:"format"`
-		LogBase int        `json:"logBase"`
-		Max     *IntString `json:"max,omitempty"`
-		Min     *IntString `json:"min,omitempty"`
-		Show    bool       `json:"show"`
+		Format  string       `json:"format"`
+		LogBase int          `json:"logBase"`
+		Max     *FloatString `json:"max,omitempty"`
+		Min     *FloatString `json:"min,omitempty"`
+		Show    bool         `json:"show"`
 	}
 	SeriesOverride struct {
 		Alias         string      `json:"alias"`
