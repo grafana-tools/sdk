@@ -76,7 +76,7 @@ func main() {
 				}
 			}
 			if status, err = c.CreateDatasource(newDS); err != nil {
-				fmt.Fprint(os.Stderr, fmt.Sprintf("error on importing datasource %s with %s (%s)", newDS.Name, err, status.Message))
+				fmt.Fprint(os.Stderr, fmt.Sprintf("error on importing datasource %s with %s (%s)", newDS.Name, err, *status.Message))
 			}
 		}
 	}

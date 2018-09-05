@@ -1,4 +1,4 @@
-package sdk
+package sdk_test
 
 /*
    Copyright 2016 Alexander I.Grafov <grafov@gmail.com>
@@ -22,11 +22,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"testing"
+
+	"github.com/grafana-tools/sdk"
 )
 
 func TestStackVal_UnmarshalJSON_GotTrue(t *testing.T) {
 	var sampleOut struct {
-		Val BoolString `json:"val"`
+		Val sdk.BoolString `json:"val"`
 	}
 	var sampleIn = []byte(`{"val":true}`)
 
@@ -42,7 +44,7 @@ func TestStackVal_UnmarshalJSON_GotTrue(t *testing.T) {
 
 func TestStackVal_UnmarshalJSON_GotFalse(t *testing.T) {
 	var sampleOut struct {
-		Val BoolString `json:"val"`
+		Val sdk.BoolString `json:"val"`
 	}
 	var sampleIn = []byte(`{"val":false}`)
 
@@ -58,7 +60,7 @@ func TestStackVal_UnmarshalJSON_GotFalse(t *testing.T) {
 
 func TestStackVal_UnmarshalJSON_GotString(t *testing.T) {
 	var sampleOut struct {
-		Val BoolString `json:"val"`
+		Val sdk.BoolString `json:"val"`
 	}
 	var sampleIn = []byte(`{"val":"A"}`)
 
@@ -74,7 +76,7 @@ func TestStackVal_UnmarshalJSON_GotString(t *testing.T) {
 
 func TestStackVal_MarshalJSON_GotTrue(t *testing.T) {
 	var sampleInp struct {
-		Val BoolString `json:"val"`
+		Val sdk.BoolString `json:"val"`
 	}
 	sampleInp.Val.Flag = true
 	var sampleOut = []byte(`{"val":true}`)
@@ -88,7 +90,7 @@ func TestStackVal_MarshalJSON_GotTrue(t *testing.T) {
 
 func TestStackVal_MarshalJSON_GotFalse(t *testing.T) {
 	var sampleInp struct {
-		Val BoolString `json:"val"`
+		Val sdk.BoolString `json:"val"`
 	}
 	sampleInp.Val.Flag = false
 	var sampleOut = []byte(`{"val":false}`)
@@ -102,7 +104,7 @@ func TestStackVal_MarshalJSON_GotFalse(t *testing.T) {
 
 func TestStackVal_MarshalJSON_GotString(t *testing.T) {
 	var sampleInp struct {
-		Val BoolString `json:"val"`
+		Val sdk.BoolString `json:"val"`
 	}
 	sampleInp.Val.Value = "A"
 	var sampleOut = []byte(`{"val":"A"}`)
@@ -116,7 +118,7 @@ func TestStackVal_MarshalJSON_GotString(t *testing.T) {
 
 func TestBoolInt_UnmarshalJSON_GotTrue(t *testing.T) {
 	var sampleOut struct {
-		Val BoolInt `json:"val"`
+		Val sdk.BoolInt `json:"val"`
 	}
 	var sampleIn = []byte(`{"val":true}`)
 
@@ -132,7 +134,7 @@ func TestBoolInt_UnmarshalJSON_GotTrue(t *testing.T) {
 
 func TestBoolInt_UnmarshalJSON_GotFalse(t *testing.T) {
 	var sampleOut struct {
-		Val BoolInt `json:"val"`
+		Val sdk.BoolInt `json:"val"`
 	}
 	var sampleIn = []byte(`{"val":false}`)
 
@@ -148,7 +150,7 @@ func TestBoolInt_UnmarshalJSON_GotFalse(t *testing.T) {
 
 func TestBoolInt_UnmarshalJSON_GotInt(t *testing.T) {
 	var sampleOut struct {
-		Val BoolInt `json:"val"`
+		Val sdk.BoolInt `json:"val"`
 	}
 	var sampleIn = []byte(`{"val":123456789}`)
 
@@ -167,7 +169,7 @@ func TestBoolInt_UnmarshalJSON_GotInt(t *testing.T) {
 
 func TestBoolInt_MarshalJSON_GotTrue(t *testing.T) {
 	var sampleInp struct {
-		Val BoolInt `json:"val"`
+		Val sdk.BoolInt `json:"val"`
 	}
 	sampleInp.Val.Flag = true
 	var sampleOut = []byte(`{"val":true}`)
@@ -181,7 +183,7 @@ func TestBoolInt_MarshalJSON_GotTrue(t *testing.T) {
 
 func TestBoolInt_MarshalJSON_GotFalse(t *testing.T) {
 	var sampleInp struct {
-		Val BoolInt `json:"val"`
+		Val sdk.BoolInt `json:"val"`
 	}
 	sampleInp.Val.Flag = false
 	var sampleOut = []byte(`{"val":false}`)
@@ -195,7 +197,7 @@ func TestBoolInt_MarshalJSON_GotFalse(t *testing.T) {
 
 func TestBoolInt_MarshalJSON_GotInt(t *testing.T) {
 	var sampleInp struct {
-		Val BoolInt `json:"val"`
+		Val sdk.BoolInt `json:"val"`
 	}
 	var i int64 = 123456789
 	sampleInp.Val.Value = &i
@@ -211,7 +213,7 @@ func TestBoolInt_MarshalJSON_GotInt(t *testing.T) {
 func TestNewGraph(t *testing.T) {
 	var title = "Sample Title"
 
-	graph := NewGraph(title)
+	graph := sdk.NewGraph(title)
 
 	if graph.GraphPanel == nil {
 		t.Error("should be not nil")
@@ -231,11 +233,11 @@ func TestNewGraph(t *testing.T) {
 }
 
 func TestGraph_AddTarget(t *testing.T) {
-	var target = Target{
+	var target = sdk.Target{
 		RefID:      "A",
 		Datasource: "Sample Source",
 		Expr:       "sample request"}
-	graph := NewGraph("")
+	graph := sdk.NewGraph("")
 
 	graph.AddTarget(&target)
 
@@ -249,16 +251,16 @@ func TestGraph_AddTarget(t *testing.T) {
 
 func TestGraph_SetTargetNew(t *testing.T) {
 	var (
-		target1 = Target{
+		target1 = sdk.Target{
 			RefID:      "A",
 			Datasource: "Sample Source 1",
 			Expr:       "sample request 1"}
-		target2 = Target{
+		target2 = sdk.Target{
 			RefID:      "B",
 			Datasource: "Sample Source 2",
 			Expr:       "sample request 2"}
 	)
-	graph := NewGraph("")
+	graph := sdk.NewGraph("")
 	graph.AddTarget(&target1)
 
 	graph.SetTarget(&target2)
@@ -276,16 +278,16 @@ func TestGraph_SetTargetNew(t *testing.T) {
 
 func TestGraph_SetTargetUpdate(t *testing.T) {
 	var (
-		target1 = Target{
+		target1 = sdk.Target{
 			RefID:      "A",
 			Datasource: "Sample Source 1",
 			Expr:       "sample request 1"}
-		target2 = Target{
+		target2 = sdk.Target{
 			RefID:      "A",
 			Datasource: "Sample Source 2",
 			Expr:       "sample request 2"}
 	)
-	graph := NewGraph("")
+	graph := sdk.NewGraph("")
 	graph.AddTarget(&target1)
 
 	graph.SetTarget(&target2)
@@ -393,7 +395,7 @@ func TestPanel_ElasticsearchSource_ParsedTargets(t *testing.T) {
   ]
 }`)
 
-	var graph Panel
+	var graph sdk.Panel
 	err := json.Unmarshal(rawPanel, &graph)
 
 	if err != nil {

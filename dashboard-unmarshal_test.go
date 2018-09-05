@@ -1,4 +1,4 @@
-package sdk
+package sdk_test
 
 /*
    Copyright 2016 Alexander I.Grafov <grafov@gmail.com>
@@ -22,10 +22,12 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"testing"
+
+	"github.com/grafana-tools/sdk"
 )
 
 func TestUnmarshal_NewEmptyDashboard26(t *testing.T) {
-	var board Board
+	var board sdk.Board
 	raw, _ := ioutil.ReadFile("testdata/new-empty-dashboard-2.6.json")
 
 	err := json.Unmarshal(raw, &board)
@@ -36,7 +38,7 @@ func TestUnmarshal_NewEmptyDashboard26(t *testing.T) {
 }
 
 func TestUnmarshal_EmptyDashboardWithTemplating26(t *testing.T) {
-	var board Board
+	var board sdk.Board
 	raw, _ := ioutil.ReadFile("testdata/empty-dashboard-with-templating-2.6.json")
 
 	err := json.Unmarshal(raw, &board)
@@ -47,7 +49,7 @@ func TestUnmarshal_EmptyDashboardWithTemplating26(t *testing.T) {
 }
 
 func TestUnmarshal_EmptyDashboardWithAnnotation26(t *testing.T) {
-	var board Board
+	var board sdk.Board
 	raw, _ := ioutil.ReadFile("testdata/empty-dashboard-with-annotation-2.6.json")
 
 	err := json.Unmarshal(raw, &board)
@@ -58,7 +60,7 @@ func TestUnmarshal_EmptyDashboardWithAnnotation26(t *testing.T) {
 }
 
 func TestUnmarshal_EmptyDashboardWithLinks26(t *testing.T) {
-	var board Board
+	var board sdk.Board
 	raw, _ := ioutil.ReadFile("testdata/empty-dashboard-with-links-2.6.json")
 
 	err := json.Unmarshal(raw, &board)
@@ -69,7 +71,7 @@ func TestUnmarshal_EmptyDashboardWithLinks26(t *testing.T) {
 }
 
 func TestUnmarshal_DashboardWithDefaultPanelsIn2Rows26(t *testing.T) {
-	var board Board
+	var board sdk.Board
 	raw, _ := ioutil.ReadFile("testdata/default-panels-all-types-2-rows-dashboard-2.6.json")
 
 	err := json.Unmarshal(raw, &board)
@@ -80,7 +82,7 @@ func TestUnmarshal_DashboardWithDefaultPanelsIn2Rows26(t *testing.T) {
 }
 
 func TestUnmarshal_DashboardWithGraphWithTargets26(t *testing.T) {
-	var board Board
+	var board sdk.Board
 	raw, _ := ioutil.ReadFile("testdata/default-panels-graph-with-targets-2.6.json")
 
 	err := json.Unmarshal(raw, &board)
@@ -95,11 +97,11 @@ func TestUnmarshal_DashboardWithGraphWithTargets26(t *testing.T) {
 		t.Errorf("there are 1 panel defined but got %d", len(board.Rows[0].Panels))
 	}
 	panel := board.Rows[0].Panels[0]
-	if panel.OfType != GraphType {
-		t.Errorf("panel type should be %d (\"graph\") type but got %d", GraphType, panel.OfType)
+	if panel.OfType != sdk.GraphType {
+		t.Errorf("panel type should be %d (\"graph\") type but got %d", sdk.GraphType, panel.OfType)
 	}
-	if *panel.Datasource != MixedSource {
-		t.Errorf("panel Datasource should be \"%s\" but got \"%s\"", MixedSource, *panel.Datasource)
+	if *panel.Datasource != sdk.MixedSource {
+		t.Errorf("panel Datasource should be \"%s\" but got \"%s\"", sdk.MixedSource, *panel.Datasource)
 	}
 	if len(panel.GraphPanel.Targets) != 2 {
 		t.Errorf("panel has 2 targets but got %d", len(panel.GraphPanel.Targets))
@@ -107,7 +109,7 @@ func TestUnmarshal_DashboardWithGraphWithTargets26(t *testing.T) {
 }
 
 func TestUnmarshal_DashboardWithEmptyPanels30(t *testing.T) {
-	var board Board
+	var board sdk.Board
 	raw, _ := ioutil.ReadFile("testdata/dashboard-with-default-panels-grafana-3.0.json")
 
 	err := json.Unmarshal(raw, &board)
@@ -118,7 +120,7 @@ func TestUnmarshal_DashboardWithEmptyPanels30(t *testing.T) {
 }
 
 func TestUnmarshal_DashboardWithHiddenTemplates(t *testing.T) {
-	var board Board
+	var board sdk.Board
 	raw, _ := ioutil.ReadFile("testdata/empty-dashboard-with-templating-4.0.json")
 
 	err := json.Unmarshal(raw, &board)
@@ -127,13 +129,13 @@ func TestUnmarshal_DashboardWithHiddenTemplates(t *testing.T) {
 		t.Error(err)
 	}
 
-	if board.Templating.List[1].Hide != TemplatingHideVariable {
-		t.Errorf("templating has hidden variable '%d', got %d", TemplatingHideVariable, board.Templating.List[1].Hide)
+	if board.Templating.List[1].Hide != sdk.TemplatingHideVariable {
+		t.Errorf("templating has hidden variable '%d', got %d", sdk.TemplatingHideVariable, board.Templating.List[1].Hide)
 	}
 }
 
 func TestUnmarshal_DashboardWithMixedYaxes(t *testing.T) {
-	var board Board
+	var board sdk.Board
 	raw, _ := ioutil.ReadFile("testdata/dashboard-with-panels-with-mixed-yaxes.json")
 
 	err := json.Unmarshal(raw, &board)
