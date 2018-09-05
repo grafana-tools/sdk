@@ -116,30 +116,21 @@ type IntString struct {
 
 // UnmarshalJSON implements custom unmarshalling for IntString type
 func (v *IntString) UnmarshalJSON(raw []byte) error {
-	if raw == nil || bytes.Equal(raw, []byte(`"null"`)) {
+	if raw == nil || bytes.Equal(raw, []byte(`"null"`)) || bytes.Equal(raw, []byte(`""`)) {
 		return nil
 	}
 
+	strVal := string(raw)
 	if rune(raw[0]) == '"' {
-		strVal := strings.Trim(string(raw), `"`)
-
-		i, err := strconv.Atoi(strVal)
-		if err != nil {
-			return err
-		}
-
-		v.Value = int64(i)
-		v.Valid = true
-
-		return nil
+		strVal = strings.Trim(strVal, `"`)
 	}
 
-	i, err := strconv.Atoi(string(raw))
+	i, err := strconv.ParseInt(strVal, 10, 64)
 	if err != nil {
 		return err
 	}
 
-	v.Value = int64(i)
+	v.Value = i
 	v.Valid = true
 
 	return nil
@@ -148,7 +139,52 @@ func (v *IntString) UnmarshalJSON(raw []byte) error {
 // MarshalJSON implements custom marshalling for IntString type
 func (v *IntString) MarshalJSON() ([]byte, error) {
 	if v.Valid {
-		strVal := strconv.Itoa(int(v.Value))
+		strVal := strconv.FormatInt(v.Value, 10)
+		return []byte(strVal), nil
+	}
+
+	return []byte(`"null"`), nil
+}
+
+func NewFloatString(i float64) *FloatString {
+	return &FloatString{
+		Value: i,
+		Valid: true,
+	}
+}
+
+// FloatString represents special type for json values that could be strings or ints: 100 or "100"
+type FloatString struct {
+	Value float64
+	Valid bool
+}
+
+// UnmarshalJSON implements custom unmarshalling for FloatString type
+func (v *FloatString) UnmarshalJSON(raw []byte) error {
+	if raw == nil || bytes.Equal(raw, []byte(`"null"`)) || bytes.Equal(raw, []byte(`""`)) {
+		return nil
+	}
+
+	strVal := string(raw)
+	if rune(raw[0]) == '"' {
+		strVal = strings.Trim(strVal, `"`)
+	}
+
+	i, err := strconv.ParseFloat(strVal, 64)
+	if err != nil {
+		return err
+	}
+
+	v.Value = i
+	v.Valid = true
+
+	return nil
+}
+
+// MarshalJSON implements custom marshalling for FloatString type
+func (v *FloatString) MarshalJSON() ([]byte, error) {
+	if v.Valid {
+		strVal := strconv.FormatFloat(v.Value, 'g', -1, 64)
 		return []byte(strVal), nil
 	}
 

@@ -164,15 +164,15 @@ type (
 		Decimals        int      `json:"decimals"`
 		Format          string   `json:"format"`
 		Gauge           struct {
-			MaxValue         int  `json:"maxValue"`
-			MinValue         int  `json:"minValue"`
-			Show             bool `json:"show"`
-			ThresholdLabels  bool `json:"thresholdLabels"`
-			ThresholdMarkers bool `json:"thresholdMarkers"`
+			MaxValue         float32 `json:"maxValue"`
+			MinValue         float32 `json:"minValue"`
+			Show             bool    `json:"show"`
+			ThresholdLabels  bool    `json:"thresholdLabels"`
+			ThresholdMarkers bool    `json:"thresholdMarkers"`
 		} `json:"gauge,omitempty"`
 		MappingType     *uint       `json:"mappingType,omitempty"`
 		MappingTypes    []*MapType  `json:"mappingTypes,omitempty"`
-		MaxDataPoints   *int        `json:"maxDataPoints,omitempty"`
+		MaxDataPoints   *IntString  `json:"maxDataPoints,omitempty"`
 		NullPointMode   string      `json:"nullPointMode"`
 		Postfix         *string     `json:"postfix,omitempty"`
 		PostfixFontSize *string     `json:"postfixFontSize,omitempty"`
@@ -230,11 +230,11 @@ type (
 		Values *[]string   `json:"values,omitempty"`
 	}
 	Axis struct {
-		Format  string     `json:"format"`
-		LogBase int        `json:"logBase"`
-		Max     *IntString `json:"max,omitempty"`
-		Min     *IntString `json:"min,omitempty"`
-		Show    bool       `json:"show"`
+		Format  string       `json:"format"`
+		LogBase int          `json:"logBase"`
+		Max     *FloatString `json:"max,omitempty"`
+		Min     *FloatString `json:"min,omitempty"`
+		Show    bool         `json:"show"`
 	}
 	SeriesOverride struct {
 		Alias         string      `json:"alias"`
