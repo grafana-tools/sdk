@@ -57,57 +57,41 @@ func (r *Client) GetDashboard(slug string) (Board, BoardProperties, error) {
 			Meta  BoardProperties `json:"meta"`
 			Board Board           `json:"dashboard"`
 		}
-		code int
-		err  error
+		err error
 	)
-	slug, _ = setPrefix(slug)
-	if raw, code, err = r.get(fmt.Sprintf("api/dashboards/%s", slug), nil); err != nil {
+	if raw, err = r.GetRawDashboard(slug); err != nil {
 		return Board{}, BoardProperties{}, err
 	}
-	if code != 200 {
-		return Board{}, BoardProperties{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
-	}
+
 	dec := json.NewDecoder(bytes.NewReader(raw))
 	dec.UseNumber()
 	if err := dec.Decode(&result); err != nil {
 		return Board{}, BoardProperties{}, fmt.Errorf("unmarshal board with meta: %s\n%s", err, raw)
 	}
+
 	return result.Board, result.Meta, err
 }
 
-// GetRawDashboard loads a dashboard JSON from Grafana instance along with metadata for a dashboard.
-// Contrary to GetDashboard() it not unpack loaded JSON to Board structure. Instead it
-// returns it as byte slice. It guarantee that data of dashboard returned untouched by conversion
-// with Board so no matter how properly fields from a current version of Grafana mapped to
-// our Board fields. It useful for backuping purposes when you want a dashboard exactly with
-// same data as it exported by Grafana.
+// GetRawDashboard loads a dashboard JSON from Grafana instance and return the original byte slice
 //
 // For dashboards from a filesystem set "file/" prefix for slug. By default dashboards from
 // a database assumed. Database dashboards may have "db/" prefix or may have not, it will
 // be appended automatically.
-func (r *Client) GetRawDashboard(slug string) ([]byte, BoardProperties, error) {
+func (r *Client) GetRawDashboard(slug string) ([]byte, error) {
 	var (
-		raw    []byte
-		result struct {
-			Meta  BoardProperties `json:"meta"`
-			Board json.RawMessage `json:"dashboard"`
-		}
+		raw  []byte
 		code int
 		err  error
 	)
 	slug, _ = setPrefix(slug)
 	if raw, code, err = r.get(fmt.Sprintf("api/dashboards/%s", slug), nil); err != nil {
-		return nil, BoardProperties{}, err
+		return []byte{}, err
 	}
 	if code != 200 {
-		return nil, BoardProperties{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
+		return []byte{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
-	dec := json.NewDecoder(bytes.NewReader(raw))
-	dec.UseNumber()
-	if err := dec.Decode(&result); err != nil {
-		return nil, BoardProperties{}, fmt.Errorf("unmarshal board with meta: %s\n%s", err, raw)
-	}
-	return []byte(result.Board), result.Meta, err
+
+	return raw, nil
 }
 
 // FoundBoard keeps result of search with metadata of a dashboard.
