@@ -72,7 +72,7 @@ func (r *Client) GetDashboard(slug string) (Board, BoardProperties, error) {
 	return result.Board, result.Meta, err
 }
 
-// GetRawDashboard loads a dashboard JSON from Grafana instance byte slice.
+// GetRawDashboard loads a dashboard JSON from Grafana instance and return the original byte slice
 //
 // For dashboards from a filesystem set "file/" prefix for slug. By default dashboards from
 // a database assumed. Database dashboards may have "db/" prefix or may have not, it will
