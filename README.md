@@ -142,12 +142,10 @@ datasources. State of support for misc API parts noted below.
 * `[PROGRESS]` Support all functions of Grafana REST API for manipulating dashboards and datasources.
 * Support functions of Grafana REST API for manipulating users and organizations.
 
-
 ## Collection of Grafana tools in Golang
 
-* [github.com/grafana/grafana-api-golang-client](https://github.com/grafana/grafana-api-golang-client) — official golang client of Grafana project. Currently in realizes parts of the REST API.
+* [github.com/nytm/go-grafana-api](https://github.com/nytm/go-grafana-api) — a golang client of Grafana project currently that realizes parts of the REST API, used for the Grafana Terraform provider.
 * [github.com/adejoux/grafanaclient](https://github.com/adejoux/grafanaclient) — API to manage Grafana 2.0 datasources and dashboards. It lacks features from 2.5 and later Grafana versions.
 * [github.com/mgit-at/grafana-backup](https://github.com/mgit-at/grafana-backup) — just saves dashboards localy.
 * [github.com/raintank/memo](https://github.com/raintank/memo) — send slack mentions to Grafana annotations.
 * [github.com/retzkek/grafctl](https://github.com/retzkek/grafctl) — backup/restore/track dashboards with git.
-
