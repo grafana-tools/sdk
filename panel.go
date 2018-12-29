@@ -119,6 +119,7 @@ type (
 		Stack           bool             `json:"stack"`
 		SteppedLine     bool             `json:"steppedLine"`
 		Targets         []Target         `json:"targets,omitempty"`
+		Thresholds      []Threshold      `json:"thresholds,omitempty"`
 		TimeFrom        *string          `json:"timeFrom,omitempty"`
 		TimeShift       *string          `json:"timeShift,omitempty"`
 		Tooltip         Tooltip          `json:"tooltip"`
@@ -128,6 +129,24 @@ type (
 		Xaxis           Axis             `json:"xaxis"` // was added in Grafana 4.x?
 		Yaxes           []Axis           `json:"yaxes"` // was added in Grafana 4.x?
 	}
+	Threshold struct {
+		// the alert threshold value, we do not omitempty, since 0 is a valid
+		// threshold
+		Value int `json:"value"`
+		// critical, warning, ok, custom
+		ColorMode string `json:"colorMode,omitempty"`
+		// gt or lt
+		Op   string `json:"op,omitempty"`
+		Fill bool   `json:"fill"`
+		Line bool   `json:"line"`
+		// hexidecimal color (e.g. #629e51, only when ColorMode is "custom")
+		FillColor string `json:"fillColor,omitempty"`
+		// hexidecimal color (e.g. #629e51, only when ColorMode is "custom")
+		LineColor string `json:"lineColor,omitempty"`
+		// left or right
+		Yaxis string `json:"yaxis,omitempty"`
+	}
+
 	Tooltip struct {
 		Shared       bool   `json:"shared"`
 		ValueType    string `json:"value_type"`
