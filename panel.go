@@ -132,7 +132,7 @@ type (
 	Threshold struct {
 		// the alert threshold value, we do not omitempty, since 0 is a valid
 		// threshold
-		Value int `json:"value"`
+		Value float32 `json:"value"`
 		// critical, warning, ok, custom
 		ColorMode string `json:"colorMode,omitempty"`
 		// gt or lt
