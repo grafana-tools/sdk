@@ -46,11 +46,23 @@ type BoardProperties struct {
 	Version    int       `json:"version"`
 }
 
-// GetDashboard loads a dashboard from Grafana instance along with metadata for a dashboard.
+// GetDashboardByUID loads a dashboard and its metadata from Grafana by dashboard uid.
+func (r *Client) GetDashboardByUID(uid string) (Board, BoardProperties, error) {
+	return r.getDashboard("uid/" + uid)
+}
+
+// GetDashboardByUID loads a dashboard and its metadata from Grafana by dashboard slug.
+// Deprecated since Grafana v5
+//
 // For dashboards from a filesystem set "file/" prefix for slug. By default dashboards from
 // a database assumed. Database dashboards may have "db/" prefix or may have not, it will
 // be appended automatically.
-func (r *Client) GetDashboard(slug string) (Board, BoardProperties, error) {
+func (r *Client) GetDashboardBySlug(slug string) (Board, BoardProperties, error) {
+	path, _ := setPrefix(slug)
+	return r.getDashboard(path)
+}
+
+func (r *Client) getDashboard(path string) (Board, BoardProperties, error) {
 	var (
 		raw    []byte
 		result struct {
@@ -60,8 +72,7 @@ func (r *Client) GetDashboard(slug string) (Board, BoardProperties, error) {
 		code int
 		err  error
 	)
-	slug, _ = setPrefix(slug)
-	if raw, code, err = r.get(fmt.Sprintf("api/dashboards/%s", slug), nil); err != nil {
+	if raw, code, err = r.get(fmt.Sprintf("api/dashboards/%s", path), nil); err != nil {
 		return Board{}, BoardProperties{}, err
 	}
 	if code != 200 {
@@ -76,7 +87,7 @@ func (r *Client) GetDashboard(slug string) (Board, BoardProperties, error) {
 }
 
 // GetRawDashboard loads a dashboard JSON from Grafana instance along with metadata for a dashboard.
-// Contrary to GetDashboard() it not unpack loaded JSON to Board structure. Instead it
+// Contrary to GetDashboardByUID() it not unpack loaded JSON to Board structure. Instead it
 // returns it as byte slice. It guarantee that data of dashboard returned untouched by conversion
 // with Board so no matter how properly fields from a current version of Grafana mapped to
 // our Board fields. It useful for backuping purposes when you want a dashboard exactly with
