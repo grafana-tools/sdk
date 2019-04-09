@@ -31,6 +31,7 @@ const (
 	TableType
 	TextType
 	PluginlistType
+	AlertlistType
 	SinglestatType
 )
 
@@ -49,6 +50,7 @@ type (
 		*DashlistPanel
 		*PluginlistPanel
 		*RowPanel
+		*AlertlistPanel
 		*CustomPanel
 	}
 	panelType   int8
@@ -82,6 +84,37 @@ type (
 		Title       string  `json:"title"` // general
 		Transparent bool    `json:"transparent"`
 		Type        string  `json:"type"`
+		Alert       *Alert  `json:"alert,omitempty"`
+	}
+	AlertCondition struct {
+		Evaluator struct {
+			Params []float64 `json:"params,omitempty"`
+			Type   string    `json:"type,omitempty"`
+		} `json:"evaluator,omitempty"`
+		Operator struct {
+			Type string `json:"type,omitempty"`
+		} `json:"operator,omitempty"`
+		Query struct {
+			Params []string `json:"params,omitempty"`
+		} `json:"query,omitempty"`
+		Reducer struct {
+			Params []string `json:"params,omitempty"`
+			Type   string   `json:"type,omitempty"`
+		} `json:"reducer,omitempty"`
+		Type string `json:"type,omitempty"`
+	}
+	AlertNotification struct {
+		ID int `json:"id,omitempty"`
+	}
+	Alert struct {
+		Conditions          []AlertCondition    `json:"conditions,omitempty"`
+		ExecutionErrorState string              `json:"executionErrorState,omitempty"`
+		Frequency           string              `json:"frequency,omitempty"`
+		Handler             int                 `json:"handler,omitempty"`
+		Name                string              `json:"name,omitempty"`
+		NoDataState         string              `json:"noDataState,omitempty"`
+		Notifications       []AlertNotification `json:"notifications,omitempty"`
+		Message             string              `json:"message,omitempty"`
 	}
 	GraphPanel struct {
 		AliasColors interface{} `json:"aliasColors"` // XXX
@@ -218,6 +251,13 @@ type (
 	}
 	PluginlistPanel struct {
 		Limit int `json:"limit,omitempty"`
+	}
+	AlertlistPanel struct {
+		OnlyAlertsOnDashboard bool     `json:"onlyAlertsOnDashboard"`
+		Show                  string   `json:"show"`
+		SortOrder             int      `json:"sortOrder"`
+		Limit                 int      `json:"limit"`
+		StateFilter           []string `json:"stateFilter"`
 	}
 	RowPanel struct {
 		Panels []Panel
@@ -450,6 +490,21 @@ func NewPluginlist(title string) *Panel {
 		PluginlistPanel: &PluginlistPanel{}}
 }
 
+func NewAlertlist(title string) *Panel {
+	if title == "" {
+		title = "Panel Title"
+	}
+	render := "flot"
+	return &Panel{
+		commonPanel: commonPanel{
+			OfType:   AlertlistType,
+			Title:    title,
+			Type:     "alertlist",
+			Renderer: &render,
+			IsNew:    true},
+		AlertlistPanel: &AlertlistPanel{}}
+}
+
 // NewCustom initializes panel with a singlestat panel.
 func NewCustom(title string) *Panel {
 	if title == "" {
@@ -677,6 +732,12 @@ func (p *Panel) MarshalJSON() ([]byte, error) {
 			PluginlistPanel
 		}{p.commonPanel, *p.PluginlistPanel}
 		return json.Marshal(outPluginlist)
+	case AlertlistType:
+		var outAlertlist = struct {
+			commonPanel
+			AlertlistPanel
+		}{p.commonPanel, *p.AlertlistPanel}
+		return json.Marshal(outAlertlist)
 	case CustomType:
 		var outCustom = struct {
 			commonPanel
