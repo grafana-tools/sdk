@@ -254,6 +254,7 @@ type (
 		Max     *FloatString `json:"max,omitempty"`
 		Min     *FloatString `json:"min,omitempty"`
 		Show    bool         `json:"show"`
+		Label   string       `json:"label,omitempty"`
 	}
 	SeriesOverride struct {
 		Alias         string      `json:"alias"`
