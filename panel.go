@@ -32,6 +32,7 @@ const (
 	TextType
 	PluginlistType
 	SinglestatType
+	RowType
 )
 
 const MixedSource = "-- Mixed --"
@@ -220,7 +221,9 @@ type (
 		Limit int `json:"limit,omitempty"`
 	}
 	RowPanel struct {
-		Panels []Panel
+		ShowTitle bool    `json:"showTitle"`
+		Collapse  bool    `json:"collapse"`
+		Panels    []Panel `json:"panels"`
 	}
 	CustomPanel map[string]interface{}
 )
@@ -627,6 +630,12 @@ func (p *Panel) UnmarshalJSON(b []byte) (err error) {
 			if err = json.Unmarshal(b, &dashlist); err == nil {
 				p.DashlistPanel = &dashlist
 			}
+		case "row":
+			var row RowPanel
+			p.OfType = RowType
+			if err = json.Unmarshal(b, &row); err == nil {
+				p.RowPanel = &row
+			}
 		default:
 			var custom = make(CustomPanel)
 			p.OfType = CustomType
@@ -675,6 +684,12 @@ func (p *Panel) MarshalJSON() ([]byte, error) {
 			commonPanel
 			PluginlistPanel
 		}{p.commonPanel, *p.PluginlistPanel}
+		return json.Marshal(outPluginlist)
+	case RowType:
+		var outPluginlist = struct {
+			commonPanel
+			RowPanel
+		}{p.commonPanel, *p.RowPanel}
 		return json.Marshal(outPluginlist)
 	case CustomType:
 		var outCustom = struct {

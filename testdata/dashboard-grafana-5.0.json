@@ -1,0 +1,717 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "limit": 100,
+        "name": "Annotations & Alerts",
+        "showIn": 0,
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Microservice overview dashboard",
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 1,
+  "id": 1022,
+  "iteration": 1555418891761,
+  "links": [
+    {
+      "asDropdown": false,
+      "icon": "external link",
+      "includeVars": true,
+      "keepTime": true,
+      "tags": [
+        "microservice",
+        "official"
+      ],
+      "targetBlank": true,
+      "type": "dashboards"
+    }
+  ],
+  "panels": [
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorPostfix": false,
+      "colorPrefix": false,
+      "colorValue": true,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "datasource": "$datasource",
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1536,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "count(count(scrape_samples_scraped{k8s_service=\"$service\"} > 10000))",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "refId": "A",
+          "target": ""
+        }
+      ],
+      "thresholds": "1,1",
+      "title": "",
+      "transparent": true,
+      "type": "singlestat",
+      "valueFontSize": "100%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "",
+          "value": "null"
+        },
+        {
+          "op": "=",
+          "text": "Service exposes more than 10k metrics. Some of them can be dropped.",
+          "value": "1"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 3
+      },
+      "id": 1021,
+      "panels": [],
+      "title": "",
+      "type": "row"
+    },
+    {
+      "content": "<h2 style=\"text-align: center; font-size: 32px; font-weight: normal; color: #fff;\">$service</h2>\n\n<h3 style=\"text-align: center; font-size: 18px; font-weight: normal; color: #cccccc;\">Version: $version</h3>",
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
+      "id": 1175,
+      "links": [],
+      "mode": "html",
+      "title": "",
+      "transparent": true,
+      "type": "text"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$datasource",
+      "error": false,
+      "fill": 5,
+      "grid": {
+        "leftLogBase": null,
+        "leftMax": null,
+        "leftMin": null,
+        "rightLogBase": null,
+        "rightMax": null,
+        "rightMin": null
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 7
+      },
+      "height": "220px",
+      "id": 45,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "hideEmpty": false,
+        "hideZero": false,
+        "max": true,
+        "min": true,
+        "rightSide": true,
+        "show": true,
+        "sideWidth": 450,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null as zero",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "< 100ms",
+          "color": "#629E51"
+        },
+        {
+          "alias": "100ms - 250ms",
+          "color": "#7EB26D"
+        },
+        {
+          "alias": "250ms - 500ms",
+          "color": "#F2C96D"
+        },
+        {
+          "alias": "500ms - 1s",
+          "color": "#EAB839"
+        },
+        {
+          "alias": "1s - 2s",
+          "color": "#BF1B00"
+        },
+        {
+          "alias": "> 2s",
+          "color": "#58140C"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum(rate(response_time_seconds_bucket{service=\"$service\", le=\"+Inf\"}[1m])) - sum(rate(response_time_seconds_bucket{service=\"$service\", le=\"2\"}[1m]))",
+          "format": "time_series",
+          "interval": "$interval",
+          "intervalFactor": 1,
+          "legendFormat": "> 2s",
+          "refId": "F"
+        },
+        {
+          "expr": "sum(rate(response_time_seconds_bucket{service=\"$service\", le=\"2\"}[1m])) - sum(rate(response_time_seconds_bucket{service=\"$service\", le=\"1\"}[1m]))",
+          "format": "time_series",
+          "interval": "$interval",
+          "intervalFactor": 1,
+          "legendFormat": "1s - 2s",
+          "refId": "E"
+        },
+        {
+          "expr": "sum(rate(response_time_seconds_bucket{service=\"$service\", le=\"1\"}[1m])) - sum(rate(response_time_seconds_bucket{service=\"$service\", le=\"0.5\"}[1m]))",
+          "format": "time_series",
+          "interval": "$interval",
+          "intervalFactor": 1,
+          "legendFormat": "500ms - 1s",
+          "refId": "D"
+        },
+        {
+          "expr": "sum(rate(response_time_seconds_bucket{service=\"$service\", le=\"0.5\"}[1m])) - sum(rate(response_time_seconds_bucket{service=\"$service\", le=\"0.25\"}[1m]))",
+          "format": "time_series",
+          "interval": "$interval",
+          "intervalFactor": 1,
+          "legendFormat": "250ms - 500ms",
+          "refId": "C"
+        },
+        {
+          "expr": "sum(rate(response_time_seconds_bucket{service=\"$service\", le=\"0.25\"}[1m])) - sum(rate(response_time_seconds_bucket{service=\"$service\", le=\"0.1\"}[1m]))",
+          "format": "time_series",
+          "interval": "$interval",
+          "intervalFactor": 1,
+          "legendFormat": "100ms - 250ms",
+          "refId": "B"
+        },
+        {
+          "datasource": "$datasource",
+          "expr": "sum(rate(response_time_seconds_bucket{service=\"$service\", le=\"0.1\"}[1m]))",
+          "format": "time_series",
+          "hide": false,
+          "interval": "$interval",
+          "intervalFactor": 1,
+          "legendFormat": "< 100ms",
+          "refId": "A",
+          "step": 60,
+          "target": ""
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "RESPONSE TIME GRADES",
+      "tooltip": {
+        "msResolution": false,
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "x-axis": false,
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "y-axis": false,
+      "y_formats": null,
+      "yaxes": [
+        {
+          "format": "short",
+          "logBase": 2,
+          "max": null,
+          "min": 0,
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$datasource",
+      "decimals": null,
+      "error": false,
+      "fill": 0,
+      "grid": {
+        "leftLogBase": null,
+        "leftMax": null,
+        "leftMin": null,
+        "rightLogBase": null,
+        "rightMax": null,
+        "rightMin": null
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 13
+      },
+      "height": "220px",
+      "id": 276,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "hideEmpty": false,
+        "hideZero": false,
+        "max": true,
+        "min": true,
+        "rightSide": true,
+        "show": true,
+        "sideWidth": 450,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "maxPerRow": 1,
+      "nullPointMode": "null as zero",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "/^0.99q/",
+          "color": "#447EBC"
+        },
+        {
+          "alias": "/^0.9q/",
+          "color": "#0A437C"
+        },
+        {
+          "alias": "ingress 0.9q",
+          "color": "#64b0c8"
+        },
+        {
+          "alias": "ingress 0.99q",
+          "color": "#2f575e"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "service:request:rt{service=\"$service\", is_success=\"1\", quantile=\"0.9\"}",
+          "format": "time_series",
+          "hide": false,
+          "interval": "$interval",
+          "intervalFactor": 1,
+          "legendFormat": "0.9q",
+          "refId": "C"
+        },
+        {
+          "expr": "service:request:rt{service=\"$service\", is_success=\"1\", quantile=\"0.99\"}",
+          "format": "time_series",
+          "hide": false,
+          "interval": "$interval",
+          "intervalFactor": 1,
+          "legendFormat": "0.99q",
+          "refId": "B"
+        },
+        {
+          "expr": "histogram_quantile(0.9, sum(rate(nginx_ingress_controller_request_duration_seconds_bucket{ingress=~\"$k8s_service(-(http|grpc)(-tmp)?)?\"}[1m])) by (le))",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "legendFormat": "ingress 0.9q",
+          "refId": "A"
+        },
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(nginx_ingress_controller_request_duration_seconds_bucket{ingress=~\"$k8s_service(-(http|grpc)(-tmp)?)?\"}[1m])) by (le))",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "legendFormat": "ingress 0.99q",
+          "refId": "D"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Response time (0.9q, 0.99q)",
+      "tooltip": {
+        "msResolution": false,
+        "shared": true,
+        "sort": 0,
+        "value_type": "cumulative"
+      },
+      "type": "graph",
+      "x-axis": false,
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": [
+          "avg"
+        ]
+      },
+      "y-axis": false,
+      "y_formats": null,
+      "yaxes": [
+        {
+          "format": "s",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": 0,
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$datasource",
+      "decimals": 0,
+      "error": false,
+      "fill": 10,
+      "grid": {
+        "leftLogBase": null,
+        "leftMax": null,
+        "leftMin": null,
+        "rightLogBase": null,
+        "rightMax": null,
+        "rightMin": null
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 19
+      },
+      "height": "220",
+      "id": 44,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "hideEmpty": false,
+        "hideZero": false,
+        "max": true,
+        "min": true,
+        "rightSide": true,
+        "show": true,
+        "sideWidth": 450,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 0,
+      "links": [
+        {
+          "dashUri": "db/incoming-traffic",
+          "dashboard": "Incoming traffic",
+          "includeVars": true,
+          "keepTime": true,
+          "params": "var-service={service}",
+          "targetBlank": true,
+          "title": "Incoming traffic",
+          "type": "dashboard"
+        }
+      ],
+      "nullPointMode": "null as zero",
+      "percentage": true,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "ok",
+          "color": "#629E51"
+        },
+        {
+          "alias": "client_error",
+          "color": "#CFFAFF"
+        },
+        {
+          "alias": "error",
+          "color": "#BF1B00"
+        },
+        {
+          "alias": "other",
+          "color": "#EAB839"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "datasource": "$datasource",
+          "expr": "sum(rate(response_time_seconds_count{service=\"$service\"}[1m])) by (status)",
+          "format": "time_series",
+          "interval": "$interval",
+          "intervalFactor": 1,
+          "legendFormat": "{{ status }}",
+          "refId": "B",
+          "step": 60,
+          "target": ""
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Response codes ratio (ok, client_error, error)",
+      "tooltip": {
+        "msResolution": false,
+        "shared": true,
+        "sort": 0,
+        "value_type": "cumulative"
+      },
+      "type": "graph",
+      "x-axis": false,
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "y-axis": false,
+      "y_formats": null,
+      "yaxes": [
+        {
+          "format": "short",
+          "logBase": 10,
+          "max": "100",
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 18,
+  "style": "dark",
+  "tags": [
+    "official",
+    "microservice"
+  ],
+  "templating": {
+    "list": [
+      {
+        "allFormat": "glob",
+        "allValue": null,
+        "current": {
+          "selected": true,
+          "text": "prod",
+          "value": "prod"
+        },
+        "datasource": null,
+        "hide": 2,
+        "includeAll": false,
+        "label": "Env",
+        "multi": false,
+        "multiFormat": "regex values",
+        "name": "env",
+        "options": [
+          {
+            "selected": false,
+            "text": "dev",
+            "value": "dev"
+          },
+          {
+            "selected": true,
+            "text": "prod",
+            "value": "prod"
+          },
+          {
+            "selected": false,
+            "text": "staging",
+            "value": "staging"
+          }
+        ],
+        "query": "dev, prod,staging",
+        "refresh": 0,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "allFormat": "",
+        "current": {
+          "text": "Prometheus",
+          "value": "Prometheus"
+        },
+        "datasource": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": "Data Source",
+        "multi": false,
+        "multiFormat": "",
+        "name": "datasource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-3h",
+    "to": "now"
+  },
+  "timepicker": {
+    "now": true,
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "browser",
+  "title": "Service Overview",
+  "uid": "BtgL8fHmz",
+  "version": 24
+}
