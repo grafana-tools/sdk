@@ -221,9 +221,9 @@ type (
 		Limit int `json:"limit,omitempty"`
 	}
 	RowPanel struct {
-		ShowTitle bool    `json:"showTitle"`
-		Collapse  bool    `json:"collapse"`
-		Panels    []Panel `json:"panels"`
+		ShowTitle  bool    `json:"showTitle"`
+		Collapsed  bool    `json:"collapsed"`
+		Panels     []Panel `json:"panels"`
 	}
 	CustomPanel map[string]interface{}
 )
