@@ -120,6 +120,11 @@ type (
 		Enable     bool    `json:"enable"`
 		Query      string  `json:"query"`
 		TextField  string  `json:"textField"`
+		Hide       bool    `json:"hide"`
+		Limit      int     `json:"limit"`
+		ShowIn     int     `json:"showIn"`
+		BuiltIn    int     `json:"builtIn"`
+		Type       string  `json:"type"`
 	}
 )
 
