@@ -95,7 +95,7 @@ func (r *Client) CreateDatasource(ds Datasource) (StatusMessage, error) {
 		return StatusMessage{}, err
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
-		return StatusMessage{}, err
+		return StatusMessage{}, fmt.Errorf("%v %s", err, string(raw))
 	}
 	return resp, nil
 }

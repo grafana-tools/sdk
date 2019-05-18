@@ -156,7 +156,7 @@ func (r *Client) SearchDashboards(query string, starred bool, tags ...string) ([
 // newer version or with same dashboard title.
 // Grafana only can create or update a dashboard in a database. File dashboards
 // may be only loaded with HTTP API but not created or updated.
-func (r *Client) SetDashboard(board Board, overwrite bool) error {
+func (r *Client) SetDashboard(board Board, overwrite bool) (StatusMessage, error) {
 	var (
 		isBoardFromDB bool
 		newBoard      struct {
@@ -169,7 +169,7 @@ func (r *Client) SetDashboard(board Board, overwrite bool) error {
 		err  error
 	)
 	if board.Slug, isBoardFromDB = cleanPrefix(board.Slug); !isBoardFromDB {
-		return errors.New("only database dashboard (with 'db/' prefix in a slug) can be set")
+		return resp, errors.New("only database dashboard (with 'db/' prefix in a slug) can be set")
 	}
 	newBoard.Dashboard = board
 	newBoard.Overwrite = overwrite
@@ -177,21 +177,21 @@ func (r *Client) SetDashboard(board Board, overwrite bool) error {
 		newBoard.Dashboard.ID = 0
 	}
 	if raw, err = json.Marshal(newBoard); err != nil {
-		return err
+		return resp, err
 	}
 	if raw, code, err = r.post("api/dashboards/db", nil, raw); err != nil {
-		return err
+		return resp, err
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
-		return err
+		return resp, err
 	}
 	switch code {
 	case 401:
-		return fmt.Errorf("%d %s", code, *resp.Message)
+		return resp, fmt.Errorf("%d %s", code, *resp.Message)
 	case 412:
-		return fmt.Errorf("%d %s", code, *resp.Message)
+		return resp, fmt.Errorf("%d %s", code, *resp.Message)
 	}
-	return nil
+	return resp, nil
 }
 
 // SetRawDashboard updates existing dashboard or creates a new one.
