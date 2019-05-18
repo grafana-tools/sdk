@@ -356,9 +356,11 @@ type Target struct {
 	// For Elasticsearch
 	DsType  *string `json:"dsType,omitempty"`
 	Metrics []struct {
-		ID    string `json:"id"`
-		Field string `json:"field"`
-		Type  string `json:"type"`
+		ID       string      `json:"id"`
+		Field    string      `json:"field"`
+		Type     string      `json:"type"`
+		Meta     interface{} `json:"meta"`
+		Settings interface{} `json:"settings"`
 	} `json:"metrics,omitempty"`
 	Query      string `json:"query,omitempty"`
 	Alias      string `json:"alias,omitempty"`
