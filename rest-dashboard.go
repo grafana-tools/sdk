@@ -156,11 +156,12 @@ func (r *Client) SearchDashboards(query string, starred bool, tags ...string) ([
 // newer version or with same dashboard title.
 // Grafana only can create or update a dashboard in a database. File dashboards
 // may be only loaded with HTTP API but not created or updated.
-func (r *Client) SetDashboard(board Board, overwrite bool) (StatusMessage, error) {
+func (r *Client) SetDashboard(board Board, overwrite bool, folderId int) (StatusMessage, error) {
 	var (
 		isBoardFromDB bool
 		newBoard      struct {
 			Dashboard Board `json:"dashboard"`
+			FolderId  int   `json:"folderId"`
 			Overwrite bool  `json:"overwrite"`
 		}
 		raw  []byte
@@ -173,6 +174,7 @@ func (r *Client) SetDashboard(board Board, overwrite bool) (StatusMessage, error
 	}
 	newBoard.Dashboard = board
 	newBoard.Overwrite = overwrite
+	newBoard.FolderId = folderId
 	if !overwrite {
 		newBoard.Dashboard.ID = 0
 	}
