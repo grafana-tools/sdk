@@ -120,6 +120,8 @@ type (
 		Enable     bool    `json:"enable"`
 		Query      string  `json:"query"`
 		TextField  string  `json:"textField"`
+		TagsField  string  `json:"tagsField"`
+		Type       string  `json:"tags"`
 	}
 )
 
