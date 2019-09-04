@@ -123,6 +123,7 @@ type (
 		DashLength  *uint       `json:"dashLength,omitempty"`
 		Dashes      *bool       `json:"dashes,omitempty"`
 		Decimals    *uint       `json:"decimals,omitempty"`
+		Description *string     `json:"description,omitempty"`
 		Fill        int         `json:"fill"`
 		//		Grid        grid        `json:"grid"` obsoleted in 4.1 by xaxis and yaxis
 
