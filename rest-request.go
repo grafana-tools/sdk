@@ -49,6 +49,8 @@ type StatusMessage struct {
 	Slug    *string `json:"slug"`
 	Version *int    `json:"version"`
 	Status  *string `json:"resp"`
+	UID     *string `json:"uid"`
+	URL     *string `json:"url"`
 }
 
 // NewClient initializes client for interacting with an instance of Grafana server;
