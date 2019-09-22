@@ -156,7 +156,7 @@ func (r *Client) SearchDashboards(query string, starred bool, tags ...string) ([
 // newer version or with same dashboard title.
 // Grafana only can create or update a dashboard in a database. File dashboards
 // may be only loaded with HTTP API but not created or updated.
-func (r *Client) SetDashboard(board Board, overwrite bool) error {
+func (r *Client) SetDashboard(board Board, overwrite bool) (StatusMessage, error) {
 	var (
 		isBoardFromDB bool
 		newBoard      struct {
@@ -169,7 +169,7 @@ func (r *Client) SetDashboard(board Board, overwrite bool) error {
 		err  error
 	)
 	if board.Slug, isBoardFromDB = cleanPrefix(board.Slug); !isBoardFromDB {
-		return errors.New("only database dashboard (with 'db/' prefix in a slug) can be set")
+		return StatusMessage{}, errors.New("only database dashboard (with 'db/' prefix in a slug) can be set")
 	}
 	newBoard.Dashboard = board
 	newBoard.Overwrite = overwrite
@@ -177,28 +177,25 @@ func (r *Client) SetDashboard(board Board, overwrite bool) error {
 		newBoard.Dashboard.ID = 0
 	}
 	if raw, err = json.Marshal(newBoard); err != nil {
-		return err
+		return StatusMessage{}, err
 	}
 	if raw, code, err = r.post("api/dashboards/db", nil, raw); err != nil {
-		return err
+		return StatusMessage{}, err
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
-		return err
+		return StatusMessage{}, err
 	}
-	switch code {
-	case 401:
-		return fmt.Errorf("%d %s", code, *resp.Message)
-	case 412:
-		return fmt.Errorf("%d %s", code, *resp.Message)
+	if code != 200 {
+		return resp, fmt.Errorf("HTTP error %d: returns %s", code, *resp.Message)
 	}
-	return nil
+	return resp, nil
 }
 
 // SetRawDashboard updates existing dashboard or creates a new one.
 // Contrary to SetDashboard() it accepts raw JSON instead of Board structure.
 // Grafana only can create or update a dashboard in a database. File dashboards
 // may be only loaded with HTTP API but not created or updated.
-func (r *Client) SetRawDashboard(raw []byte) error {
+func (r *Client) SetRawDashboard(raw []byte) (StatusMessage, error) {
 	var (
 		rawResp []byte
 		resp    StatusMessage
@@ -208,7 +205,7 @@ func (r *Client) SetRawDashboard(raw []byte) error {
 		plain   = make(map[string]interface{})
 	)
 	if err = json.Unmarshal(raw, &plain); err != nil {
-		return err
+		return StatusMessage{}, err
 	}
 	// TODO(axel) fragile place, refactor it
 	plain["id"] = 0
@@ -217,18 +214,15 @@ func (r *Client) SetRawDashboard(raw []byte) error {
 	buf.Write(raw)
 	buf.WriteString(`, "overwrite": true}`)
 	if rawResp, code, err = r.post("api/dashboards/db", nil, buf.Bytes()); err != nil {
-		return err
+		return StatusMessage{}, err
 	}
 	if err = json.Unmarshal(rawResp, &resp); err != nil {
-		return err
+		return StatusMessage{}, err
 	}
-	switch code {
-	case 401:
-		return fmt.Errorf("%d %s", code, *resp.Message)
-	case 412:
-		return fmt.Errorf("%d %s", code, *resp.Message)
+	if code != 200 {
+		return StatusMessage{}, fmt.Errorf("HTTP error %d: returns %s", code, *resp.Message)
 	}
-	return nil
+	return resp, nil
 }
 
 // DeleteDashboard deletes dashboard that selected by slug string.

@@ -64,10 +64,14 @@ with Grafana then client SDK for Go will be uniquely useful.
 		Expr:       "sample request 1"}
 	graph.AddTarget(&target)
 	row1.Add(graph)
-	c := sdk.NewClient("http://grafana.host", "grafana-api-key", sdk.DefaultHTTPClient)	
-	if err = c.SetDashboard(board, false); err != nil {
+    grafanaURL := "http://grafana.host"
+	c := sdk.NewClient(grafanaURL, "grafana-api-key", sdk.DefaultHTTPClient)
+    response, err := c.SetDashboard(board, false)
+	err != nil {
 		fmt.Printf("error on uploading dashboard %s", board.Title)
-	}
+    } else {
+        fmt.Printf("dashboard URL: %v", grafanaURL+*resp.URL)
+    }
 ```	
 
 The library includes several demo apps for showing API usage:
