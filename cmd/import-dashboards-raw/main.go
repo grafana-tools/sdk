@@ -65,5 +65,6 @@ func main() {
 				log.Printf("error on importing dashboard from %s", file.Name())
 				continue
 			}
+		}
 	}
 }
