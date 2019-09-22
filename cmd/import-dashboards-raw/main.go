@@ -60,10 +60,10 @@ func main() {
 				log.Println(err)
 				continue
 			}
-			if err = c.SetRawDashboard(rawBoard); err != nil {
+			_, err := c.SetRawDashboard(rawBoard)
+			if err != nil {
 				log.Printf("error on importing dashboard from %s", file.Name())
 				continue
 			}
-		}
 	}
 }
