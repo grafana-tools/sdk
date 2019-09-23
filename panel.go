@@ -242,7 +242,7 @@ type (
 		Targets       []Target   `json:"targets,omitempty"`
 		Thresholds    string     `json:"thresholds"`
 		ValueFontSize string     `json:"valueFontSize"`
-		ValueMaps     []valueMap `json:"valueMaps"`
+		ValueMaps     []ValueMap `json:"valueMaps"`
 		ValueName     string     `json:"valueName"`
 	}
 	DashlistPanel struct {
@@ -334,7 +334,7 @@ type (
 )
 
 // for a singlestat
-type valueMap struct {
+type ValueMap struct {
 	Op       string `json:"op"`
 	TextType string `json:"text"`
 	Value    string `json:"value"`
