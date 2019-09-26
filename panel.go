@@ -189,12 +189,12 @@ type (
 		Sort         int    `json:"sort,omitempty"`
 	}
 	TablePanel struct {
-		Columns []column `json:"columns"`
+		Columns []Column `json:"columns"`
 		Sort    *struct {
 			Col  uint `json:"col"`
 			Desc bool `json:"desc"`
 		} `json:"sort,omitempty"`
-		Styles    []columnStyle `json:"styles"`
+		Styles    []ColumnStyle `json:"styles"`
 		Transform string        `json:"transform"`
 		Targets   []Target      `json:"targets,omitempty"`
 		Scroll    bool          `json:"scroll"` // from grafana 3.x
@@ -209,7 +209,7 @@ type (
 			Col  int  `json:"col"`
 			Desc bool `json:"desc"`
 		} `json:"sort"`
-		Styles []columnStyle `json:"styles"`
+		Styles []ColumnStyle `json:"styles"`
 	}
 	SinglestatPanel struct {
 		Colors          []string `json:"colors"`
@@ -318,11 +318,11 @@ type (
 
 // for a table
 type (
-	column struct {
+	Column struct {
 		TextType string `json:"text"`
 		Value    string `json:"value"`
 	}
-	columnStyle struct {
+	ColumnStyle struct {
 		Alias      *string   `json:"alias"`
 		DateFormat *string   `json:"dateFormat,omitempty"`
 		Pattern    string    `json:"pattern"`
