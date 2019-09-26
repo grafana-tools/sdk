@@ -260,6 +260,8 @@ type (
 		SortOrder             int      `json:"sortOrder"`
 		Limit                 int      `json:"limit"`
 		StateFilter           []string `json:"stateFilter"`
+		NameFilter            string   `json:"nameFilter,omitempty"`
+		DashboardTags         []string `json:"dashboardTags,omitempty"`
 	}
 	RowPanel struct {
 		Panels []Panel
