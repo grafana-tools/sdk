@@ -234,10 +234,12 @@ type (
 		PrefixFontSize  *string     `json:"prefixFontSize,omitempty"`
 		RangeMaps       []*RangeMap `json:"rangeMaps,omitempty"`
 		SparkLine       struct {
-			FillColor *string `json:"fillColor,omitempty"`
-			Full      bool    `json:"full,omitempty"`
-			LineColor *string `json:"lineColor,omitempty"`
-			Show      bool    `json:"show,omitempty"`
+			FillColor *string  `json:"fillColor,omitempty"`
+			Full      bool     `json:"full,omitempty"`
+			LineColor *string  `json:"lineColor,omitempty"`
+			Show      bool     `json:"show,omitempty"`
+			YMin      *float64 `json:"ymin,omitempty"`
+			YMax      *float64 `json:"ymax,omitempty"`
 		} `json:"sparkline,omitempty"`
 		Targets       []Target   `json:"targets,omitempty"`
 		Thresholds    string     `json:"thresholds"`
