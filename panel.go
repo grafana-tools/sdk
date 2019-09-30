@@ -174,9 +174,9 @@ type (
 		Op   string `json:"op,omitempty"`
 		Fill bool   `json:"fill"`
 		Line bool   `json:"line"`
-		// hexidecimal color (e.g. #629e51, only when ColorMode is "custom")
+		// hexadecimal color (e.g. #629e51, only when ColorMode is "custom")
 		FillColor string `json:"fillColor,omitempty"`
-		// hexidecimal color (e.g. #629e51, only when ColorMode is "custom")
+		// hexadecimal color (e.g. #629e51, only when ColorMode is "custom")
 		LineColor string `json:"lineColor,omitempty"`
 		// left or right
 		Yaxis string `json:"yaxis,omitempty"`

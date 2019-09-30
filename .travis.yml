@@ -2,9 +2,7 @@ language: go
 
 # Versions of go that are explicitly supported.
 go:
- - 1.7.5
- - 1.8
- - 1.9
+ - 1.13.x
 
 # Required for coverage.
 before_install:
