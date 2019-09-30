@@ -40,7 +40,7 @@ const MixedSource = "-- Mixed --"
 type (
 	// Panel represents panels of different types defined in Grafana.
 	Panel struct {
-		commonPanel
+		CommonPanel
 		// Should be initialized only one type of panels.
 		// OfType field defines which of types below will be used.
 		*GraphPanel
@@ -54,7 +54,7 @@ type (
 		*CustomPanel
 	}
 	panelType   int8
-	commonPanel struct {
+	CommonPanel struct {
 		Datasource *string `json:"datasource,omitempty"` // metrics
 		Editable   bool    `json:"editable"`
 		Error      bool    `json:"error"`
@@ -409,7 +409,7 @@ func NewDashlist(title string) *Panel {
 	}
 	render := "flot"
 	return &Panel{
-		commonPanel: commonPanel{
+		CommonPanel: CommonPanel{
 			OfType:   DashlistType,
 			Title:    title,
 			Type:     "dashlist",
@@ -425,7 +425,7 @@ func NewGraph(title string) *Panel {
 	}
 	render := "flot"
 	return &Panel{
-		commonPanel: commonPanel{
+		CommonPanel: CommonPanel{
 			OfType:   GraphType,
 			Title:    title,
 			Type:     "graph",
@@ -447,7 +447,7 @@ func NewTable(title string) *Panel {
 	}
 	render := "flot"
 	return &Panel{
-		commonPanel: commonPanel{
+		CommonPanel: CommonPanel{
 			OfType:   TableType,
 			Title:    title,
 			Type:     "table",
@@ -463,7 +463,7 @@ func NewText(title string) *Panel {
 	}
 	render := "flot"
 	return &Panel{
-		commonPanel: commonPanel{
+		CommonPanel: CommonPanel{
 			OfType:   TextType,
 			Title:    title,
 			Type:     "text",
@@ -479,7 +479,7 @@ func NewSinglestat(title string) *Panel {
 	}
 	render := "flot"
 	return &Panel{
-		commonPanel: commonPanel{
+		CommonPanel: CommonPanel{
 			OfType:   SinglestatType,
 			Title:    title,
 			Type:     "singlestat",
@@ -495,7 +495,7 @@ func NewPluginlist(title string) *Panel {
 	}
 	render := "flot"
 	return &Panel{
-		commonPanel: commonPanel{
+		CommonPanel: CommonPanel{
 			OfType:   PluginlistType,
 			Title:    title,
 			Type:     "pluginlist",
@@ -510,7 +510,7 @@ func NewAlertlist(title string) *Panel {
 	}
 	render := "flot"
 	return &Panel{
-		commonPanel: commonPanel{
+		CommonPanel: CommonPanel{
 			OfType:   AlertlistType,
 			Title:    title,
 			Type:     "alertlist",
@@ -526,7 +526,7 @@ func NewCustom(title string) *Panel {
 	}
 	render := "flot"
 	return &Panel{
-		commonPanel: commonPanel{
+		CommonPanel: CommonPanel{
 			OfType:   CustomType,
 			Title:    title,
 			Type:     "singlestat",
@@ -658,14 +658,14 @@ func (p *Panel) GetTargets() *[]Target {
 }
 
 type probePanel struct {
-	commonPanel
+	CommonPanel
 	//	json.RawMessage
 }
 
 func (p *Panel) UnmarshalJSON(b []byte) (err error) {
 	var probe probePanel
 	if err = json.Unmarshal(b, &probe); err == nil {
-		p.commonPanel = probe.commonPanel
+		p.CommonPanel = probe.CommonPanel
 		switch probe.Type {
 		case "graph":
 			var graph GraphPanel
@@ -712,51 +712,51 @@ func (p *Panel) MarshalJSON() ([]byte, error) {
 	switch p.OfType {
 	case GraphType:
 		var outGraph = struct {
-			commonPanel
+			CommonPanel
 			GraphPanel
-		}{p.commonPanel, *p.GraphPanel}
+		}{p.CommonPanel, *p.GraphPanel}
 		return json.Marshal(outGraph)
 	case TableType:
 		var outTable = struct {
-			commonPanel
+			CommonPanel
 			TablePanel
-		}{p.commonPanel, *p.TablePanel}
+		}{p.CommonPanel, *p.TablePanel}
 		return json.Marshal(outTable)
 	case TextType:
 		var outText = struct {
-			commonPanel
+			CommonPanel
 			TextPanel
-		}{p.commonPanel, *p.TextPanel}
+		}{p.CommonPanel, *p.TextPanel}
 		return json.Marshal(outText)
 	case SinglestatType:
 		var outSinglestat = struct {
-			commonPanel
+			CommonPanel
 			SinglestatPanel
-		}{p.commonPanel, *p.SinglestatPanel}
+		}{p.CommonPanel, *p.SinglestatPanel}
 		return json.Marshal(outSinglestat)
 	case DashlistType:
 		var outDashlist = struct {
-			commonPanel
+			CommonPanel
 			DashlistPanel
-		}{p.commonPanel, *p.DashlistPanel}
+		}{p.CommonPanel, *p.DashlistPanel}
 		return json.Marshal(outDashlist)
 	case PluginlistType:
 		var outPluginlist = struct {
-			commonPanel
+			CommonPanel
 			PluginlistPanel
-		}{p.commonPanel, *p.PluginlistPanel}
+		}{p.CommonPanel, *p.PluginlistPanel}
 		return json.Marshal(outPluginlist)
 	case AlertlistType:
 		var outAlertlist = struct {
-			commonPanel
+			CommonPanel
 			AlertlistPanel
-		}{p.commonPanel, *p.AlertlistPanel}
+		}{p.CommonPanel, *p.AlertlistPanel}
 		return json.Marshal(outAlertlist)
 	case CustomType:
 		var outCustom = struct {
-			commonPanel
+			CommonPanel
 			CustomPanel
-		}{p.commonPanel, *p.CustomPanel}
+		}{p.CommonPanel, *p.CustomPanel}
 		return json.Marshal(outCustom)
 	}
 	return nil, errors.New("can't marshal unknown panel type")
