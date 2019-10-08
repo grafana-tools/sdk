@@ -325,3 +325,23 @@ func (r *Client) DeleteOrgUser(oid, uid uint) (StatusMessage, error) {
 	err = json.Unmarshal(raw, &reply)
 	return reply, err
 }
+
+// UpdateActualOrgPreferences updates preferences of the actual organization.
+// It reflects DELETE /api/org/preferences API call.
+func (r *Client) UpdateActualOrgPreferences(prefs Preferences) (StatusMessage, error) {
+	var (
+		raw  []byte
+		resp StatusMessage
+		err  error
+	)
+	if raw, err = json.Marshal(prefs); err != nil {
+		return StatusMessage{}, err
+	}
+	if raw, _, err = r.put("api/org/preferences/", nil, raw); err != nil {
+		return StatusMessage{}, err
+	}
+	if err = json.Unmarshal(raw, &resp); err != nil {
+		return StatusMessage{}, err
+	}
+	return resp, nil
+}
