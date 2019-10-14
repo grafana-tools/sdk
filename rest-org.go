@@ -48,7 +48,7 @@ func (r *Client) CreateOrg(org Org) (StatusMessage, error) {
 }
 
 // GetActualOrg gets current organization.
-// It reflects GET /api/orgs API call.
+// It reflects GET /api/org API call.
 func (r *Client) GetActualOrg() (Org, error) {
 	var (
 		raw  []byte
