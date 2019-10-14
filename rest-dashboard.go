@@ -51,7 +51,7 @@ type BoardProperties struct {
 // a database assumed. Database dashboards may have "db/" prefix or may have not, it will
 // be appended automatically.
 //
-// It reflects GET /api/dashboards/db/:slug API call
+// It reflects GET /api/dashboards/db/:slug API call.
 func (r *Client) GetDashboard(slug string) (Board, BoardProperties, error) {
 	var (
 		raw    []byte
@@ -88,7 +88,7 @@ func (r *Client) GetDashboard(slug string) (Board, BoardProperties, error) {
 // a database assumed. Database dashboards may have "db/" prefix or may have not, it will
 // be appended automatically.
 //
-// It reflects GET /api/dashboards/db/:slug API call
+// It reflects GET /api/dashboards/db/:slug API call.
 func (r *Client) GetRawDashboard(slug string) ([]byte, BoardProperties, error) {
 	var (
 		raw    []byte
@@ -127,7 +127,7 @@ type FoundBoard struct {
 // SearchDashboards search dashboards by substring of their title. It allows restrict the result set with
 // only starred dashboards and only for tags (logical OR applied to multiple tags).
 //
-// It reflects GET /api/search API call
+// It reflects GET /api/search API call.
 func (r *Client) SearchDashboards(query string, starred bool, tags ...string) ([]FoundBoard, error) {
 	var (
 		raw    []byte
@@ -163,7 +163,7 @@ func (r *Client) SearchDashboards(query string, starred bool, tags ...string) ([
 // Grafana only can create or update a dashboard in a database. File dashboards
 // may be only loaded with HTTP API but not created or updated.
 //
-// It reflects POST /api/dashboards/db API call
+// It reflects POST /api/dashboards/db API call.
 func (r *Client) SetDashboard(board Board, overwrite bool) (StatusMessage, error) {
 	var (
 		isBoardFromDB bool
@@ -204,7 +204,7 @@ func (r *Client) SetDashboard(board Board, overwrite bool) (StatusMessage, error
 // Grafana only can create or update a dashboard in a database. File dashboards
 // may be only loaded with HTTP API but not created or updated.
 //
-// It reflects POST /api/dashboards/db API call
+// It reflects POST /api/dashboards/db API call.
 func (r *Client) SetRawDashboard(raw []byte) (StatusMessage, error) {
 	var (
 		rawResp []byte
@@ -239,7 +239,7 @@ func (r *Client) SetRawDashboard(raw []byte) (StatusMessage, error) {
 // Grafana only can delete a dashboard in a database. File dashboards
 // may be only loaded with HTTP API but not deteled.
 //
-// It reflects DELETE /api/dashboards/db/:slug API call
+// It reflects DELETE /api/dashboards/db/:slug API call.
 func (r *Client) DeleteDashboard(slug string) (StatusMessage, error) {
 	var (
 		isBoardFromDB bool
