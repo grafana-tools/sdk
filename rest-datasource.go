@@ -23,7 +23,7 @@ import (
 	"fmt"
 )
 
-// GetAllDatasources loads all datasources.
+// GetAllDatasources gets all datasources.
 // It reflects GET /api/datasources API call.
 func (r *Client) GetAllDatasources() ([]Datasource, error) {
 	var (
