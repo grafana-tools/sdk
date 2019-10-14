@@ -7,7 +7,7 @@ import (
 
 // CreateUser creates a new global user.
 // Requires basic authentication and that the authenticated user is a Grafana Admin.
-// It reflects POST /api/admin/users API call.
+// Reflects POST /api/admin/users API call.
 func (r *Client) CreateUser(user User) (StatusMessage, error) {
 	var (
 		raw  []byte
@@ -28,7 +28,7 @@ func (r *Client) CreateUser(user User) (StatusMessage, error) {
 
 // UpdateUserPermissions updates the permissions of a global user.
 // Requires basic authentication and that the authenticated user is a Grafana Admin.
-// It reflects PUT /api/admin/users/:userId/password API call.
+// Reflects PUT /api/admin/users/:userId/password API call.
 func (r *Client) UpdateUserPermissions(permissions UserPermissions, uid uint) (StatusMessage, error) {
 	var (
 		raw   []byte
@@ -47,7 +47,7 @@ func (r *Client) UpdateUserPermissions(permissions UserPermissions, uid uint) (S
 
 // SwitchUserContext switches user context to the given organization.
 // Requires basic authentication and that the authenticated user is a Grafana Admin.
-// It reflects POST /api/users/:userId/using/:organizationId API call.
+// Reflects POST /api/users/:userId/using/:organizationId API call.
 func (r *Client) SwitchUserContext(uid uint, oid uint) (StatusMessage, error) {
 	var (
 		raw  []byte
