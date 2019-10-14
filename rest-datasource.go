@@ -24,7 +24,7 @@ import (
 )
 
 // GetAllDatasources gets all datasources.
-// It reflects GET /api/datasources API call.
+// Reflects GET /api/datasources API call.
 func (r *Client) GetAllDatasources() ([]Datasource, error) {
 	var (
 		raw  []byte
@@ -43,7 +43,7 @@ func (r *Client) GetAllDatasources() ([]Datasource, error) {
 }
 
 // GetDatasource gets an datasource by ID.
-// It reflects GET /api/datasources/:datasourceId API call.
+// Reflects GET /api/datasources/:datasourceId API call.
 func (r *Client) GetDatasource(id uint) (Datasource, error) {
 	var (
 		raw  []byte
@@ -62,7 +62,7 @@ func (r *Client) GetDatasource(id uint) (Datasource, error) {
 }
 
 // GetDatasourceByName gets an datasource by Name.
-// It reflects GET /api/datasources/name/:datasourceName API call.
+// Reflects GET /api/datasources/name/:datasourceName API call.
 func (r *Client) GetDatasourceByName(name string) (Datasource, error) {
 	var (
 		raw  []byte
@@ -81,7 +81,7 @@ func (r *Client) GetDatasourceByName(name string) (Datasource, error) {
 }
 
 // CreateDatasource creates a new datasource.
-// It reflects POST /api/datasources API call.
+// Reflects POST /api/datasources API call.
 func (r *Client) CreateDatasource(ds Datasource) (StatusMessage, error) {
 	var (
 		raw  []byte
@@ -101,7 +101,7 @@ func (r *Client) CreateDatasource(ds Datasource) (StatusMessage, error) {
 }
 
 // UpdateDatasource updates a datasource from data passed in argument.
-// It reflects PUT /api/datasources/:datasourceId API call.
+// Reflects PUT /api/datasources/:datasourceId API call.
 func (r *Client) UpdateDatasource(ds Datasource) (StatusMessage, error) {
 	var (
 		raw  []byte
@@ -121,7 +121,7 @@ func (r *Client) UpdateDatasource(ds Datasource) (StatusMessage, error) {
 }
 
 // DeleteDatasource deletes an existing datasource by ID.
-// It reflects DELETE /api/datasources/:datasourceId API call.
+// Reflects DELETE /api/datasources/:datasourceId API call.
 func (r *Client) DeleteDatasource(id uint) (StatusMessage, error) {
 	var (
 		raw   []byte
@@ -136,7 +136,7 @@ func (r *Client) DeleteDatasource(id uint) (StatusMessage, error) {
 }
 
 // DeleteDatasourceByName deletes an existing datasource by Name.
-// It reflects DELETE /api/datasources/name/:datasourceName API call.
+// Reflects DELETE /api/datasources/name/:datasourceName API call.
 func (r *Client) DeleteDatasourceByName(name string) (StatusMessage, error) {
 	var (
 		raw   []byte
@@ -151,7 +151,7 @@ func (r *Client) DeleteDatasourceByName(name string) (StatusMessage, error) {
 }
 
 // GetDatasourceTypes gets all available plugins for the datasources.
-// It reflects GET /api/datasources/plugins API call.
+// Reflects GET /api/datasources/plugins API call.
 func (r *Client) GetDatasourceTypes() (map[string]DatasourceType, error) {
 	var (
 		raw     []byte
