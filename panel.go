@@ -374,8 +374,11 @@ type Target struct {
 		Field    string `json:"field"`
 		Type     string `json:"type"`
 		Settings struct {
-			Interval    string `json:"interval"`
+			Interval    string `json:"interval,omitempty"`
 			MinDocCount int    `json:"min_doc_count"`
+			Order       string `json:"order,omitempty"`
+			OrderBy     string `json:"orderBy,omitempty"`
+			Size        string `json:"size,omitempty"`
 		} `json:"settings"`
 	} `json:"bucketAggs,omitempty"`
 
