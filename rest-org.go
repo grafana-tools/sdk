@@ -27,8 +27,8 @@ import (
 	"net/http"
 )
 
-// CreateOrg creates a new organization
-// It reflects POST /api/orgs
+// CreateOrg creates a new organization.
+// It reflects POST /api/orgs API call.
 func (r *Client) CreateOrg(org Org) (StatusMessage, error) {
 	var (
 		raw  []byte
@@ -70,8 +70,8 @@ func (r *Client) GetActualOrg() (Org, error) {
 	return org, err
 }
 
-// GetOrgById gets organization by organization Id
-// It reflects GET /api/orgs/:orgId
+// GetOrgById gets organization by organization Id.
+// It reflects GET /api/orgs/:orgId API call.
 func (r *Client) GetOrgById(oid uint) (Org, error) {
 	var (
 		raw  []byte
@@ -94,8 +94,8 @@ func (r *Client) GetOrgById(oid uint) (Org, error) {
 	return org, err
 }
 
-// GetOrgByOrgName gets organization by organization name
-// It reflects GET /api/orgs/name/:orgName
+// GetOrgByOrgName gets organization by organization name.
+// It reflects GET /api/orgs/name/:orgName API call.
 func (r *Client) GetOrgByOrgName(name string) (Org, error) {
 	var (
 		raw  []byte
@@ -138,8 +138,8 @@ func (r *Client) UpdateActualOrg(org Org) (StatusMessage, error) {
 	return resp, nil
 }
 
-//UpdateOrg updates the organization identified by oid.
-// It reflects PUT /api/orgs/:orgId
+// UpdateOrg updates the organization identified by oid.
+// It reflects PUT /api/orgs/:orgId API call.
 func (r *Client) UpdateOrg(org Org, oid uint) (StatusMessage, error) {
 	var (
 		raw  []byte
@@ -158,8 +158,8 @@ func (r *Client) UpdateOrg(org Org, oid uint) (StatusMessage, error) {
 	return resp, nil
 }
 
-// DeleteOrg deletes the organization identified by the organization id
-// Reflects DELETE /api/orgs/:orgId
+// DeleteOrg deletes the organization identified by the oid.
+// Reflects DELETE /api/orgs/:orgId API call.
 func (r *Client) DeleteOrg(oid uint) (StatusMessage, error) {
 	var (
 		raw  []byte
@@ -176,6 +176,7 @@ func (r *Client) DeleteOrg(oid uint) (StatusMessage, error) {
 }
 
 // GetActualOrgUsers get all users within the actual organisation.
+// Reflects GET /api/org/users API call.
 func (r *Client) GetActualOrgUsers() ([]OrgUser, error) {
 	var (
 		raw   []byte
@@ -197,8 +198,8 @@ func (r *Client) GetActualOrgUsers() ([]OrgUser, error) {
 	return users, err
 }
 
-// GetOrgUsers gets the users for the organization specified by organization id
-// Reflects GET /api/orgs/:orgId/users
+// GetOrgUsers gets the users for the organization specified by oid.
+// Reflects GET /api/orgs/:orgId/users API call.
 func (r *Client) GetOrgUsers(oid uint) ([]OrgUser, error) {
 	var (
 		raw   []byte
@@ -220,8 +221,8 @@ func (r *Client) GetOrgUsers(oid uint) ([]OrgUser, error) {
 	return users, err
 }
 
-// AddActualOrgUser creates a new organization
-// It reflects POST /api/org/users
+// AddActualOrgUser adds a global user to the current organization.
+// Reflects POST /api/org/users API call.
 func (r *Client) AddActualOrgUser(userRole UserRole) (StatusMessage, error) {
 	var (
 		raw  []byte
@@ -240,8 +241,8 @@ func (r *Client) AddActualOrgUser(userRole UserRole) (StatusMessage, error) {
 	return resp, nil
 }
 
-// UpdateUser updates the existing user
-// It reflects POST /api/org/users/:userId
+// UpdateUser updates the existing user.
+// Reflects POST /api/org/users/:userId API call.
 func (r *Client) UpdateActualOrgUser(user UserRole, uid uint) (StatusMessage, error) {
 	var (
 		raw  []byte
@@ -260,8 +261,8 @@ func (r *Client) UpdateActualOrgUser(user UserRole, uid uint) (StatusMessage, er
 	return resp, nil
 }
 
-// DeleteActualOrgUser delete user in actual organisation.
-// It reflects DELETE /api/org/users/:userId API call.
+// DeleteActualOrgUser delete user in actual organization.
+// Reflects DELETE /api/org/users/:userId API call.
 func (r *Client) DeleteActualOrgUser(uid uint) (StatusMessage, error) {
 	var (
 		raw   []byte
@@ -275,8 +276,8 @@ func (r *Client) DeleteActualOrgUser(uid uint) (StatusMessage, error) {
 	return reply, err
 }
 
-// AddUserToOrg add user to organization with id
-// It reflects POST /api/orgs/:orgId/users API call.
+// AddUserToOrg add user to organization with oid.
+// Reflects POST /api/orgs/:orgId/users API call.
 func (r *Client) AddOrgUser(user UserRole, oid uint) (StatusMessage, error) {
 	var (
 		raw   []byte
@@ -293,8 +294,8 @@ func (r *Client) AddOrgUser(user UserRole, oid uint) (StatusMessage, error) {
 	return reply, err
 }
 
-// UpdateOrgUser updates the user specified by uid within the organization specified by oid
-// It reflects PATCH /api/orgs/:orgId/users/:userId API call.
+// UpdateOrgUser updates the user specified by uid within the organization specified by oid.
+// Reflects PATCH /api/orgs/:orgId/users/:userId API call.
 func (r *Client) UpdateOrgUser(user UserRole, oid, uid uint) (StatusMessage, error) {
 	var (
 		raw   []byte
@@ -311,8 +312,8 @@ func (r *Client) UpdateOrgUser(user UserRole, oid, uid uint) (StatusMessage, err
 	return reply, err
 }
 
-// DeleteOrgUser deletes the user specified by uid within the organization specified by oid
-// It reflects DELETE /api/orgs/:orgId/users/:userId API call.
+// DeleteOrgUser deletes the user specified by uid within the organization specified by oid.
+// Reflects DELETE /api/orgs/:orgId/users/:userId API call.
 func (r *Client) DeleteOrgUser(oid, uid uint) (StatusMessage, error) {
 	var (
 		raw   []byte
@@ -327,7 +328,7 @@ func (r *Client) DeleteOrgUser(oid, uid uint) (StatusMessage, error) {
 }
 
 // UpdateActualOrgPreferences updates preferences of the actual organization.
-// It reflects DELETE /api/org/preferences API call.
+// Reflects PUT /api/org/preferences API call.
 func (r *Client) UpdateActualOrgPreferences(prefs Preferences) (StatusMessage, error) {
 	var (
 		raw  []byte

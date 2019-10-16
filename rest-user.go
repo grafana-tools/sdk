@@ -26,6 +26,7 @@ import (
 )
 
 // GetActualUser gets an actual user.
+// Reflects GET /api/user API call.
 func (r *Client) GetActualUser() (User, error) {
 	var (
 		raw  []byte
@@ -48,6 +49,7 @@ func (r *Client) GetActualUser() (User, error) {
 }
 
 // GetUser gets an user by ID.
+// Reflects GET /api/users/:id API call.
 func (r *Client) GetUser(id uint) (User, error) {
 	var (
 		raw  []byte
@@ -70,6 +72,7 @@ func (r *Client) GetUser(id uint) (User, error) {
 }
 
 // GetAllUsers gets all users.
+// Reflects GET /api/users API call.
 func (r *Client) GetAllUsers() ([]User, error) {
 	var (
 		raw   []byte
@@ -91,12 +94,14 @@ func (r *Client) GetAllUsers() ([]User, error) {
 	return users, err
 }
 
-// SearchUsersWithPaging search users with paging
+// SearchUsersWithPaging search users with paging.
 // query optional.  query value is contained in one of the name, login or email fields. Query values with spaces need to be url encoded e.g. query=Jane%20Doe
 // perpage optional. default 1000
 // page optional. default 1
 // http://docs.grafana.org/http_api/user/#search-users
 // http://docs.grafana.org/http_api/user/#search-users-with-paging
+//
+// Reflects GET /api/users/search API call.
 func (r *Client) SearchUsersWithPaging(query *string, perpage, page *int) (PageUsers, error) {
 	var (
 		raw       []byte
