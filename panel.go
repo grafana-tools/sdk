@@ -116,6 +116,7 @@ type (
 		NoDataState         string              `json:"noDataState,omitempty"`
 		Notifications       []AlertNotification `json:"notifications,omitempty"`
 		Message             string              `json:"message,omitempty"`
+		For                 string              `json:"for,omitempty"`
 	}
 	GraphPanel struct {
 		AliasColors interface{} `json:"aliasColors"` // XXX
