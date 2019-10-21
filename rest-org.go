@@ -52,7 +52,7 @@ func (r *Client) CreateOrg(org Org) (StatusMessage, error) {
 func (r *Client) GetAllOrgs() ([]Org, error) {
 	var (
 		raw  []byte
-		orgs  []Org
+		orgs []Org
 		code int
 		err  error
 	)
@@ -66,7 +66,7 @@ func (r *Client) GetAllOrgs() ([]Org, error) {
 	dec := json.NewDecoder(bytes.NewReader(raw))
 	dec.UseNumber()
 	if err := dec.Decode(&orgs); err != nil {
-		return orgs, fmt.Errorf("unmarshal org: %s\n%s", err, raw)
+		return orgs, fmt.Errorf("unmarshal orgs: %s\n%s", err, raw)
 	}
 	return orgs, err
 }
