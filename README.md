@@ -72,7 +72,7 @@ with Grafana then client SDK for Go will be uniquely useful.
     } else {
         fmt.Printf("dashboard URL: %v", grafanaURL+*resp.URL)
     }
-```	
+```
 
 The library includes several demo apps for showing API usage:
 
