@@ -110,7 +110,7 @@ implemented only create/update/delete operations for dashboards and
 datasources. State of support for misc API parts noted below.
 
 | API                    | Status                    |
-|------------------------+---------------------------|
+|------------------------|---------------------------|
 | Authorization          | API tokens and Basic Auth |
 | Dashboards             | partially                 |
 | Datasources            | +                         |
