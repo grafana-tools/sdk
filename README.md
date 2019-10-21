@@ -111,18 +111,18 @@ datasources. State of support for misc API parts noted below.
 
 <!--- 
 #+ORGTBL: SEND status orgtbl-to-gfm
-| API                    | Status          |
-|------------------------+-----------------|
-| Authorization          | only API tokens |
-| Dashboards             | partially       |
-| Datasources            | +               |
-| Organization (current) | partially       |
-| Organizations          | -               |
-| Users                  | partially       |
-| User (actual)          | partially       |
-| Snapshots              | -               |
-| Frontend settings      | -               |
-| Admin                  | -               |
+| API                    | Status                    |
+|------------------------+---------------------------|
+| Authorization          | API tokens and Basic Auth |
+| Dashboards             | partially                 |
+| Datasources            | +                         |
+| Organization (current) | partially                 |
+| Organizations          | partially                 |
+| Users                  | partially                 |
+| User (actual)          | partially                 |
+| Snapshots              | -                         |
+| Frontend settings      | -                         |
+| Admin                  | partially                 |
 -->
 
 <!--- BEGIN RECEIVE ORGTBL status -->
