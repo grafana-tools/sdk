@@ -47,6 +47,30 @@ func (r *Client) CreateOrg(org Org) (StatusMessage, error) {
 	return resp, nil
 }
 
+// GetAllOrgs returns all organizations.
+// It reflects GET /api/orgs API call.
+func (r *Client) GetAllOrgs() ([]Org, error) {
+	var (
+		raw  []byte
+		orgs  []Org
+		code int
+		err  error
+	)
+	if raw, code, err = r.get("api/orgs", nil); err != nil {
+		return orgs, err
+	}
+
+	if code != http.StatusOK {
+		return orgs, fmt.Errorf("HTTP error %d: returns %s", code, raw)
+	}
+	dec := json.NewDecoder(bytes.NewReader(raw))
+	dec.UseNumber()
+	if err := dec.Decode(&orgs); err != nil {
+		return orgs, fmt.Errorf("unmarshal org: %s\n%s", err, raw)
+	}
+	return orgs, err
+}
+
 // GetActualOrg gets current organization.
 // It reflects GET /api/org API call.
 func (r *Client) GetActualOrg() (Org, error) {
