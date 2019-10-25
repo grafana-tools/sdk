@@ -346,3 +346,27 @@ func (r *Client) UpdateActualOrgPreferences(prefs Preferences) (StatusMessage, e
 	}
 	return resp, nil
 }
+
+// GetActualOrgPreferences gets preferences of the actual organization.
+// It reflects GET /api/org/preferences API call.
+func (r *Client) GetActualOrgPreferences() (Preferences, error) {
+	var (
+		raw  []byte
+		pref Preferences
+		code int
+		err  error
+	)
+	if raw, code, err = r.get("/api/org/preferences", nil); err != nil {
+		return pref, err
+	}
+
+	if code != http.StatusOK {
+		return pref, fmt.Errorf("HTTP error %d: returns %s", code, raw)
+	}
+	dec := json.NewDecoder(bytes.NewReader(raw))
+	dec.UseNumber()
+	if err := dec.Decode(&pref); err != nil {
+		return pref, fmt.Errorf("unmarshal prefs: %s\n%s", err, raw)
+	}
+	return pref, err
+}
