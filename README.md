@@ -72,7 +72,7 @@ with Grafana then client SDK for Go will be uniquely useful.
     } else {
         fmt.Printf("dashboard URL: %v", grafanaURL+*resp.URL)
     }
-```	
+```
 
 The library includes several demo apps for showing API usage:
 
@@ -109,36 +109,18 @@ Work on full API implementation still in progress. Currently
 implemented only create/update/delete operations for dashboards and
 datasources. State of support for misc API parts noted below.
 
-<!--- 
-#+ORGTBL: SEND status orgtbl-to-gfm
-| API                    | Status          |
-|------------------------+-----------------|
-| Authorization          | only API tokens |
-| Dashboards             | partially       |
-| Datasources            | +               |
-| Organization (current) | partially       |
-| Organizations          | -               |
-| Users                  | partially       |
-| User (actual)          | partially       |
-| Snapshots              | -               |
-| Frontend settings      | -               |
-| Admin                  | -               |
--->
-
-<!--- BEGIN RECEIVE ORGTBL status -->
-| API | Status |
-|---|---|
-| Authorization | only API tokens |
-| Dashboards | partially |
-| Datasources | + |
-| Organization (current) | partially |
-| Organizations | - |
-| Users | partially |
-| User (actual) | partially |
-| Snapshots | - |
-| Frontend settings | - |
-| Admin | - |
-<!--- END RECEIVE ORGTBL status -->
+| API                    | Status                    |
+|------------------------|---------------------------|
+| Authorization          | API tokens and Basic Auth |
+| Dashboards             | partially                 |
+| Datasources            | +                         |
+| Organization (current) | partially                 |
+| Organizations          | partially                 |
+| Users                  | partially                 |
+| User (actual)          | partially                 |
+| Snapshots              | -                         |
+| Frontend settings      | -                         |
+| Admin                  | partially                 |
 
 ## Roadmap
 
