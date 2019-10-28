@@ -86,8 +86,6 @@ func (r *Client) GetAllUsers() ([]User, error) {
 	if raw, code, err = r.get("api/users", params); err != nil {
 		return users, err
 	}
-		return users, err
-	}
 	if code != 200 {
 		return users, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
