@@ -80,7 +80,7 @@ func (r *Client) GetAllUsers() ([]User, error) {
 		code  int
 		err   error
 	)
-	
+
 	params := url.Values{}
 	params.Set("perpage", "99999")
 	if raw, code, err = r.get("api/users", params); err != nil {
