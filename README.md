@@ -77,11 +77,6 @@ for vendoring.  The single dependency now is:
 The "slugify" for URLs is a simple task but this package used in
 Grafana server so it used in the SDK for the compatibility reasons.
 
-## Grafana server compability
-
-Made mostly for Grafana 3.x, works with Grafana 4.x but need more
-tests. Full support for Grafana 4.x is on the way.
-
 ## Status of REST API realization [![Coverage Status](https://coveralls.io/repos/github/grafana-tools/sdk/badge.svg?branch=master)](https://coveralls.io/github/grafana-tools/sdk?branch=master)
 
 Work on full API implementation still in progress. Currently
@@ -100,7 +95,6 @@ datasources. State of support for misc API parts noted below.
 | Snapshots              | -                         |
 | Frontend settings      | -                         |
 | Admin                  | partially                 |
-
 
 There is no exact roadmap, the library tries to reflect latest Grafana API.
 
