@@ -2,12 +2,13 @@ package sdk_test
 
 /*
    Copyright 2016 Alexander I.Grafov <grafov@gmail.com>
+   Copyright 2016-2019 The Grafana SDK authors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+	   http://www.apache.org/licenses/LICENSE-2.0
 
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
@@ -310,37 +311,37 @@ func TestPanel_ElasticsearchSource_ParsedTargets(t *testing.T) {
   "error": false,
   "fill": 1,
   "grid": {
-    "leftLogBase": 1,
-    "leftMax": null,
-    "leftMin": null,
-    "rightLogBase": 1,
-    "rightMax": null,
-    "rightMin": null,
-    "threshold1": null,
-    "threshold1Color": "rgba(216, 200, 27, 0.27)",
-    "threshold2": null,
-    "threshold2Color": "rgba(234, 112, 112, 0.22)"
+	"leftLogBase": 1,
+	"leftMax": null,
+	"leftMin": null,
+	"rightLogBase": 1,
+	"rightMax": null,
+	"rightMin": null,
+	"threshold1": null,
+	"threshold1Color": "rgba(216, 200, 27, 0.27)",
+	"threshold2": null,
+	"threshold2Color": "rgba(234, 112, 112, 0.22)"
   },
   "id": 37,
   "isNew": true,
   "legend": {
-    "avg": false,
-    "current": false,
-    "max": false,
-    "min": false,
-    "show": false,
-    "total": false,
-    "values": false
+	"avg": false,
+	"current": false,
+	"max": false,
+	"min": false,
+	"show": false,
+	"total": false,
+	"values": false
   },
   "lines": false,
   "linewidth": 2,
   "links": [
-    {
-      "params": "q=tag%3A%2Fid.*%2F+AND+level%3AERROR&rangetype=relative&relative=300#fields=message%2Csource",
-      "title": "Example GrayLog Page",
-      "type": "absolute",
-      "url": "https://graylog/streams/xxx/messages"
-    }
+	{
+	  "params": "q=tag%3A%2Fid.*%2F+AND+level%3AERROR&rangetype=relative&relative=300#fields=message%2Csource",
+	  "title": "Example GrayLog Page",
+	  "type": "absolute",
+	  "url": "https://graylog/streams/xxx/messages"
+	}
   ],
   "nullPointMode": "connected",
   "percentage": false,
@@ -352,46 +353,46 @@ func TestPanel_ElasticsearchSource_ParsedTargets(t *testing.T) {
   "stack": false,
   "steppedLine": false,
   "targets": [
-    {
-      "bucketAggs": [
-        {
-          "field": "timestamp",
-          "id": "2",
-          "settings": {
-            "interval": "5m",
-            "min_doc_count": 0
-          },
-          "type": "date_histogram"
-        }
-      ],
-      "dsType": "elasticsearch",
-      "metrics": [
-        {
-          "field": "select field",
-          "id": "1",
-          "type": "count"
-        }
-      ],
-      "query": "tag:/.*.xxx.filtered/ AND tag:/id.*/ AND level:ERROR",
-      "refId": "A",
-      "target": "",
-      "timeField": "timestamp"
-    }
+	{
+	  "bucketAggs": [
+		{
+		  "field": "timestamp",
+		  "id": "2",
+		  "settings": {
+			"interval": "5m",
+			"min_doc_count": 0
+		  },
+		  "type": "date_histogram"
+		}
+	  ],
+	  "dsType": "elasticsearch",
+	  "metrics": [
+		{
+		  "field": "select field",
+		  "id": "1",
+		  "type": "count"
+		}
+	  ],
+	  "query": "tag:/.*.xxx.filtered/ AND tag:/id.*/ AND level:ERROR",
+	  "refId": "A",
+	  "target": "",
+	  "timeField": "timestamp"
+	}
   ],
   "timeFrom": null,
   "timeShift": null,
   "title": "Example GrayLog Errors[5m]",
   "tooltip": {
-    "shared": true,
-    "value_type": "cumulative"
+	"shared": true,
+	"value_type": "cumulative"
   },
   "transparent": true,
   "type": "graph",
   "x-axis": true,
   "y-axis": true,
   "y_formats": [
-    "short",
-    "short"
+	"short",
+	"short"
   ]
 }`)
 
