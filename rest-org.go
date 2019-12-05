@@ -1,5 +1,3 @@
-// +build draft
-
 package sdk
 
 /*
