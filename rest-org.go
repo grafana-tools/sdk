@@ -1,5 +1,3 @@
-// +build draft
-
 package sdk
 
 /*
@@ -277,7 +275,7 @@ func (r *Client) UpdateActualOrgUser(user UserRole, uid uint) (StatusMessage, er
 	if raw, err = json.Marshal(user); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, _, err = r.post(fmt.Sprintf("api/org/users/%s", uid), nil, raw); err != nil {
+	if raw, _, err = r.post(fmt.Sprintf("api/org/users/%d", uid), nil, raw); err != nil {	
 		return StatusMessage{}, err
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
