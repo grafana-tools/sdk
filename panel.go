@@ -33,6 +33,7 @@ const (
 	PluginlistType
 	AlertlistType
 	SinglestatType
+	RowType
 )
 
 const MixedSource = "-- Mixed --"
@@ -752,6 +753,12 @@ func (p *Panel) MarshalJSON() ([]byte, error) {
 			AlertlistPanel
 		}{p.CommonPanel, *p.AlertlistPanel}
 		return json.Marshal(outAlertlist)
+	case RowType:
+		var outRow = struct {
+			CommonPanel
+			RowPanel
+		}{p.CommonPanel, *p.RowPanel}
+		return json.Marshal(outRow)
 	case CustomType:
 		var outCustom = struct {
 			CommonPanel
