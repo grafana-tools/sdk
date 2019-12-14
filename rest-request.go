@@ -49,7 +49,7 @@ type StatusMessage struct {
 	Message *string `json:"message"`
 	Slug    *string `json:"slug"`
 	Version *int    `json:"version"`
-	Status  *string `json:"resp"`
+	Status  *string `json:"status"`
 	UID     *string `json:"uid"`
 	URL     *string `json:"url"`
 }
