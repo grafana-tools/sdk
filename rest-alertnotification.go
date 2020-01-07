@@ -133,7 +133,7 @@ func (c *Client) UpdateAlertNotificationID(an AlertNotification, id uint) error 
 	if raw, err = json.Marshal(an); err != nil {
 		return err
 	}
-	if raw, code, err = c.put(fmt.Sprintf("api/alert-notifications/id/%d", id), nil, raw); err != nil {
+	if raw, code, err = c.put(fmt.Sprintf("api/alert-notifications/%d", id), nil, raw); err != nil {
 		return err
 	}
 	if code != 200 {
