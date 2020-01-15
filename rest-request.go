@@ -97,6 +97,9 @@ func (r *Client) doRequest(method, query string, params url.Values, buf io.Reade
 		u.RawQuery = params.Encode()
 	}
 	req, err := http.NewRequest(method, u.String(), buf)
+	if err != nil {
+		return nil, 0, err
+	}
 	if !r.basicAuth {
 		req.Header.Set("Authorization", r.key)
 	}
