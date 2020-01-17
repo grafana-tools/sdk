@@ -105,10 +105,6 @@ type (
 		} `json:"reducer,omitempty"`
 		Type string `json:"type,omitempty"`
 	}
-	AlertNotification struct {
-		ID  int    `json:"id,omitempty"`
-		UID string `json:"uid,omitempty"`
-	}
 	Alert struct {
 		Conditions          []AlertCondition    `json:"conditions,omitempty"`
 		ExecutionErrorState string              `json:"executionErrorState,omitempty"`
