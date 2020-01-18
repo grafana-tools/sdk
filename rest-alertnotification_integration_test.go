@@ -28,6 +28,9 @@ func Test_Alertnotification_CRUD(t *testing.T) {
 		SendReminder:          true,
 		Frequency:             "123",
 		UID:                   "foobar",
+		Settings: map[string]string{
+			"foo": "bar",
+		},
 	}
 
 	id, err := client.CreateAlertNotification(an)
