@@ -9,7 +9,7 @@ var client = NewClient("http://localhost:3000", "admin:admin", DefaultHTTPClient
 
 func Test_Alertnotification_CRUD(t *testing.T) {
 	if v := os.Getenv("GRAFANA_INTEGRATION"); v != "1" {
-		t.Skip("skipping because GRAFANA_INTEGRATION is %s, not 1", v)
+		t.Skipf("skipping because GRAFANA_INTEGRATION is %s, not 1", v)
 	}
 
 	alertnotifications, err := client.GetAllAlertNotifications()
