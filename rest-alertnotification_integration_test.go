@@ -1,11 +1,10 @@
 package sdk
 
 import (
-	"net/http"
 	"testing"
 )
 
-var client = NewClient("http://localhost:3000", "admin:admin", DefaultClient)
+var client = NewClient("http://localhost:3000", "admin:admin", DefaultHTTPClient)
 
 func Test_Alertnotification_CRUD(t *testing.T) {
 	alertnotifications, err := client.GetAllAlertNotifications()
