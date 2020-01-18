@@ -21,15 +21,15 @@ func Test_Alertnotification_CRUD(t *testing.T) {
 	}
 
 	an := AlertNotification{
-		Name:                  "alertnotification",
-		Type:                  "prometheus",
-		IsDefault:             true,
-		DisableResolveMessage: true,
-		SendReminder:          true,
-		Frequency:             "123",
+		Name:                  "team-a-email-notifier",
+		Type:                  "email",
+		IsDefault:             false,
+		DisableResolveMessage: false,
+		SendReminder:          false,
+		Frequency:             "15m",
 		UID:                   "foobar",
 		Settings: map[string]string{
-			"foo": "bar",
+			"addresses": "dev@null.com",
 		},
 	}
 
