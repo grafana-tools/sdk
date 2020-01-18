@@ -1,7 +1,7 @@
 package sdk
 
 import (
-	"http"
+	"net/http"
 	"testing"
 )
 
