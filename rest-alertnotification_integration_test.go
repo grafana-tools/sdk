@@ -45,8 +45,18 @@ func Test_Alertnotification_CRUD(t *testing.T) {
 	}
 
 	an.Name = "alertnotification2"
-	err := client.UpdateAlertNotificationUID(an, "foobar")
+	err = client.UpdateAlertNotificationUID(an, "foobar")
 	if err != nil {
 		t.Error(err)
+	}
+
+	err = client.DeleteAlertNotificationUID("foobar")
+	if err != nil {
+		t.Error(err)
+	}
+
+	an, err = client.GetAlertNotificationUID("foobar")
+	if err == nil {
+		t.Errorf("expected the alertnotification to be deleted")
 	}
 }
