@@ -2,7 +2,6 @@ package sdk_test
 
 import (
 	"github.com/grafana-tools/sdk"
-	"os"
 	"testing"
 )
 
