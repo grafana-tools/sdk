@@ -7,10 +7,8 @@ import (
 )
 
 func Test_Alertnotification_CRUD(t *testing.T) {
-	if v := os.Getenv("GRAFANA_INTEGRATION"); v != "1" {
-		t.Skipf("skipping because GRAFANA_INTEGRATION is %s, not 1", v)
-	}
-	client := sdk.NewClient("http://localhost:3000", "admin:admin", sdk.DefaultHTTPClient)
+	shouldSkip(t)
+	client := newClient()
 
 	alertnotifications, err := client.GetAllAlertNotifications()
 	if err != nil {

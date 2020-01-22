@@ -7,11 +7,9 @@ import (
 )
 
 func Test_Datasource_CRUD(t *testing.T) {
-	if v := os.Getenv("GRAFANA_INTEGRATION"); v != "1" {
-		t.Skipf("skipping because GRAFANA_INTEGRATION is %s, not 1", v)
-	}
+	shouldSkip(t)
 
-	client := sdk.NewClient("http://localhost:3000", "admin:admin", sdk.DefaultHTTPClient)
+	client := getClient()
 
 	datasources, err := client.GetAllDatasources()
 	if err != nil {
