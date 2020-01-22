@@ -22,8 +22,7 @@ func getClient() *sdk.Client {
 		pass = p
 	}
 
-	client := sdk.NewClient(addr, fmt.Sprintf("%s:%s", user, pass), sdk.DefaultHTTPClient)
-	return &client
+	return sdk.NewClient(addr, fmt.Sprintf("%s:%s", user, pass), sdk.DefaultHTTPClient)
 }
 
 func shouldSkip(t *testing.T) {
