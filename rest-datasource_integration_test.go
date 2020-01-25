@@ -25,6 +25,7 @@ func Test_Datasource_CRUD(t *testing.T) {
 		IsDefault: false,
 		Database:  &db,
 		URL:       "http://1.2.3.4",
+		Access:    "direct",
 		JSONData: map[string]string{
 			"esVersion":                  "5",
 			"timeField":                  "@timestamp",
@@ -53,7 +54,7 @@ func Test_Datasource_CRUD(t *testing.T) {
 		t.Error(err)
 	}
 
-	status, err = client.DeleteDatasourceByName("elasticsdksource")
+	_, err = client.DeleteDatasourceByName("elasticsdksource")
 	if err != nil {
 		t.Error(err)
 	}
