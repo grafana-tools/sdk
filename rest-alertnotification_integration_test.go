@@ -1,16 +1,13 @@
-package sdk
+package sdk_test
 
 import (
-	"os"
+	"github.com/grafana-tools/sdk"
 	"testing"
 )
 
-var client = NewClient("http://localhost:3000", "admin:admin", DefaultHTTPClient)
-
 func Test_Alertnotification_CRUD(t *testing.T) {
-	if v := os.Getenv("GRAFANA_INTEGRATION"); v != "1" {
-		t.Skipf("skipping because GRAFANA_INTEGRATION is %s, not 1", v)
-	}
+	shouldSkip(t)
+	client := getClient()
 
 	alertnotifications, err := client.GetAllAlertNotifications()
 	if err != nil {
@@ -20,7 +17,7 @@ func Test_Alertnotification_CRUD(t *testing.T) {
 		t.Errorf("expected to get zero alertnotifications, got %#v", alertnotifications)
 	}
 
-	an := AlertNotification{
+	an := sdk.AlertNotification{
 		Name:                  "team-a-email-notifier",
 		Type:                  "email",
 		IsDefault:             false,
