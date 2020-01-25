@@ -12,10 +12,10 @@ func Test_Datasource_CRUD(t *testing.T) {
 
 	datasources, err := client.GetAllDatasources()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if len(datasources) != 0 {
-		t.Errorf("expected to get zero datasources, got %#v", datasources)
+		t.Fatalf("expected to get zero datasources, got %#v", datasources)
 	}
 
 	db := "grafanasdk"
@@ -35,32 +35,32 @@ func Test_Datasource_CRUD(t *testing.T) {
 
 	status, err := client.CreateDatasource(ds)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	dsRetrieved, err := client.GetDatasource(uint(*status.ID))
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	if dsRetrieved.Name != ds.Name {
-		t.Errorf("got wrong name: expected %s, was %s", dsRetrieved.Name, ds.Name)
+		t.Fatalf("got wrong name: expected %s, was %s", dsRetrieved.Name, ds.Name)
 	}
 
 	ds.Name = "elasticsdksource"
 	ds.ID = dsRetrieved.ID
 	status, err = client.UpdateDatasource(ds)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	_, err = client.DeleteDatasourceByName("elasticsdksource")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	_, err = client.GetDatasource(uint(*status.ID))
 	if err == nil {
-		t.Errorf("expected the datasource to be deleted")
+		t.Fatalf("expected the datasource to be deleted")
 	}
 }
