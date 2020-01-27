@@ -83,20 +83,22 @@ Work on full API implementation still in progress. Currently
 implemented only create/update/delete operations for dashboards and
 datasources. State of support for misc API parts noted below.
 
-| API                    | Status                    |
-|------------------------|---------------------------|
-| Authorization          | API tokens and Basic Auth |
-| Dashboards             | partially                 |
-| Datasources            | +                         |
-| Organization (current) | partially                 |
-| Organizations          | partially                 |
-| Users                  | partially                 |
-| User (actual)          | partially                 |
-| Snapshots              | -                         |
-| Frontend settings      | -                         |
-| Admin                  | partially                 |
+| API                         | Status                    |
+|-----------------------------|---------------------------|
+| Authorization               | API tokens and Basic Auth |
+| Dashboards                  | partially                 |
+| Datasources                 | +                         |
+| Alert notification channels | +                         |
+| Organization (current)      | partially                 |
+| Organizations               | partially                 |
+| Users                       | partially                 |
+| User (actual)               | partially                 |
+| Snapshots                   | -                         |
+| Frontend settings           | -                         |
+| Admin                       | partially                 |
 
-There is no exact roadmap, the library tries to reflect latest Grafana API.
+There is no exact roadmap.  The integration tests are being run against Grafana
+[6.5.3](/.travis.yml).
 
 I still have interest to this library development but not always have
 time for it. So I gladly accept new contributions. Drop an issue or
