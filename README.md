@@ -5,7 +5,7 @@
 SDK for Go language offers a library for interacting with
 [Grafana](http://grafana.org) server from Go applications.  It
 realizes many of
-[HTTP REST API](http://docs.grafana.org/reference/http_api) calls for
+[HTTP REST API](https://grafana.com/docs/grafana/latest/http_api/) calls for
 administration, client, organizations. Beside of them it allows
 creating of Grafana objects (dashboards, panels, datasources) locally
 and manipulating them for constructing dashboards programmatically.
