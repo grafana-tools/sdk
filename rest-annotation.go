@@ -18,10 +18,10 @@ func (r *Client) CreateAnnotation(a CreateAnnotationRequest) (StatusMessage, err
 		err  error
 	)
 	if raw, err = json.Marshal(a); err != nil {
-		return StatusMessage{}, err
+		return StatusMessage{}, fmt.Errorf("failed to marshal request: %w", err)
 	}
 	if raw, _, err = r.post("api/annotations", nil, raw); err != nil {
-		return StatusMessage{}, fmt.Errorf("failed to unmarshal response message: %w", err)
+		return StatusMessage{}, fmt.Errorf("failed to create annotation: %w", err)
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
 		return StatusMessage{}, fmt.Errorf("failed to unmarshal response message: %w", err)
@@ -37,13 +37,13 @@ func (r *Client) PatchAnnotation(id uint, a PatchAnnotationRequest) (StatusMessa
 		err  error
 	)
 	if raw, err = json.Marshal(a); err != nil {
-		return StatusMessage{}, err
+		return StatusMessage{}, fmt.Errorf("failed to marshal request: %w", err)
 	}
 	if raw, _, err = r.patch(fmt.Sprintf("api/annotations/%d", id), nil, raw); err != nil {
-		return StatusMessage{}, err
+		return StatusMessage{}, fmt.Errorf("failed to patch annotation: %w", err)
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
-		return StatusMessage{}, err
+		return StatusMessage{}, fmt.Errorf("failed to unmarshal response message: %w", err)
 	}
 	return resp, nil
 }
@@ -62,10 +62,10 @@ func (r *Client) GetAnnotations(params ...GetAnnotationsParams) ([]AnnotationRes
 	}
 
 	if raw, _, err = r.get("api/annotations", requestParams); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to get annotations: %w", err)
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to unmarshal response message: %w", err)
 	}
 	return resp, nil
 }
@@ -79,10 +79,10 @@ func (r *Client) DeleteAnnotation(id uint) (StatusMessage, error) {
 	)
 
 	if raw, _, err = r.delete(fmt.Sprintf("api/annotations/%d", id)); err != nil {
-		return StatusMessage{}, err
+		return StatusMessage{}, fmt.Errorf("failed to delete annotation: %w", err)
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
-		return StatusMessage{}, err
+		return StatusMessage{}, fmt.Errorf("failed to unmarshal response message: %w", err)
 	}
 	return resp, nil
 }
@@ -91,49 +91,64 @@ func (r *Client) DeleteAnnotation(id uint) (StatusMessage, error) {
 // https://grafana.com/docs/grafana/latest/http_api/annotations/#find-annotations
 type GetAnnotationsParams func(values url.Values)
 
+// WithTag adds the tag to the
 func WithTag(tag string) GetAnnotationsParams {
 	return func(v url.Values) {
 		v.Add("tags", tag)
 	}
 }
 
+// WithLimit sets the max number of alerts to return
 func WithLimit(limit uint) GetAnnotationsParams {
 	return func(v url.Values) {
 		v.Set("limit", strconv.FormatUint(uint64(limit), 10))
 	}
 }
 
+// WithAnnotationType filters the type to annotations
 func WithAnnotationType() GetAnnotationsParams {
 	return func(v url.Values) {
 		v.Set("type", "annotation")
 	}
 }
 
+// WithAlertType filters the type to alerts
+func WithAlertType() GetAnnotationsParams {
+	return func(v url.Values) {
+		v.Set("type", "alert")
+	}
+}
+
+// WithDashboard filters the response to the specified dashboard ID
 func WithDashboard(id uint) GetAnnotationsParams {
 	return func(v url.Values) {
 		v.Set("dashboardId", strconv.FormatUint(uint64(id), 10))
 	}
 }
 
+// WithPanel filters the response to the specified panel ID
 func WithPanel(id uint) GetAnnotationsParams {
 	return func(v url.Values) {
 		v.Set("panelId", strconv.FormatUint(uint64(id), 10))
 	}
 }
 
+// WithUser filters the annotations to only be made by the specified user ID
 func WithUser(id uint) GetAnnotationsParams {
 	return func(v url.Values) {
 		v.Set("userId", strconv.FormatUint(uint64(id), 10))
 	}
 }
 
-func WithFrom(t time.Time) GetAnnotationsParams {
+// WithStartTime filters the annotations to after the specified time
+func WithStartTime(t time.Time) GetAnnotationsParams {
 	return func(v url.Values) {
 		v.Set("from", strconv.FormatInt(toMilliseconds(t), 10))
 	}
 }
 
-func WithTo(t time.Time) GetAnnotationsParams {
+// WithEndTime filters the annotations to before the specified time
+func WithEndTime(t time.Time) GetAnnotationsParams {
 	return func(v url.Values) {
 		v.Set("to", strconv.FormatInt(toMilliseconds(t), 10))
 	}

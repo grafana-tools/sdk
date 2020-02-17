@@ -2,7 +2,6 @@ package sdk_test
 
 import (
 	"github.com/grafana-tools/sdk"
-	"log"
 	"net/url"
 	"testing"
 	"time"
@@ -61,7 +60,6 @@ func TestAnnotations(t *testing.T) {
 
 	checkResponse(t, resp, "Annotation added")
 	id := *resp.ID
-	log.Printf("addotation %d added", id)
 
 	resp, err = client.PatchAnnotation(id, sdk.PatchAnnotationRequest{Text: "new text"})
 	if err != nil {
@@ -75,7 +73,6 @@ func TestAnnotations(t *testing.T) {
 	}
 	var found bool
 	for _, a := range anns {
-		log.Printf("%+v", a)
 		if a.ID == id {
 			found = true
 		}
