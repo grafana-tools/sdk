@@ -66,7 +66,7 @@ func main() {
 				continue
 			}
 			c.DeleteDashboard(board.UpdateSlug())
-			_, err := c.SetDashboard(board, false)
+			_, err := c.SetDashboard(board, 0, false)
 			if err != nil {
 				log.Printf("error on importing dashboard %s", board.Title)
 				continue

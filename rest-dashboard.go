@@ -201,11 +201,12 @@ func (r *Client) SearchDashboards(query string, starred bool, tags ...string) ([
 // may be only loaded with HTTP API but not created or updated.
 //
 // Reflects POST /api/dashboards/db API call.
-func (r *Client) SetDashboard(board Board, overwrite bool) (StatusMessage, error) {
+func (r *Client) SetDashboard(board Board, folderId int, overwrite bool) (StatusMessage, error) {
 	var (
 		isBoardFromDB bool
 		newBoard      struct {
 			Dashboard Board `json:"dashboard"`
+			FolderID  int   `json:"folderId"`
 			Overwrite bool  `json:"overwrite"`
 		}
 		raw  []byte
@@ -217,6 +218,7 @@ func (r *Client) SetDashboard(board Board, overwrite bool) (StatusMessage, error
 		return StatusMessage{}, errors.New("only database dashboard (with 'db/' prefix in a slug) can be set")
 	}
 	newBoard.Dashboard = board
+	newBoard.FolderID = folderId
 	newBoard.Overwrite = overwrite
 	if !overwrite {
 		newBoard.Dashboard.ID = 0
