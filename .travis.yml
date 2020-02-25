@@ -1,26 +1,57 @@
+---
 language: go
 
 services:
-- docker
+ - docker
 
-# Versions of go that are explicitly supported.
-go:
- - 1.13.x
- - 1.12.x
- - 1.11.x
-
-# Different Grafana versions.
+# Different Grafana + Go versions that will be tested.
 jobs:
  include:
-  - name: "Grafana 6.6.2"
-    env: "GRAFANA_VERSION=6.6.2"
-  - name: "Grafana 6.5.3"
-    env: "GRAFANA_VERSION=6.5.3"
-  - name: "Grafana 6.4.5"
-    env: "GRAFANA_VERSION=6.4.5"
-
-env:
- - GRAFANA_INTEGRATION=1
+  - name: "Grafana 6.6.2 1.13.x"
+    env:
+     - "GRAFANA_VERSION=6.6.2"
+     - "GRAFANA_INTEGRATION=1"
+    go: "1.13.x"
+  - name: "Grafana 6.5.3 1.13.x"
+    env:
+     - "GRAFANA_VERSION=6.5.3"
+     - "GRAFANA_INTEGRATION=1"
+    go: "1.13.x"
+  - name: "Grafana 6.4.5 1.13.x"
+    env:
+     - "GRAFANA_VERSION=6.4.5 1.13.x"
+     - "GRAFANA_INTEGRATION=1"
+    go: "1.13.x"
+  - name: "Grafana 6.6.2 1.12.x"
+    env:
+     - "GRAFANA_VERSION=6.6.2"
+     - "GRAFANA_INTEGRATION=1"
+    go: "1.12.x"
+  - name: "Grafana 6.5.3 1.12.x"
+    env:
+     - "GRAFANA_VERSION=6.5.3"
+     - "GRAFANA_INTEGRATION=1"
+    go: "1.12.x"
+  - name: "Grafana 6.4.5 1.12.x"
+    env:
+     - "GRAFANA_VERSION=6.4.5"
+     - "GRAFANA_INTEGRATION=1"
+    go: "1.12.x"
+  - name: "Grafana 6.6.2 1.11.x"
+    env:
+     - "GRAFANA_VERSION=6.6.2"
+     - "GRAFANA_INTEGRATION=1"
+    go: "1.11.x"
+  - name: "Grafana 6.5.3 1.11.x"
+    env:
+     - "GRAFANA_VERSION=6.5.3"
+     - "GRAFANA_INTEGRATION=1"
+    go: "1.11.x"
+  - name: "Grafana 6.4.5 1.11.x"
+    env:
+     - "GRAFANA_VERSION=6.4.5"
+     - "GRAFANA_INTEGRATION=1"
+    go: "1.11.x"
 
 # Required for coverage.
 before_install:
