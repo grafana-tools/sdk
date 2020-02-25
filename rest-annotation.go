@@ -155,5 +155,5 @@ func WithEndTime(t time.Time) GetAnnotationsParams {
 }
 
 func toMilliseconds(t time.Time) int64 {
-	return t.UnixNano() / 1_000_000
+	return t.UnixNano() / 1000000
 }
