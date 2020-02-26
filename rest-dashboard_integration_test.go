@@ -11,6 +11,7 @@ import (
 func Test_Dashboard_CRUD(t *testing.T) {
 	var (
 		boardLinks []sdk.FoundBoard
+		err        error
 	)
 
 	shouldSkip(t)
@@ -20,13 +21,12 @@ func Test_Dashboard_CRUD(t *testing.T) {
 	var board sdk.Board
 	raw, _ := ioutil.ReadFile("testdata/new-empty-dashboard-2.6.json")
 
-	err := json.Unmarshal(raw, &board)
-
-	if _, err := client.SetDashboard(board, true); err != nil {
+	if err = json.Unmarshal(raw, &board); err != nil {
 		t.Error(err)
 	}
 
-	if err != nil {
+	client.DeleteDashboard(board.UpdateSlug())
+	if _, err = client.SetDashboard(board, false); err != nil {
 		t.Error(err)
 	}
 
@@ -35,7 +35,7 @@ func Test_Dashboard_CRUD(t *testing.T) {
 	}
 
 	for _, link := range boardLinks {
-		_, _, err := client.GetDashboardByUID(link.UID)
+		_, _, err = client.GetDashboardByUID(link.UID)
 		if err != nil {
 			t.Error(err)
 		}
