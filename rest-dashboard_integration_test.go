@@ -39,5 +39,15 @@ func Test_Dashboard_CRUD(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
+
+		_, _, err = client.GetDashboard(link.URI)
+		if err != nil {
+			t.Error(err)
+		}
+
+		_, _, err = client.GetDashboardBySlug(link.URI)
+		if err != nil {
+			t.Error(err)
+		}
 	}
 }
