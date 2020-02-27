@@ -79,7 +79,7 @@ func (r *Client) GetDashboard(path string) (Board, BoardProperties, error) {
 		code int
 		err  error
 	)
-	//slug, _ = setPrefix(slug)
+	path, _ = setPrefix(path)
 	if raw, code, err = r.get(fmt.Sprintf("api/dashboards/%s", path), nil); err != nil {
 		return Board{}, BoardProperties{}, err
 	}
@@ -281,6 +281,9 @@ func setPrefix(slug string) (string, bool) {
 		return slug, true
 	}
 	if strings.HasPrefix(slug, "file") {
+		return slug, false
+	}
+	if strings.HasPrefix(slug, "uid") {
 		return slug, false
 	}
 	return fmt.Sprintf("db/%s", slug), true
