@@ -1,13 +1,14 @@
 package sdk_test
 
 import (
-	"github.com/grafana-tools/sdk"
 	"testing"
+
+	"github.com/grafana-tools/sdk"
 )
 
 func TestAdminOperations(t *testing.T) {
 	shouldSkip(t)
-	client := getClient()
+	client := getClient(t)
 
 	u := sdk.User{
 		Login:          "test",

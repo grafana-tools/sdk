@@ -1,14 +1,15 @@
 package sdk_test
 
 import (
-	"github.com/grafana-tools/sdk"
 	"testing"
+
+	"github.com/grafana-tools/sdk"
 )
 
 func Test_Datasource_CRUD(t *testing.T) {
 	shouldSkip(t)
 
-	client := getClient()
+	client := getClient(t)
 
 	datasources, err := client.GetAllDatasources()
 	if err != nil {

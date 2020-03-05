@@ -7,7 +7,7 @@ import (
 func Test_User_SmokeTests(t *testing.T) {
 	shouldSkip(t)
 
-	client := getClient()
+	client := getClient(t)
 
 	actualUser, err := client.GetActualUser()
 	if err != nil {
@@ -45,7 +45,7 @@ func Test_User_SmokeTests(t *testing.T) {
 func Test_User_SearchUsers(t *testing.T) {
 	shouldSkip(t)
 
-	client := getClient()
+	client := getClient(t)
 	actualUser, err := client.GetActualUser()
 	if err != nil {
 		t.Fatalf("failed to get actual user: %s", err.Error())
