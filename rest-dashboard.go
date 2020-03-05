@@ -22,11 +22,12 @@ package sdk
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 // BoardProperties keeps metadata of a dashboard.
@@ -48,50 +49,48 @@ type BoardProperties struct {
 }
 
 // GetDashboardByUID loads a dashboard and its metadata from Grafana by dashboard uid.
+//
+// Reflects GET /api/dashboards/uid/:uid API call.
 func (r *Client) GetDashboardByUID(uid string) (Board, BoardProperties, error) {
-	return r.GetDashboard("uid/" + uid)
+	return r.getDashboard("uid/" + uid)
 }
 
 // GetDashboardBySlug loads a dashboard and its metadata from Grafana by dashboard slug.
-// Deprecated since Grafana v5
 //
-// For dashboards from a filesystem set "file/" prefix for slug. By default dashboards from
-// a database assumed. Database dashboards may have "db/" prefix or may have not, it will
-// be appended automatically.
-func (r *Client) GetDashboardBySlug(slug string) (Board, BoardProperties, error) {
-	path, _ := setPrefix(slug)
-	return r.GetDashboard(path)
-}
-
-// GetDashboard loads a dashboard from Grafana instance along with metadata for a dashboard.
 // For dashboards from a filesystem set "file/" prefix for slug. By default dashboards from
 // a database assumed. Database dashboards may have "db/" prefix or may have not, it will
 // be appended automatically.
 //
 // Reflects GET /api/dashboards/db/:slug API call.
-func (r *Client) GetDashboard(path string) (Board, BoardProperties, error) {
+// Deprecated: since Grafana v5 you should use uids. Use GetDashboardByUID() for that.
+func (r *Client) GetDashboardBySlug(slug string) (Board, BoardProperties, error) {
+	path := setPrefix(slug)
+	return r.getDashboard(path)
+}
+
+// getDashboard loads a dashboard from Grafana instance along with metadata for a dashboard.
+// For dashboards from a filesystem set "file/" prefix for slug. By default dashboards from
+// a database assumed. Database dashboards may have "db/" prefix or may have not, it will
+// be appended automatically.
+//
+// Reflects GET /api/dashboards/db/:slug API call.
+func (r *Client) getDashboard(path string) (Board, BoardProperties, error) {
+	raw, bp, err := r.getRawDashboard(path)
+	if err != nil {
+		return Board{}, BoardProperties{}, errors.Wrap(err, "get raw dashboard")
+	}
 	var (
-		raw    []byte
 		result struct {
 			Meta  BoardProperties `json:"meta"`
 			Board Board           `json:"dashboard"`
 		}
-		code int
-		err  error
 	)
-	path, _ = setPrefix(path)
-	if raw, code, err = r.get(fmt.Sprintf("api/dashboards/%s", path), nil); err != nil {
-		return Board{}, BoardProperties{}, err
-	}
-	if code != 200 {
-		return Board{}, BoardProperties{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
-	}
 	dec := json.NewDecoder(bytes.NewReader(raw))
 	dec.UseNumber()
-	if err := dec.Decode(&result); err != nil {
-		return Board{}, BoardProperties{}, fmt.Errorf("unmarshal board with meta: %s\n%s", err, raw)
+	if err := dec.Decode(&result.Board); err != nil {
+		return Board{}, BoardProperties{}, errors.Wrap(err, "unmarshal board")
 	}
-	return result.Board, result.Meta, err
+	return result.Board, bp, err
 }
 
 // GetRawDashboard loads a dashboard JSON from Grafana instance along with metadata for a dashboard.
@@ -106,7 +105,8 @@ func (r *Client) GetDashboard(path string) (Board, BoardProperties, error) {
 // be appended automatically.
 //
 // Reflects GET /api/dashboards/db/:slug API call.
-func (r *Client) GetRawDashboard(slug string) ([]byte, BoardProperties, error) {
+// Deprecated: since Grafana v5 you should use uids. Use GetRawDashboardByUID() for that.
+func (r *Client) getRawDashboard(path string) ([]byte, BoardProperties, error) {
 	var (
 		raw    []byte
 		result struct {
@@ -116,8 +116,8 @@ func (r *Client) GetRawDashboard(slug string) ([]byte, BoardProperties, error) {
 		code int
 		err  error
 	)
-	slug, _ = setPrefix(slug)
-	if raw, code, err = r.get(fmt.Sprintf("api/dashboards/%s", slug), nil); err != nil {
+	path = setPrefix(path)
+	if raw, code, err = r.get(fmt.Sprintf("api/dashboards/%s", path), nil); err != nil {
 		return nil, BoardProperties{}, err
 	}
 	if code != 200 {
@@ -126,9 +126,29 @@ func (r *Client) GetRawDashboard(slug string) ([]byte, BoardProperties, error) {
 	dec := json.NewDecoder(bytes.NewReader(raw))
 	dec.UseNumber()
 	if err := dec.Decode(&result); err != nil {
-		return nil, BoardProperties{}, fmt.Errorf("unmarshal board with meta: %s\n%s", err, raw)
+		return nil, BoardProperties{}, errors.Wrap(err, "unmarshal board")
 	}
 	return []byte(result.Board), result.Meta, err
+}
+
+// GetRawDashboardByUID loads a dashboard and its metadata from Grafana by dashboard uid.
+//
+// Reflects GET /api/dashboards/uid/:uid API call.
+func (r *Client) GetRawDashboardByUID(uid string) ([]byte, BoardProperties, error) {
+	return r.getRawDashboard("uid/" + uid)
+}
+
+// GetRawDashboardBySlug loads a dashboard and its metadata from Grafana by dashboard slug.
+//
+// For dashboards from a filesystem set "file/" prefix for slug. By default dashboards from
+// a database assumed. Database dashboards may have "db/" prefix or may have not, it will
+// be appended automatically.
+//
+// Reflects GET /api/dashboards/db/:slug API call.
+// Deprecated: since Grafana v5 you should use uids. Use GetRawDashboardByUID() for that.
+func (r *Client) GetRawDashboardBySlug(slug string) ([]byte, BoardProperties, error) {
+	path := setPrefix(slug)
+	return r.getRawDashboard(path)
 }
 
 // FoundBoard keeps result of search with metadata of a dashboard.
@@ -276,17 +296,14 @@ func (r *Client) DeleteDashboard(slug string) (StatusMessage, error) {
 }
 
 // implicitly use dashboards from Grafana DB not from a file system
-func setPrefix(slug string) (string, bool) {
+func setPrefix(slug string) string {
 	if strings.HasPrefix(slug, "db") {
-		return slug, true
+		return slug
 	}
 	if strings.HasPrefix(slug, "file") {
-		return slug, false
+		return slug
 	}
-	if strings.HasPrefix(slug, "uid") {
-		return slug, false
-	}
-	return fmt.Sprintf("db/%s", slug), true
+	return fmt.Sprintf("db/%s", slug)
 }
 
 // assume we use database dashboard by default
