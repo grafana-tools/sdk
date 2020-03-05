@@ -116,7 +116,6 @@ func (r *Client) getRawDashboard(path string) ([]byte, BoardProperties, error) {
 		code int
 		err  error
 	)
-	path = setPrefix(path)
 	if raw, code, err = r.get(fmt.Sprintf("api/dashboards/%s", path), nil); err != nil {
 		return nil, BoardProperties{}, err
 	}
