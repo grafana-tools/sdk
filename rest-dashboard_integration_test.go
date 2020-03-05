@@ -16,7 +16,7 @@ func Test_Dashboard_CRUD(t *testing.T) {
 
 	shouldSkip(t)
 
-	client := getClient()
+	client := getClient(t)
 
 	var board sdk.Board
 	raw, _ := ioutil.ReadFile("testdata/new-empty-dashboard-2.6.json")

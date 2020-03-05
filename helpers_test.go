@@ -2,12 +2,15 @@ package sdk_test
 
 import (
 	"fmt"
-	"github.com/grafana-tools/sdk"
 	"os"
 	"testing"
+
+	"github.com/grafana-tools/sdk"
 )
 
-func getClient() *sdk.Client {
+func getClient(t *testing.T) *sdk.Client {
+	t.Helper()
+
 	addr := "http://localhost:3000"
 	user := "admin"
 	pass := "admin"
@@ -26,6 +29,8 @@ func getClient() *sdk.Client {
 }
 
 func shouldSkip(t *testing.T) {
+	t.Helper()
+
 	if v := os.Getenv("GRAFANA_INTEGRATION"); v != "1" {
 		t.Skipf("skipping because GRAFANA_INTEGRATION is %s, not 1", v)
 	}

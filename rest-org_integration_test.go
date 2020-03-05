@@ -1,14 +1,15 @@
 package sdk_test
 
 import (
-	"github.com/grafana-tools/sdk"
 	"testing"
+
+	"github.com/grafana-tools/sdk"
 )
 
 func TestCreateDelete(t *testing.T) {
 	shouldSkip(t)
 
-	client := getClient()
+	client := getClient(t)
 
 	oName := "coolorg"
 	o := sdk.Org{Name: oName}

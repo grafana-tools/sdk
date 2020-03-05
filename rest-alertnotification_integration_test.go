@@ -1,13 +1,14 @@
 package sdk_test
 
 import (
-	"github.com/grafana-tools/sdk"
 	"testing"
+
+	"github.com/grafana-tools/sdk"
 )
 
 func Test_Alertnotification_CRUD(t *testing.T) {
 	shouldSkip(t)
-	client := getClient()
+	client := getClient(t)
 
 	alertnotifications, err := client.GetAllAlertNotifications()
 	if err != nil {
