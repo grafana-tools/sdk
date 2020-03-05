@@ -51,7 +51,7 @@ func TestAnnotations(t *testing.T) {
 
 	ar := sdk.CreateAnnotationRequest{
 		Text: "test",
-		Time: time.Now().UnixNano() / 1_000_000,
+		Time: time.Now().UnixNano() / 1000000,
 	}
 	resp, err := client.CreateAnnotation(ar)
 	if err != nil {

@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"strconv"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 // https://grafana.com/docs/grafana/latest/http_api/annotations/
@@ -18,13 +20,13 @@ func (r *Client) CreateAnnotation(a CreateAnnotationRequest) (StatusMessage, err
 		err  error
 	)
 	if raw, err = json.Marshal(a); err != nil {
-		return StatusMessage{}, fmt.Errorf("failed to marshal request: %w", err)
+		return StatusMessage{}, errors.Wrap(err, "marshal request")
 	}
 	if raw, _, err = r.post("api/annotations", nil, raw); err != nil {
-		return StatusMessage{}, fmt.Errorf("failed to create annotation: %w", err)
+		return StatusMessage{}, errors.Wrap(err, "create annotation")
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
-		return StatusMessage{}, fmt.Errorf("failed to unmarshal response message: %w", err)
+		return StatusMessage{}, errors.Wrap(err, "unmarshal response message")
 	}
 	return resp, nil
 }
@@ -37,13 +39,13 @@ func (r *Client) PatchAnnotation(id uint, a PatchAnnotationRequest) (StatusMessa
 		err  error
 	)
 	if raw, err = json.Marshal(a); err != nil {
-		return StatusMessage{}, fmt.Errorf("failed to marshal request: %w", err)
+		return StatusMessage{}, errors.Wrap(err, "marshal request")
 	}
 	if raw, _, err = r.patch(fmt.Sprintf("api/annotations/%d", id), nil, raw); err != nil {
-		return StatusMessage{}, fmt.Errorf("failed to patch annotation: %w", err)
+		return StatusMessage{}, errors.Wrap(err, "patch annotation")
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
-		return StatusMessage{}, fmt.Errorf("failed to unmarshal response message: %w", err)
+		return StatusMessage{}, errors.Wrap(err, "unmarshal response message")
 	}
 	return resp, nil
 }
@@ -62,10 +64,10 @@ func (r *Client) GetAnnotations(params ...GetAnnotationsParams) ([]AnnotationRes
 	}
 
 	if raw, _, err = r.get("api/annotations", requestParams); err != nil {
-		return nil, fmt.Errorf("failed to get annotations: %w", err)
+		return nil, errors.Wrap(err, "get annotations")
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal response message: %w", err)
+		return nil, errors.Wrap(err, "unmarshal response message")
 	}
 	return resp, nil
 }
@@ -79,15 +81,15 @@ func (r *Client) DeleteAnnotation(id uint) (StatusMessage, error) {
 	)
 
 	if raw, _, err = r.delete(fmt.Sprintf("api/annotations/%d", id)); err != nil {
-		return StatusMessage{}, fmt.Errorf("failed to delete annotation: %w", err)
+		return StatusMessage{}, errors.Wrap(err, "delete annotation")
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
-		return StatusMessage{}, fmt.Errorf("failed to unmarshal response message: %w", err)
+		return StatusMessage{}, errors.Wrap(err, "unmarshal response message")
 	}
 	return resp, nil
 }
 
-// AnnotationOption is the type for all options implementing query parameters
+// GetAnnotationsParams is the type for all options implementing query parameters
 // https://grafana.com/docs/grafana/latest/http_api/annotations/#find-annotations
 type GetAnnotationsParams func(values url.Values)
 
@@ -155,5 +157,5 @@ func WithEndTime(t time.Time) GetAnnotationsParams {
 }
 
 func toMilliseconds(t time.Time) int64 {
-	return t.UnixNano() / 1_000_000
+	return t.UnixNano() / 1000000
 }
