@@ -50,7 +50,7 @@ func main() {
 		os.Exit(1)
 	}
 	for _, link := range boardLinks {
-		if rawBoard, meta, err = c.GetRawDashboard(link.URI); err != nil {
+		if rawBoard, meta, err = c.GetRawDashboardBySlug(link.URI); err != nil {
 			fmt.Fprintf(os.Stderr, fmt.Sprintf("%s for %s\n", err, link.URI))
 			continue
 		}
