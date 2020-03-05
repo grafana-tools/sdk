@@ -47,13 +47,29 @@ type BoardProperties struct {
 	Version    int       `json:"version"`
 }
 
+// GetDashboardByUID loads a dashboard and its metadata from Grafana by dashboard uid.
+func (r *Client) GetDashboardByUID(uid string) (Board, BoardProperties, error) {
+	return r.GetDashboard("uid/" + uid)
+}
+
+// GetDashboardBySlug loads a dashboard and its metadata from Grafana by dashboard slug.
+// Deprecated since Grafana v5
+//
+// For dashboards from a filesystem set "file/" prefix for slug. By default dashboards from
+// a database assumed. Database dashboards may have "db/" prefix or may have not, it will
+// be appended automatically.
+func (r *Client) GetDashboardBySlug(slug string) (Board, BoardProperties, error) {
+	path, _ := setPrefix(slug)
+	return r.GetDashboard(path)
+}
+
 // GetDashboard loads a dashboard from Grafana instance along with metadata for a dashboard.
 // For dashboards from a filesystem set "file/" prefix for slug. By default dashboards from
 // a database assumed. Database dashboards may have "db/" prefix or may have not, it will
 // be appended automatically.
 //
 // Reflects GET /api/dashboards/db/:slug API call.
-func (r *Client) GetDashboard(slug string) (Board, BoardProperties, error) {
+func (r *Client) GetDashboard(path string) (Board, BoardProperties, error) {
 	var (
 		raw    []byte
 		result struct {
@@ -63,8 +79,8 @@ func (r *Client) GetDashboard(slug string) (Board, BoardProperties, error) {
 		code int
 		err  error
 	)
-	slug, _ = setPrefix(slug)
-	if raw, code, err = r.get(fmt.Sprintf("api/dashboards/%s", slug), nil); err != nil {
+	path, _ = setPrefix(path)
+	if raw, code, err = r.get(fmt.Sprintf("api/dashboards/%s", path), nil); err != nil {
 		return Board{}, BoardProperties{}, err
 	}
 	if code != 200 {
@@ -118,6 +134,7 @@ func (r *Client) GetRawDashboard(slug string) ([]byte, BoardProperties, error) {
 // FoundBoard keeps result of search with metadata of a dashboard.
 type FoundBoard struct {
 	ID        uint     `json:"id"`
+	UID       string   `json:"uid"`
 	Title     string   `json:"title"`
 	URI       string   `json:"uri"`
 	Type      string   `json:"type"`
@@ -264,6 +281,9 @@ func setPrefix(slug string) (string, bool) {
 		return slug, true
 	}
 	if strings.HasPrefix(slug, "file") {
+		return slug, false
+	}
+	if strings.HasPrefix(slug, "uid") {
 		return slug, false
 	}
 	return fmt.Sprintf("db/%s", slug), true
