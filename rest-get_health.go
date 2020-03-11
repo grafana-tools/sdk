@@ -20,22 +20,32 @@ package sdk
 */
 
 import (
-	"fmt"
+	"encoding/json"
 )
 
-// Checks health of the grafana base url
+// HealthResponse represents the health of grafana server
+type HealthResponse struct {
+	Alive    bool   `json:"alive"`
+	Commit   string `json:"commit"`
+	Database string `json:"database"`
+	Version  string `json:"version"`
+}
+
+// GetHealth retrieves the health of the grafana server
 // Reflects GET BaseURL API call.
-func (r *Client) CheckHealth() error {
+func (r *Client) GetHealth() (HealthResponse, error) {
 	var (
-		raw  []byte
-		code int
-		err  error
+		raw []byte
+		err error
 	)
-	if raw, code, err = r.get("", nil); err != nil {
-		return err
+	if raw, _, err = r.get("/api/health", nil); err != nil {
+		return HealthResponse{}, err
 	}
-	if code != 200 {
-		return fmt.Errorf("HTTP error %d: returns %s", code, raw)
+
+	health := HealthResponse{}
+	if err := json.Unmarshal(raw, &health); err != nil {
+		return HealthResponse{}, err
 	}
-	return nil
+	health.Alive = health.Database == "ok"
+	return health, nil
 }
