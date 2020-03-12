@@ -25,7 +25,6 @@ import (
 
 // HealthResponse represents the health of grafana server
 type HealthResponse struct {
-	Alive    bool   `json:"alive"`
 	Commit   string `json:"commit"`
 	Database string `json:"database"`
 	Version  string `json:"version"`
@@ -46,6 +45,5 @@ func (r *Client) GetHealth() (HealthResponse, error) {
 	if err := json.Unmarshal(raw, &health); err != nil {
 		return HealthResponse{}, err
 	}
-	health.Alive = health.Database == "ok"
 	return health, nil
 }

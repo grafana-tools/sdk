@@ -12,7 +12,7 @@ func TestClient_GetHealth(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !health.Alive {
-		t.Fatalf("expected `health.Alive` to be %v, got %v.", true, health.Alive)
+	if health.Database != "ok" {
+		t.Fatalf("expected `Database` to be %v, got %v.", "ok", health.Database)
 	}
 }
