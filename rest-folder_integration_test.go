@@ -24,7 +24,7 @@ func Test_Folder_CRUD(t *testing.T) {
 	}
 
 	var f2 = sdk.Folder{
-		Title:     "test-folder-2",
+		Title: "test-folder-2",
 	}
 
 	fReceived2, err := client.CreateFolder(f2)
@@ -42,7 +42,6 @@ func Test_Folder_CRUD(t *testing.T) {
 	if len(fs) != 1 {
 		t.Fatalf("expected to get one folders, got %d", len(fs))
 	}
-
 
 	fg, err := client.GetFolderByUID(fReceived1.UID)
 	if err != nil {

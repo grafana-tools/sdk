@@ -32,10 +32,10 @@ import (
 // Reflects GET /api/folders API call.
 func (r *Client) GetAllFolders(params ...GetFolderParams) ([]Folder, error) {
 	var (
-		raw  []byte
-		fs   []Folder
-		code int
-		err  error
+		raw           []byte
+		fs            []Folder
+		code          int
+		err           error
 		requestParams = make(url.Values)
 	)
 	for _, p := range params {
@@ -154,8 +154,6 @@ func (r *Client) GetFolderByID(ID int) (Folder, error) {
 	err = json.Unmarshal(raw, &f)
 	return f, err
 }
-
-
 
 // GetFolderParams is the type for all options implementing query parameters
 type GetFolderParams func(values url.Values)
