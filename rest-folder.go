@@ -22,18 +22,26 @@ package sdk
 import (
 	"encoding/json"
 	"fmt"
+	"net/url"
+	"strconv"
 )
+
+// https://grafana.com/docs/grafana/latest/http_api/folder/
 
 // GetAllFolders gets all folders.
 // Reflects GET /api/folders API call.
-func (r *Client) GetAllFolders() ([]Folder, error) {
+func (r *Client) GetAllFolders(params ...GetFolderParams) ([]Folder, error) {
 	var (
 		raw  []byte
 		fs   []Folder
 		code int
 		err  error
+		requestParams = make(url.Values)
 	)
-	if raw, code, err = r.get("api/folders", nil); err != nil {
+	for _, p := range params {
+		p(requestParams)
+	}
+	if raw, code, err = r.get("api/folders", requestParams); err != nil {
 		return nil, err
 	}
 	if code != 200 {
@@ -43,7 +51,7 @@ func (r *Client) GetAllFolders() ([]Folder, error) {
 	return fs, err
 }
 
-// GetFolderByUID get folder by uid.
+// GetFolderByUID gets folder by uid.
 // Reflects GET /api/folders/:uid API call.
 func (r *Client) GetFolderByUID(UID string) (Folder, error) {
 	var (
@@ -125,7 +133,7 @@ func (r *Client) DeleteFolderByUID(UID string) (bool, error) {
 	return true, err
 }
 
-// GetFolderByID get folder by id.
+// GetFolderByID gets folder by id.
 // Reflects GET /api/folders/id/:id API call.
 func (r *Client) GetFolderByID(ID int) (Folder, error) {
 	var (
@@ -134,6 +142,9 @@ func (r *Client) GetFolderByID(ID int) (Folder, error) {
 		code int
 		err  error
 	)
+	if ID <= 0 {
+		return f, fmt.Errorf("ID cannot be less than zero")
+	}
 	if raw, code, err = r.get(fmt.Sprintf("api/folders/id/%d", ID), nil); err != nil {
 		return f, err
 	}
@@ -142,4 +153,16 @@ func (r *Client) GetFolderByID(ID int) (Folder, error) {
 	}
 	err = json.Unmarshal(raw, &f)
 	return f, err
+}
+
+
+
+// GetFolderParams is the type for all options implementing query parameters
+type GetFolderParams func(values url.Values)
+
+// Limit sets the max number of folders to return
+func Limit(limit uint) GetFolderParams {
+	return func(v url.Values) {
+		v.Set("limit", strconv.FormatUint(uint64(limit), 10))
+	}
 }
