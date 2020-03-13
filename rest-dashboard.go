@@ -30,6 +30,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+// DefaultFolderId is the id of the general folder
+// that is pre-created and cannot be removed.
 const DefaultFolderId = 0
 
 // BoardProperties keeps metadata of a dashboard.
@@ -195,6 +197,8 @@ func (r *Client) SearchDashboards(query string, starred bool, tags ...string) ([
 	return boards, err
 }
 
+// SetDashboardParams contains the extra parameteres
+// that affects where and how the dashboard will be stored
 type SetDashboardParams struct {
 	FolderID  int
 	Overwrite bool
