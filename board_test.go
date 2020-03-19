@@ -37,12 +37,18 @@ func TestAddTags(t *testing.T) {
 
 func TestBoardRemoveTags_Existent(t *testing.T) {
 	b := sdk.NewBoard("Sample")
-	b.AddTags("1", "2", "3", "4")
 
-	b.RemoveTags("1", "2")
+	b.AddTags("1", "2", "3", "4", "4")
+	b.RemoveTags("1", "2", "5")
+	b.AddTags("1", "4")
 
-	if len(b.Tags) != 2 {
-		t.Errorf("len(tags) should be 2 but got %d", len(b.Tags))
+	if len(b.Tags) != 3 {
+		t.Errorf("len(tags) should be 2 but got %d %v ", len(b.Tags), b.Tags)
+	}
+	for _, tag := range b.Tags {
+		if tag == "2" || tag == "5" {
+			t.Errorf("2 & 5 tag should not be present but got in tags %v", b.Tags)
+		}
 	}
 }
 
