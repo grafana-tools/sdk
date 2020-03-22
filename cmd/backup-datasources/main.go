@@ -26,6 +26,7 @@ package main
 */
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -46,8 +47,9 @@ func main() {
 		fmt.Fprint(os.Stderr, "Usage:  backup-datasources http://sdk.host:3000 api-key-string-here\n")
 		os.Exit(0)
 	}
+	ctx := context.Background()
 	c := sdk.NewClient(os.Args[1], os.Args[2], sdk.DefaultHTTPClient)
-	if datasources, err = c.GetAllDatasources(); err != nil {
+	if datasources, err = c.GetAllDatasources(ctx); err != nil {
 		fmt.Fprintf(os.Stderr, fmt.Sprintf("%s\n", err))
 		os.Exit(1)
 	}

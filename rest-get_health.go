@@ -20,6 +20,7 @@ package sdk
 */
 
 import (
+	"context"
 	"encoding/json"
 )
 
@@ -32,12 +33,12 @@ type HealthResponse struct {
 
 // GetHealth retrieves the health of the grafana server
 // Reflects GET BaseURL API call.
-func (r *Client) GetHealth() (HealthResponse, error) {
+func (r *Client) GetHealth(ctx context.Context) (HealthResponse, error) {
 	var (
 		raw []byte
 		err error
 	)
-	if raw, _, err = r.get("/api/health", nil); err != nil {
+	if raw, _, err = r.get(ctx, "/api/health", nil); err != nil {
 		return HealthResponse{}, err
 	}
 

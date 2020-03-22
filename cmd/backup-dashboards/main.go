@@ -26,6 +26,7 @@ package main
 */
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -44,13 +45,14 @@ func main() {
 		fmt.Fprint(os.Stderr, "Usage:  backup-dashboards http://grafana.host:3000 api-key-string-here\n")
 		os.Exit(0)
 	}
+	ctx := context.Background()
 	c := sdk.NewClient(os.Args[1], os.Args[2], sdk.DefaultHTTPClient)
-	if boardLinks, err = c.SearchDashboards("", false); err != nil {
+	if boardLinks, err = c.SearchDashboards(ctx, "", false); err != nil {
 		fmt.Fprintf(os.Stderr, fmt.Sprintf("%s\n", err))
 		os.Exit(1)
 	}
 	for _, link := range boardLinks {
-		if rawBoard, meta, err = c.GetRawDashboardBySlug(link.URI); err != nil {
+		if rawBoard, meta, err = c.GetRawDashboardBySlug(ctx, link.URI); err != nil {
 			fmt.Fprintf(os.Stderr, fmt.Sprintf("%s for %s\n", err, link.URI))
 			continue
 		}

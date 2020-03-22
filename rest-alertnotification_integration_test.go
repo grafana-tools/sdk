@@ -1,6 +1,7 @@
 package sdk_test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/grafana-tools/sdk"
@@ -9,8 +10,9 @@ import (
 func Test_Alertnotification_CRUD(t *testing.T) {
 	shouldSkip(t)
 	client := getClient(t)
+	ctx := context.Background()
 
-	alertnotifications, err := client.GetAllAlertNotifications()
+	alertnotifications, err := client.GetAllAlertNotifications(ctx)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -31,12 +33,12 @@ func Test_Alertnotification_CRUD(t *testing.T) {
 		},
 	}
 
-	id, err := client.CreateAlertNotification(an)
+	id, err := client.CreateAlertNotification(ctx, an)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	anRetrieved, err := client.GetAlertNotificationID(uint(id))
+	anRetrieved, err := client.GetAlertNotificationID(ctx, uint(id))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -46,17 +48,17 @@ func Test_Alertnotification_CRUD(t *testing.T) {
 	}
 
 	an.Name = "alertnotification2"
-	err = client.UpdateAlertNotificationUID(an, "foobar")
+	err = client.UpdateAlertNotificationUID(ctx, an, "foobar")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	err = client.DeleteAlertNotificationUID("foobar")
+	err = client.DeleteAlertNotificationUID(ctx, "foobar")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	an, err = client.GetAlertNotificationUID("foobar")
+	an, err = client.GetAlertNotificationUID(ctx, "foobar")
 	if err == nil {
 		t.Fatalf("expected the alertnotification to be deleted")
 	}

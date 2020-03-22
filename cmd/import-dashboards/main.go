@@ -29,6 +29,7 @@ package main
 */
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -49,6 +50,7 @@ func main() {
 		fmt.Fprint(os.Stderr, "Usage: import-dashboards http://grafana-host:3000 api-key-string-here\n")
 		os.Exit(0)
 	}
+	ctx := context.Background()
 	c := sdk.NewClient(os.Args[1], os.Args[2], sdk.DefaultHTTPClient)
 	filesInDir, err = ioutil.ReadDir(".")
 	if err != nil {
@@ -65,8 +67,8 @@ func main() {
 				log.Println(err)
 				continue
 			}
-			c.DeleteDashboard(board.UpdateSlug())
-			_, err := c.SetDashboard(board, false)
+			c.DeleteDashboard(ctx, board.UpdateSlug())
+			_, err := c.SetDashboard(ctx, board, false)
 			if err != nil {
 				log.Printf("error on importing dashboard %s", board.Title)
 				continue

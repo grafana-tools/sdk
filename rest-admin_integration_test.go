@@ -1,6 +1,7 @@
 package sdk_test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/grafana-tools/sdk"
@@ -9,6 +10,7 @@ import (
 func TestAdminOperations(t *testing.T) {
 	shouldSkip(t)
 	client := getClient(t)
+	ctx := context.Background()
 
 	u := sdk.User{
 		Login:          "test",
@@ -19,7 +21,7 @@ func TestAdminOperations(t *testing.T) {
 		IsGrafanaAdmin: false,
 	}
 
-	st, err := client.CreateUser(u)
+	st, err := client.CreateUser(ctx, u)
 	if err != nil {
 		t.Fatalf("failed to create an user: %s", err.Error())
 	}
@@ -29,7 +31,7 @@ func TestAdminOperations(t *testing.T) {
 
 	uid := *st.ID
 
-	retrievedUser, err := client.GetUser(uid)
+	retrievedUser, err := client.GetUser(ctx, uid)
 	if err != nil {
 		t.Fatalf("failed to get user: %s", err.Error())
 	}
@@ -38,12 +40,12 @@ func TestAdminOperations(t *testing.T) {
 		t.Fatal("retrieved data does not match what was created")
 	}
 
-	_, err = client.UpdateUserPermissions(sdk.UserPermissions{IsGrafanaAdmin: true}, uid)
+	_, err = client.UpdateUserPermissions(ctx, sdk.UserPermissions{IsGrafanaAdmin: true}, uid)
 	if err != nil {
 		t.Fatalf("failed to convert the user into an admin: %s", err)
 	}
 
-	retrievedUser, err = client.GetUser(uid)
+	retrievedUser, err = client.GetUser(ctx, uid)
 	if err != nil {
 		t.Fatalf("failed to get user: %s", err.Error())
 	}

@@ -1,21 +1,24 @@
 package sdk_test
 
 import (
-	"github.com/grafana-tools/sdk"
+	"context"
 	"testing"
+
+	"github.com/grafana-tools/sdk"
 )
 
 func Test_Folder_CRUD(t *testing.T) {
 	shouldSkip(t)
 
 	client := getClient(t)
+	ctx := context.Background()
 
 	var f1 = sdk.Folder{
 		Title: "test-folder-1",
 	}
 	var err error
 
-	fReceived1, err := client.CreateFolder(f1)
+	fReceived1, err := client.CreateFolder(ctx, f1)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -27,7 +30,7 @@ func Test_Folder_CRUD(t *testing.T) {
 		Title: "test-folder-2",
 	}
 
-	fReceived2, err := client.CreateFolder(f2)
+	fReceived2, err := client.CreateFolder(ctx, f2)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -35,7 +38,7 @@ func Test_Folder_CRUD(t *testing.T) {
 		t.Fatalf("got wrong title: expected %s, was %s", f2.Title, fReceived2.Title)
 	}
 
-	fs, err := client.GetAllFolders(sdk.Limit(1))
+	fs, err := client.GetAllFolders(ctx, sdk.Limit(1))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -43,7 +46,7 @@ func Test_Folder_CRUD(t *testing.T) {
 		t.Fatalf("expected to get one folders, got %d", len(fs))
 	}
 
-	fg, err := client.GetFolderByUID(fReceived1.UID)
+	fg, err := client.GetFolderByUID(ctx, fReceived1.UID)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -51,7 +54,7 @@ func Test_Folder_CRUD(t *testing.T) {
 		t.Fatalf("got wrong title: expected %s, was %s", fReceived1.Title, fg.Title)
 	}
 
-	fg, err = client.GetFolderByID(fReceived1.ID)
+	fg, err = client.GetFolderByID(ctx, fReceived1.ID)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -60,7 +63,7 @@ func Test_Folder_CRUD(t *testing.T) {
 	}
 
 	fReceived1.Title = "test-update-folder"
-	fg, err = client.UpdateFolderByUID(fReceived1)
+	fg, err = client.UpdateFolderByUID(ctx, fReceived1)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -68,14 +71,14 @@ func Test_Folder_CRUD(t *testing.T) {
 		t.Fatalf("got wrong title: expected %s, was %s", fReceived1.Title, fg.Title)
 	}
 
-	r, err := client.DeleteFolderByUID(fReceived1.UID)
+	r, err := client.DeleteFolderByUID(ctx, fReceived1.UID)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if !r {
 		t.Fatal("delete failed")
 	}
-	r, err = client.DeleteFolderByUID(fReceived2.UID)
+	r, err = client.DeleteFolderByUID(ctx, fReceived2.UID)
 	if err != nil {
 		t.Fatal(err)
 	}
