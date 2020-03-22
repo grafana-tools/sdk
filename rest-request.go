@@ -97,10 +97,11 @@ func (r *Client) doRequest(ctx context.Context, method, query string, params url
 	if params != nil {
 		u.RawQuery = params.Encode()
 	}
-	req, err := http.NewRequestWithContext(ctx, method, u.String(), buf)
+	req, err := http.NewRequest(method, u.String(), buf)
 	if err != nil {
 		return nil, 0, err
 	}
+	req = req.WithContext(ctx)
 	if !r.basicAuth {
 		req.Header.Set("Authorization", r.key)
 	}
