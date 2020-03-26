@@ -101,6 +101,7 @@ datasources. State of support for misc API parts noted below.
 There is no exact roadmap.  The integration tests are being run against the
 following Grafana versions:
 
+* [6.7.3](./travis.yml)
 * [6.6.2](/.travis.yml)
 * [6.5.3](/.travis.yml)
 * [6.4.5](/.travis.yml)
