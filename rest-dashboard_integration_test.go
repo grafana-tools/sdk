@@ -27,7 +27,11 @@ func Test_Dashboard_CRUD(t *testing.T) {
 	}
 
 	client.DeleteDashboard(ctx, board.UpdateSlug())
-	if _, err = client.SetDashboard(ctx, board, false); err != nil {
+	params := sdk.SetDashboardParams{
+		FolderID:  sdk.DefaultFolderId,
+		Overwrite: false,
+	}
+	if _, err = client.SetDashboard(ctx, board, params); err != nil {
 		t.Fatal(err)
 	}
 

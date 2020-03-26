@@ -31,6 +31,10 @@ import (
 	"github.com/pkg/errors"
 )
 
+// DefaultFolderId is the id of the general folder
+// that is pre-created and cannot be removed.
+const DefaultFolderId = 0
+
 // BoardProperties keeps metadata of a dashboard.
 type BoardProperties struct {
 	IsStarred  bool      `json:"isStarred,omitempty"`
@@ -194,6 +198,13 @@ func (r *Client) SearchDashboards(ctx context.Context, query string, starred boo
 	return boards, err
 }
 
+// SetDashboardParams contains the extra parameteres
+// that affects where and how the dashboard will be stored
+type SetDashboardParams struct {
+	FolderID  int
+	Overwrite bool
+}
+
 // SetDashboard updates existing dashboard or creates a new one.
 // Set dasboard ID to nil to create a new dashboard.
 // Set overwrite to true if you want to overwrite existing dashboard with
@@ -202,11 +213,12 @@ func (r *Client) SearchDashboards(ctx context.Context, query string, starred boo
 // may be only loaded with HTTP API but not created or updated.
 //
 // Reflects POST /api/dashboards/db API call.
-func (r *Client) SetDashboard(ctx context.Context, board Board, overwrite bool) (StatusMessage, error) {
+func (r *Client) SetDashboard(ctx context.Context, board Board, params SetDashboardParams) (StatusMessage, error) {
 	var (
 		isBoardFromDB bool
 		newBoard      struct {
 			Dashboard Board `json:"dashboard"`
+			FolderID  int   `json:"folderId"`
 			Overwrite bool  `json:"overwrite"`
 		}
 		raw  []byte
@@ -218,8 +230,9 @@ func (r *Client) SetDashboard(ctx context.Context, board Board, overwrite bool) 
 		return StatusMessage{}, errors.New("only database dashboard (with 'db/' prefix in a slug) can be set")
 	}
 	newBoard.Dashboard = board
-	newBoard.Overwrite = overwrite
-	if !overwrite {
+	newBoard.FolderID = params.FolderID
+	newBoard.Overwrite = params.Overwrite
+	if !params.Overwrite {
 		newBoard.Dashboard.ID = 0
 	}
 	if raw, err = json.Marshal(newBoard); err != nil {
