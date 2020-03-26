@@ -66,7 +66,11 @@ func main() {
 				continue
 			}
 			c.DeleteDashboard(board.UpdateSlug())
-			_, err := c.SetDashboard(board, false)
+			params := sdk.SetDashboardParams{
+				FolderID:  sdk.DefaultFolderId,
+				Overwrite: false,
+			}
+			_, err := c.SetDashboard(board, params)
 			if err != nil {
 				log.Printf("error on importing dashboard %s", board.Title)
 				continue
