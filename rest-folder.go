@@ -20,6 +20,7 @@ package sdk
 */
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -30,7 +31,7 @@ import (
 
 // GetAllFolders gets all folders.
 // Reflects GET /api/folders API call.
-func (r *Client) GetAllFolders(params ...GetFolderParams) ([]Folder, error) {
+func (r *Client) GetAllFolders(ctx context.Context, params ...GetFolderParams) ([]Folder, error) {
 	var (
 		raw           []byte
 		fs            []Folder
@@ -41,7 +42,7 @@ func (r *Client) GetAllFolders(params ...GetFolderParams) ([]Folder, error) {
 	for _, p := range params {
 		p(requestParams)
 	}
-	if raw, code, err = r.get("api/folders", requestParams); err != nil {
+	if raw, code, err = r.get(ctx, "api/folders", requestParams); err != nil {
 		return nil, err
 	}
 	if code != 200 {
@@ -53,14 +54,14 @@ func (r *Client) GetAllFolders(params ...GetFolderParams) ([]Folder, error) {
 
 // GetFolderByUID gets folder by uid.
 // Reflects GET /api/folders/:uid API call.
-func (r *Client) GetFolderByUID(UID string) (Folder, error) {
+func (r *Client) GetFolderByUID(ctx context.Context, UID string) (Folder, error) {
 	var (
 		raw  []byte
 		f    Folder
 		code int
 		err  error
 	)
-	if raw, code, err = r.get(fmt.Sprintf("api/folders/%s", UID), nil); err != nil {
+	if raw, code, err = r.get(ctx, fmt.Sprintf("api/folders/%s", UID), nil); err != nil {
 		return f, err
 	}
 	if code != 200 {
@@ -72,7 +73,7 @@ func (r *Client) GetFolderByUID(UID string) (Folder, error) {
 
 // CreateFolder create folders.
 // Reflects POST /api/folders API call.
-func (r *Client) CreateFolder(f Folder) (Folder, error) {
+func (r *Client) CreateFolder(ctx context.Context, f Folder) (Folder, error) {
 	var (
 		raw  []byte
 		rf   Folder
@@ -83,7 +84,7 @@ func (r *Client) CreateFolder(f Folder) (Folder, error) {
 	if raw, err = json.Marshal(f); err != nil {
 		return rf, err
 	}
-	if raw, code, err = r.post("api/folders", nil, raw); err != nil {
+	if raw, code, err = r.post(ctx, "api/folders", nil, raw); err != nil {
 		return rf, err
 	}
 	if code != 200 {
@@ -95,7 +96,7 @@ func (r *Client) CreateFolder(f Folder) (Folder, error) {
 
 // UpdateFolderByUID update folder by uid
 // Reflects PUT /api/folders/:uid API call.
-func (r *Client) UpdateFolderByUID(f Folder) (Folder, error) {
+func (r *Client) UpdateFolderByUID(ctx context.Context, f Folder) (Folder, error) {
 	var (
 		raw  []byte
 		rf   Folder
@@ -106,7 +107,7 @@ func (r *Client) UpdateFolderByUID(f Folder) (Folder, error) {
 	if raw, err = json.Marshal(f); err != nil {
 		return rf, err
 	}
-	if raw, code, err = r.put(fmt.Sprintf("api/folders/%s", f.UID), nil, raw); err != nil {
+	if raw, code, err = r.put(ctx, fmt.Sprintf("api/folders/%s", f.UID), nil, raw); err != nil {
 		return rf, err
 	}
 	if code != 200 {
@@ -118,13 +119,13 @@ func (r *Client) UpdateFolderByUID(f Folder) (Folder, error) {
 
 // DeleteFolderByUID deletes an existing folder by uid.
 // Reflects DELETE /api/folders/:uid API call.
-func (r *Client) DeleteFolderByUID(UID string) (bool, error) {
+func (r *Client) DeleteFolderByUID(ctx context.Context, UID string) (bool, error) {
 	var (
 		raw  []byte
 		code int
 		err  error
 	)
-	if raw, code, err = r.delete(fmt.Sprintf("api/folders/%s", UID)); err != nil {
+	if raw, code, err = r.delete(ctx, fmt.Sprintf("api/folders/%s", UID)); err != nil {
 		return false, err
 	}
 	if code != 200 {
@@ -135,7 +136,7 @@ func (r *Client) DeleteFolderByUID(UID string) (bool, error) {
 
 // GetFolderByID gets folder by id.
 // Reflects GET /api/folders/id/:id API call.
-func (r *Client) GetFolderByID(ID int) (Folder, error) {
+func (r *Client) GetFolderByID(ctx context.Context, ID int) (Folder, error) {
 	var (
 		raw  []byte
 		f    Folder
@@ -145,7 +146,7 @@ func (r *Client) GetFolderByID(ID int) (Folder, error) {
 	if ID <= 0 {
 		return f, fmt.Errorf("ID cannot be less than zero")
 	}
-	if raw, code, err = r.get(fmt.Sprintf("api/folders/id/%d", ID), nil); err != nil {
+	if raw, code, err = r.get(ctx, fmt.Sprintf("api/folders/id/%d", ID), nil); err != nil {
 		return f, err
 	}
 	if code != 200 {

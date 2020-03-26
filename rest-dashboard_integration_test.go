@@ -1,6 +1,7 @@
 package sdk_test
 
 import (
+	"context"
 	"encoding/json"
 	"io/ioutil"
 	"testing"
@@ -15,7 +16,7 @@ func Test_Dashboard_CRUD(t *testing.T) {
 	)
 
 	shouldSkip(t)
-
+	ctx := context.Background()
 	client := getClient(t)
 
 	var board sdk.Board
@@ -25,26 +26,26 @@ func Test_Dashboard_CRUD(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	client.DeleteDashboard(board.UpdateSlug())
+	client.DeleteDashboard(ctx, board.UpdateSlug())
 	params := sdk.SetDashboardParams{
 		FolderID:  sdk.DefaultFolderId,
 		Overwrite: false,
 	}
-	if _, err = client.SetDashboard(board, params); err != nil {
+	if _, err = client.SetDashboard(ctx, board, params); err != nil {
 		t.Fatal(err)
 	}
 
-	if boardLinks, err = client.SearchDashboards("", false); err != nil {
+	if boardLinks, err = client.SearchDashboards(ctx, "", false); err != nil {
 		t.Fatal(err)
 	}
 
 	for _, link := range boardLinks {
-		_, _, err = client.GetDashboardByUID(link.UID)
+		_, _, err = client.GetDashboardByUID(ctx, link.UID)
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		_, _, err = client.GetDashboardBySlug(link.URI)
+		_, _, err = client.GetDashboardBySlug(ctx, link.URI)
 		if err != nil {
 			t.Fatal(err)
 		}

@@ -1,6 +1,7 @@
 package sdk_test
 
 import (
+	"context"
 	"testing"
 )
 
@@ -8,13 +9,14 @@ func Test_User_SmokeTests(t *testing.T) {
 	shouldSkip(t)
 
 	client := getClient(t)
+	ctx := context.Background()
 
-	actualUser, err := client.GetActualUser()
+	actualUser, err := client.GetActualUser(ctx)
 	if err != nil {
 		t.Fatalf("failed to get actual user: %s", err.Error())
 	}
 
-	retrievedUser, err := client.GetUser(actualUser.ID)
+	retrievedUser, err := client.GetUser(ctx, actualUser.ID)
 	if err != nil {
 		t.Fatalf("failed to get user with ID %d: %s", actualUser.ID, err.Error())
 	}
@@ -23,7 +25,7 @@ func Test_User_SmokeTests(t *testing.T) {
 		t.Fatalf("retrieved a different user: %s vs. %s", actualUser.Name, retrievedUser.Name)
 	}
 
-	allUsers, err := client.GetAllUsers()
+	allUsers, err := client.GetAllUsers(ctx)
 	if err != nil {
 		t.Fatalf("failed to get all users: %s", err.Error())
 	}
@@ -46,7 +48,9 @@ func Test_User_SearchUsers(t *testing.T) {
 	shouldSkip(t)
 
 	client := getClient(t)
-	actualUser, err := client.GetActualUser()
+	ctx := context.Background()
+
+	actualUser, err := client.GetActualUser(ctx)
 	if err != nil {
 		t.Fatalf("failed to get actual user: %s", err.Error())
 	}
@@ -54,7 +58,7 @@ func Test_User_SearchUsers(t *testing.T) {
 	q := actualUser.Login
 	var currInd int = -1
 
-	if pgUsers, err := client.SearchUsersWithPaging(nil, nil, nil); err == nil {
+	if pgUsers, err := client.SearchUsersWithPaging(ctx, nil, nil, nil); err == nil {
 		for i, u := range pgUsers.Users {
 			if u.Login == q {
 				currInd = i
@@ -75,7 +79,7 @@ func Test_User_SearchUsers(t *testing.T) {
 	perPage := currInd + 1000
 	numPage := 1
 	nonExistentUser := "foobar"
-	afterUsers, err := client.SearchUsersWithPaging(&nonExistentUser, &perPage, &numPage)
+	afterUsers, err := client.SearchUsersWithPaging(ctx, &nonExistentUser, &perPage, &numPage)
 	if err != nil {
 		t.Fatal(err)
 	}

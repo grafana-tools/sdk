@@ -1,6 +1,7 @@
 package sdk
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -13,7 +14,7 @@ import (
 // https://grafana.com/docs/grafana/latest/http_api/annotations/
 
 // CreateAnnotation creates a new annotation from the annotation request
-func (r *Client) CreateAnnotation(a CreateAnnotationRequest) (StatusMessage, error) {
+func (r *Client) CreateAnnotation(ctx context.Context, a CreateAnnotationRequest) (StatusMessage, error) {
 	var (
 		raw  []byte
 		resp StatusMessage
@@ -22,7 +23,7 @@ func (r *Client) CreateAnnotation(a CreateAnnotationRequest) (StatusMessage, err
 	if raw, err = json.Marshal(a); err != nil {
 		return StatusMessage{}, errors.Wrap(err, "marshal request")
 	}
-	if raw, _, err = r.post("api/annotations", nil, raw); err != nil {
+	if raw, _, err = r.post(ctx, "api/annotations", nil, raw); err != nil {
 		return StatusMessage{}, errors.Wrap(err, "create annotation")
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
@@ -32,7 +33,7 @@ func (r *Client) CreateAnnotation(a CreateAnnotationRequest) (StatusMessage, err
 }
 
 // PatchAnnotation patches the annotation with id with the request
-func (r *Client) PatchAnnotation(id uint, a PatchAnnotationRequest) (StatusMessage, error) {
+func (r *Client) PatchAnnotation(ctx context.Context, id uint, a PatchAnnotationRequest) (StatusMessage, error) {
 	var (
 		raw  []byte
 		resp StatusMessage
@@ -41,7 +42,7 @@ func (r *Client) PatchAnnotation(id uint, a PatchAnnotationRequest) (StatusMessa
 	if raw, err = json.Marshal(a); err != nil {
 		return StatusMessage{}, errors.Wrap(err, "marshal request")
 	}
-	if raw, _, err = r.patch(fmt.Sprintf("api/annotations/%d", id), nil, raw); err != nil {
+	if raw, _, err = r.patch(ctx, fmt.Sprintf("api/annotations/%d", id), nil, raw); err != nil {
 		return StatusMessage{}, errors.Wrap(err, "patch annotation")
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
@@ -51,7 +52,7 @@ func (r *Client) PatchAnnotation(id uint, a PatchAnnotationRequest) (StatusMessa
 }
 
 // GetAnnotations gets annotations matching the annotation parameters
-func (r *Client) GetAnnotations(params ...GetAnnotationsParams) ([]AnnotationResponse, error) {
+func (r *Client) GetAnnotations(ctx context.Context, params ...GetAnnotationsParams) ([]AnnotationResponse, error) {
 	var (
 		raw           []byte
 		err           error
@@ -63,7 +64,7 @@ func (r *Client) GetAnnotations(params ...GetAnnotationsParams) ([]AnnotationRes
 		p(requestParams)
 	}
 
-	if raw, _, err = r.get("api/annotations", requestParams); err != nil {
+	if raw, _, err = r.get(ctx, "api/annotations", requestParams); err != nil {
 		return nil, errors.Wrap(err, "get annotations")
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
@@ -73,14 +74,14 @@ func (r *Client) GetAnnotations(params ...GetAnnotationsParams) ([]AnnotationRes
 }
 
 // DeleteAnnotation deletes the annotation with id
-func (r *Client) DeleteAnnotation(id uint) (StatusMessage, error) {
+func (r *Client) DeleteAnnotation(ctx context.Context, id uint) (StatusMessage, error) {
 	var (
 		raw  []byte
 		err  error
 		resp StatusMessage
 	)
 
-	if raw, _, err = r.delete(fmt.Sprintf("api/annotations/%d", id)); err != nil {
+	if raw, _, err = r.delete(ctx, fmt.Sprintf("api/annotations/%d", id)); err != nil {
 		return StatusMessage{}, errors.Wrap(err, "delete annotation")
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {

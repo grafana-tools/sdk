@@ -21,6 +21,7 @@ package sdk
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -55,8 +56,8 @@ type BoardProperties struct {
 // GetDashboardByUID loads a dashboard and its metadata from Grafana by dashboard uid.
 //
 // Reflects GET /api/dashboards/uid/:uid API call.
-func (r *Client) GetDashboardByUID(uid string) (Board, BoardProperties, error) {
-	return r.getDashboard("uid/" + uid)
+func (r *Client) GetDashboardByUID(ctx context.Context, uid string) (Board, BoardProperties, error) {
+	return r.getDashboard(ctx, "uid/"+uid)
 }
 
 // GetDashboardBySlug loads a dashboard and its metadata from Grafana by dashboard slug.
@@ -67,9 +68,9 @@ func (r *Client) GetDashboardByUID(uid string) (Board, BoardProperties, error) {
 //
 // Reflects GET /api/dashboards/db/:slug API call.
 // Deprecated: since Grafana v5 you should use uids. Use GetDashboardByUID() for that.
-func (r *Client) GetDashboardBySlug(slug string) (Board, BoardProperties, error) {
+func (r *Client) GetDashboardBySlug(ctx context.Context, slug string) (Board, BoardProperties, error) {
 	path := setPrefix(slug)
-	return r.getDashboard(path)
+	return r.getDashboard(ctx, path)
 }
 
 // getDashboard loads a dashboard from Grafana instance along with metadata for a dashboard.
@@ -78,8 +79,8 @@ func (r *Client) GetDashboardBySlug(slug string) (Board, BoardProperties, error)
 // be appended automatically.
 //
 // Reflects GET /api/dashboards/db/:slug API call.
-func (r *Client) getDashboard(path string) (Board, BoardProperties, error) {
-	raw, bp, err := r.getRawDashboard(path)
+func (r *Client) getDashboard(ctx context.Context, path string) (Board, BoardProperties, error) {
+	raw, bp, err := r.getRawDashboard(ctx, path)
 	if err != nil {
 		return Board{}, BoardProperties{}, errors.Wrap(err, "get raw dashboard")
 	}
@@ -110,7 +111,7 @@ func (r *Client) getDashboard(path string) (Board, BoardProperties, error) {
 //
 // Reflects GET /api/dashboards/db/:slug API call.
 // Deprecated: since Grafana v5 you should use uids. Use GetRawDashboardByUID() for that.
-func (r *Client) getRawDashboard(path string) ([]byte, BoardProperties, error) {
+func (r *Client) getRawDashboard(ctx context.Context, path string) ([]byte, BoardProperties, error) {
 	var (
 		raw    []byte
 		result struct {
@@ -120,7 +121,7 @@ func (r *Client) getRawDashboard(path string) ([]byte, BoardProperties, error) {
 		code int
 		err  error
 	)
-	if raw, code, err = r.get(fmt.Sprintf("api/dashboards/%s", path), nil); err != nil {
+	if raw, code, err = r.get(ctx, fmt.Sprintf("api/dashboards/%s", path), nil); err != nil {
 		return nil, BoardProperties{}, err
 	}
 	if code != 200 {
@@ -137,8 +138,8 @@ func (r *Client) getRawDashboard(path string) ([]byte, BoardProperties, error) {
 // GetRawDashboardByUID loads a dashboard and its metadata from Grafana by dashboard uid.
 //
 // Reflects GET /api/dashboards/uid/:uid API call.
-func (r *Client) GetRawDashboardByUID(uid string) ([]byte, BoardProperties, error) {
-	return r.getRawDashboard("uid/" + uid)
+func (r *Client) GetRawDashboardByUID(ctx context.Context, uid string) ([]byte, BoardProperties, error) {
+	return r.getRawDashboard(ctx, "uid/"+uid)
 }
 
 // GetRawDashboardBySlug loads a dashboard and its metadata from Grafana by dashboard slug.
@@ -149,9 +150,9 @@ func (r *Client) GetRawDashboardByUID(uid string) ([]byte, BoardProperties, erro
 //
 // Reflects GET /api/dashboards/db/:slug API call.
 // Deprecated: since Grafana v5 you should use uids. Use GetRawDashboardByUID() for that.
-func (r *Client) GetRawDashboardBySlug(slug string) ([]byte, BoardProperties, error) {
+func (r *Client) GetRawDashboardBySlug(ctx context.Context, slug string) ([]byte, BoardProperties, error) {
 	path := setPrefix(slug)
-	return r.getRawDashboard(path)
+	return r.getRawDashboard(ctx, path)
 }
 
 // FoundBoard keeps result of search with metadata of a dashboard.
@@ -169,7 +170,7 @@ type FoundBoard struct {
 // only starred dashboards and only for tags (logical OR applied to multiple tags).
 //
 // Reflects GET /api/search API call.
-func (r *Client) SearchDashboards(query string, starred bool, tags ...string) ([]FoundBoard, error) {
+func (r *Client) SearchDashboards(ctx context.Context, query string, starred bool, tags ...string) ([]FoundBoard, error) {
 	var (
 		raw    []byte
 		boards []FoundBoard
@@ -187,7 +188,7 @@ func (r *Client) SearchDashboards(query string, starred bool, tags ...string) ([
 	for _, tag := range tags {
 		q.Add("tag", tag)
 	}
-	if raw, code, err = r.get("api/search", q); err != nil {
+	if raw, code, err = r.get(ctx, "api/search", q); err != nil {
 		return nil, err
 	}
 	if code != 200 {
@@ -212,7 +213,7 @@ type SetDashboardParams struct {
 // may be only loaded with HTTP API but not created or updated.
 //
 // Reflects POST /api/dashboards/db API call.
-func (r *Client) SetDashboard(board Board, params SetDashboardParams) (StatusMessage, error) {
+func (r *Client) SetDashboard(ctx context.Context, board Board, params SetDashboardParams) (StatusMessage, error) {
 	var (
 		isBoardFromDB bool
 		newBoard      struct {
@@ -237,7 +238,7 @@ func (r *Client) SetDashboard(board Board, params SetDashboardParams) (StatusMes
 	if raw, err = json.Marshal(newBoard); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, code, err = r.post("api/dashboards/db", nil, raw); err != nil {
+	if raw, code, err = r.post(ctx, "api/dashboards/db", nil, raw); err != nil {
 		return StatusMessage{}, err
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
@@ -255,7 +256,7 @@ func (r *Client) SetDashboard(board Board, params SetDashboardParams) (StatusMes
 // may be only loaded with HTTP API but not created or updated.
 //
 // Reflects POST /api/dashboards/db API call.
-func (r *Client) SetRawDashboard(raw []byte) (StatusMessage, error) {
+func (r *Client) SetRawDashboard(ctx context.Context, raw []byte) (StatusMessage, error) {
 	var (
 		rawResp []byte
 		resp    StatusMessage
@@ -273,7 +274,7 @@ func (r *Client) SetRawDashboard(raw []byte) (StatusMessage, error) {
 	buf.WriteString(`{"dashboard":`)
 	buf.Write(raw)
 	buf.WriteString(`, "overwrite": true}`)
-	if rawResp, code, err = r.post("api/dashboards/db", nil, buf.Bytes()); err != nil {
+	if rawResp, code, err = r.post(ctx, "api/dashboards/db", nil, buf.Bytes()); err != nil {
 		return StatusMessage{}, err
 	}
 	if err = json.Unmarshal(rawResp, &resp); err != nil {
@@ -290,7 +291,7 @@ func (r *Client) SetRawDashboard(raw []byte) (StatusMessage, error) {
 // may be only loaded with HTTP API but not deteled.
 //
 // Reflects DELETE /api/dashboards/db/:slug API call.
-func (r *Client) DeleteDashboard(slug string) (StatusMessage, error) {
+func (r *Client) DeleteDashboard(ctx context.Context, slug string) (StatusMessage, error) {
 	var (
 		isBoardFromDB bool
 		raw           []byte
@@ -300,7 +301,7 @@ func (r *Client) DeleteDashboard(slug string) (StatusMessage, error) {
 	if slug, isBoardFromDB = cleanPrefix(slug); !isBoardFromDB {
 		return StatusMessage{}, errors.New("only database dashboards (with 'db/' prefix in a slug) can be removed")
 	}
-	if raw, _, err = r.delete(fmt.Sprintf("api/dashboards/db/%s", slug)); err != nil {
+	if raw, _, err = r.delete(ctx, fmt.Sprintf("api/dashboards/db/%s", slug)); err != nil {
 		return StatusMessage{}, err
 	}
 	err = json.Unmarshal(raw, &reply)

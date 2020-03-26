@@ -1,6 +1,7 @@
 package sdk_test
 
 import (
+	"context"
 	"testing"
 	"time"
 
@@ -10,12 +11,13 @@ import (
 func TestAnnotations(t *testing.T) {
 	shouldSkip(t)
 	client := getClient(t)
+	ctx := context.Background()
 
 	ar := sdk.CreateAnnotationRequest{
 		Text: "test",
 		Time: time.Now().UnixNano() / 1000000,
 	}
-	resp, err := client.CreateAnnotation(ar)
+	resp, err := client.CreateAnnotation(ctx, ar)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -23,13 +25,13 @@ func TestAnnotations(t *testing.T) {
 	checkResponse(t, resp, "Annotation added")
 	id := *resp.ID
 
-	resp, err = client.PatchAnnotation(id, sdk.PatchAnnotationRequest{Text: "new text"})
+	resp, err = client.PatchAnnotation(ctx, id, sdk.PatchAnnotationRequest{Text: "new text"})
 	if err != nil {
 		t.Fatal(err)
 	}
 	checkResponse(t, resp, "Annotation patched")
 
-	anns, err := client.GetAnnotations(sdk.WithLimit(100))
+	anns, err := client.GetAnnotations(ctx, sdk.WithLimit(100))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -43,7 +45,7 @@ func TestAnnotations(t *testing.T) {
 		t.Errorf("annotation not found")
 	}
 
-	resp, err = client.DeleteAnnotation(id)
+	resp, err = client.DeleteAnnotation(ctx, id)
 	if err != nil {
 		t.Fatal(err)
 	}

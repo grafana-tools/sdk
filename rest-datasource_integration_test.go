@@ -1,6 +1,7 @@
 package sdk_test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/grafana-tools/sdk"
@@ -10,8 +11,9 @@ func Test_Datasource_CRUD(t *testing.T) {
 	shouldSkip(t)
 
 	client := getClient(t)
+	ctx := context.Background()
 
-	datasources, err := client.GetAllDatasources()
+	datasources, err := client.GetAllDatasources(ctx)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -34,12 +36,12 @@ func Test_Datasource_CRUD(t *testing.T) {
 		},
 	}
 
-	status, err := client.CreateDatasource(ds)
+	status, err := client.CreateDatasource(ctx, ds)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	dsRetrieved, err := client.GetDatasource(uint(*status.ID))
+	dsRetrieved, err := client.GetDatasource(ctx, uint(*status.ID))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -50,17 +52,17 @@ func Test_Datasource_CRUD(t *testing.T) {
 
 	ds.Name = "elasticsdksource"
 	ds.ID = dsRetrieved.ID
-	status, err = client.UpdateDatasource(ds)
+	status, err = client.UpdateDatasource(ctx, ds)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	_, err = client.DeleteDatasourceByName("elasticsdksource")
+	_, err = client.DeleteDatasourceByName(ctx, "elasticsdksource")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	_, err = client.GetDatasource(uint(*status.ID))
+	_, err = client.GetDatasource(ctx, uint(*status.ID))
 	if err == nil {
 		t.Fatalf("expected the datasource to be deleted")
 	}

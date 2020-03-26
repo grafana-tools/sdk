@@ -31,6 +31,7 @@ package main
 */
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -50,6 +51,7 @@ func main() {
 		fmt.Fprint(os.Stderr, "Usage: import-dashboards http://grafana.host:3000 api-key-string-here\n")
 		os.Exit(0)
 	}
+	ctx := context.Background()
 	c := sdk.NewClient(os.Args[1], os.Args[2], sdk.DefaultHTTPClient)
 	filesInDir, err = ioutil.ReadDir(".")
 	if err != nil {
@@ -61,7 +63,7 @@ func main() {
 				log.Println(err)
 				continue
 			}
-			_, err := c.SetRawDashboard(rawBoard)
+			_, err := c.SetRawDashboard(ctx, rawBoard)
 			if err != nil {
 				log.Printf("error on importing dashboard from %s", file.Name())
 				continue

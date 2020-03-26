@@ -29,6 +29,7 @@ package main
 */
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -50,8 +51,9 @@ func main() {
 		fmt.Fprint(os.Stderr, "Usage:  import-datasources http://sdk-host:3000 api-key-string-here\n")
 		os.Exit(0)
 	}
+	ctx := context.Background()
 	c := sdk.NewClient(os.Args[1], os.Args[2], sdk.DefaultHTTPClient)
-	if datasources, err = c.GetAllDatasources(); err != nil {
+	if datasources, err = c.GetAllDatasources(ctx); err != nil {
 		fmt.Fprintf(os.Stderr, fmt.Sprintf("%s\n", err))
 		os.Exit(1)
 	}
@@ -72,11 +74,11 @@ func main() {
 			}
 			for _, existingDS := range datasources {
 				if existingDS.Name == newDS.Name {
-					c.DeleteDatasource(existingDS.ID)
+					c.DeleteDatasource(ctx, existingDS.ID)
 					break
 				}
 			}
-			if status, err = c.CreateDatasource(newDS); err != nil {
+			if status, err = c.CreateDatasource(ctx, newDS); err != nil {
 				fmt.Fprint(os.Stderr, fmt.Sprintf("error on importing datasource %s with %s (%s)", newDS.Name, err, *status.Message))
 			}
 		}
