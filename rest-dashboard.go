@@ -25,6 +25,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"strconv"
 	"strings"
 	"time"
 
@@ -171,6 +172,16 @@ type FoundBoard struct {
 //
 // Reflects GET /api/search API call.
 func (r *Client) SearchDashboards(ctx context.Context, query string, starred bool, tags ...string) ([]FoundBoard, error) {
+	return r.searchDashboards(ctx, []uint{}, query, starred, tags)
+}
+
+// SearchDashboardsInFolders is like SearchDashboards but instead of searching in all Grafana, it will limit
+// to the folder IDs passed as parameter.
+func (r *Client) SearchDashboardsInFolders(ctx context.Context, folderIDs []uint, query string, starred bool, tags ...string) ([]FoundBoard, error) {
+	return r.searchDashboards(ctx, folderIDs, query, starred, tags)
+}
+
+func (r *Client) searchDashboards(ctx context.Context, folderIDs []uint, query string, starred bool, tags []string) ([]FoundBoard, error) {
 	var (
 		raw    []byte
 		boards []FoundBoard
@@ -179,6 +190,7 @@ func (r *Client) SearchDashboards(ctx context.Context, query string, starred boo
 	)
 	u := url.URL{}
 	q := u.Query()
+
 	if query != "" {
 		q.Set("query", query)
 	}
@@ -188,6 +200,10 @@ func (r *Client) SearchDashboards(ctx context.Context, query string, starred boo
 	for _, tag := range tags {
 		q.Add("tag", tag)
 	}
+	for _, folderID := range folderIDs {
+		q.Add("folderIds", strconv.FormatUint(uint64(folderID), 10))
+	}
+
 	if raw, code, err = r.get(ctx, "api/search", q); err != nil {
 		return nil, err
 	}

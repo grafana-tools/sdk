@@ -39,6 +39,10 @@ func Test_Dashboard_CRUD(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	if boardLinks, err = client.SearchDashboardsInFolders(ctx, []uint{1, 2}, "", false); err != nil {
+		t.Fatal(err)
+	}
+
 	for _, link := range boardLinks {
 		_, _, err = client.GetDashboardByUID(ctx, link.UID)
 		if err != nil {
