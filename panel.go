@@ -237,7 +237,8 @@ type (
 		DashboardTags         []string `json:"dashboardTags,omitempty"`
 	}
 	RowPanel struct {
-		Panels []Panel
+		Panels    []Panel `json:"panels"`
+		Collapsed bool    `json:"collapsed"`
 	}
 	CustomPanel map[string]interface{}
 )
@@ -266,12 +267,13 @@ type (
 		Values *[]string   `json:"values,omitempty"`
 	}
 	Axis struct {
-		Format  string       `json:"format"`
-		LogBase int          `json:"logBase"`
-		Max     *FloatString `json:"max,omitempty"`
-		Min     *FloatString `json:"min,omitempty"`
-		Show    bool         `json:"show"`
-		Label   string       `json:"label,omitempty"`
+		Format   string       `json:"format"`
+		LogBase  int          `json:"logBase"`
+		Decimals int          `json:"decimals"`
+		Max      *FloatString `json:"max,omitempty"`
+		Min      *FloatString `json:"min,omitempty"`
+		Show     bool         `json:"show"`
+		Label    string       `json:"label,omitempty"`
 	}
 	SeriesOverride struct {
 		Alias         string      `json:"alias"`
@@ -313,16 +315,22 @@ type (
 		TextType string `json:"text"`
 		Value    string `json:"value"`
 	}
+	ColumnStyleValueMap struct {
+		Text  string `json:"text"`
+		Value string `json:"value"`
+	}
 	ColumnStyle struct {
-		Alias      *string   `json:"alias"`
-		DateFormat *string   `json:"dateFormat,omitempty"`
-		Pattern    string    `json:"pattern"`
-		Type       string    `json:"type"`
-		ColorMode  *string   `json:"colorMode,omitempty"`
-		Colors     *[]string `json:"colors,omitempty"`
-		Decimals   *uint     `json:"decimals,omitempty"`
-		Thresholds *[]string `json:"thresholds,omitempty"`
-		Unit       *string   `json:"unit,omitempty"`
+		Alias       *string               `json:"alias"`
+		DateFormat  *string               `json:"dateFormat,omitempty"`
+		Pattern     string                `json:"pattern"`
+		Type        string                `json:"type"`
+		ColorMode   *string               `json:"colorMode,omitempty"`
+		Colors      *[]string             `json:"colors,omitempty"`
+		Decimals    *uint                 `json:"decimals,omitempty"`
+		Thresholds  *[]string             `json:"thresholds,omitempty"`
+		Unit        *string               `json:"unit,omitempty"`
+		MappingType int                   `json:"mappingType,omitempty"`
+		ValueMaps   []ColumnStyleValueMap `json:"valueMaps,omitempty"`
 	}
 )
 
