@@ -50,16 +50,16 @@ func main() {
 	ctx := context.Background()
 	c := sdk.NewClient(os.Args[1], os.Args[2], sdk.DefaultHTTPClient)
 	if datasources, err = c.GetAllDatasources(ctx); err != nil {
-		fmt.Fprintf(os.Stderr, fmt.Sprintf("%s\n", err))
+		fmt.Fprint(os.Stderr, err)
 		os.Exit(1)
 	}
 	for _, ds := range datasources {
 		if dsPacked, err = json.Marshal(ds); err != nil {
-			fmt.Fprintf(os.Stderr, fmt.Sprintf("%s for %s\n", err, ds.Name))
+			fmt.Fprintf(os.Stderr, "%s for %s\n", err, ds.Name)
 			continue
 		}
 		if err = ioutil.WriteFile(fmt.Sprintf("%s.json", slug.Make(ds.Name)), dsPacked, os.FileMode(int(0666))); err != nil {
-			fmt.Fprintf(os.Stderr, fmt.Sprintf("%s for %s\n", err, meta.Slug))
+			fmt.Fprintf(os.Stderr, "%s for %s\n", err, meta.Slug)
 		}
 	}
 }

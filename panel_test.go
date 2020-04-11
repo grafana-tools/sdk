@@ -84,7 +84,7 @@ func TestStackVal_MarshalJSON_GotTrue(t *testing.T) {
 
 	data, _ := json.Marshal(sampleInp)
 
-	if bytes.Compare(data, sampleOut) != 0 {
+	if !bytes.Equal(data, sampleOut) {
 		t.Errorf("should be %s but got %s", sampleOut, data)
 	}
 }
@@ -98,7 +98,7 @@ func TestStackVal_MarshalJSON_GotFalse(t *testing.T) {
 
 	data, _ := json.Marshal(sampleInp)
 
-	if bytes.Compare(data, sampleOut) != 0 {
+	if !bytes.Equal(data, sampleOut) {
 		t.Errorf("should be %s but got %s", sampleOut, data)
 	}
 }
@@ -112,7 +112,7 @@ func TestStackVal_MarshalJSON_GotString(t *testing.T) {
 
 	data, _ := json.Marshal(sampleInp)
 
-	if bytes.Compare(data, sampleOut) != 0 {
+	if !bytes.Equal(data, sampleOut) {
 		t.Errorf("should be %s but got %s", sampleOut, data)
 	}
 }
@@ -177,7 +177,7 @@ func TestBoolInt_MarshalJSON_GotTrue(t *testing.T) {
 
 	data, _ := json.Marshal(sampleInp)
 
-	if bytes.Compare(data, sampleOut) != 0 {
+	if !bytes.Equal(data, sampleOut) {
 		t.Errorf("should be %s but got %s", sampleOut, data)
 	}
 }
@@ -191,7 +191,7 @@ func TestBoolInt_MarshalJSON_GotFalse(t *testing.T) {
 
 	data, _ := json.Marshal(sampleInp)
 
-	if bytes.Compare(data, sampleOut) != 0 {
+	if !bytes.Equal(data, sampleOut) {
 		t.Errorf("should be %s but got %s", sampleOut, data)
 	}
 }
@@ -206,7 +206,7 @@ func TestBoolInt_MarshalJSON_GotInt(t *testing.T) {
 
 	data, _ := json.Marshal(sampleInp)
 
-	if bytes.Compare(data, sampleOut) != 0 {
+	if !bytes.Equal(data, sampleOut) {
 		t.Errorf("should be %s but got %s", sampleOut, data)
 	}
 }
