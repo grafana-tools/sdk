@@ -246,7 +246,7 @@ type (
 type (
 	// TODO look at schema versions carefully
 	// grid was obsoleted by xaxis and yaxes
-	grid struct { //nolint:golint,deadcode
+	grid struct { //nolint: unused,deadcode
 		LeftLogBase     *int     `json:"leftLogBase"`
 		LeftMax         *int     `json:"leftMax"`
 		LeftMin         *int     `json:"leftMin"`
@@ -259,7 +259,7 @@ type (
 		Threshold2Color string   `json:"threshold2Color"`
 		ThresholdLine   bool     `json:"thresholdLine"`
 	}
-	xaxis struct { //nolint:golint,deadcode
+	xaxis struct { //nolint:unused,deadcode
 		Mode   string      `json:"mode"`
 		Name   interface{} `json:"name"` // TODO what is this?
 		Show   bool        `json:"show"`
