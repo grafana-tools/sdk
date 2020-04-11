@@ -54,32 +54,34 @@ func main() {
 	ctx := context.Background()
 	c := sdk.NewClient(os.Args[1], os.Args[2], sdk.DefaultHTTPClient)
 	if datasources, err = c.GetAllDatasources(ctx); err != nil {
-		fmt.Fprintf(os.Stderr, fmt.Sprintf("%s\n", err))
+		fmt.Fprint(os.Stderr, err)
 		os.Exit(1)
 	}
 	filesInDir, err = ioutil.ReadDir(".")
 	if err != nil {
-		fmt.Fprintf(os.Stderr, fmt.Sprintf("%s\n", err))
+		fmt.Fprint(os.Stderr, err)
 	}
 	for _, file := range filesInDir {
 		if strings.HasSuffix(file.Name(), ".json") {
 			if rawDS, err = ioutil.ReadFile(file.Name()); err != nil {
-				fmt.Fprint(os.Stderr, fmt.Sprintf("%s\n", err))
+				fmt.Fprint(os.Stderr, err)
 				continue
 			}
 			var newDS sdk.Datasource
 			if err = json.Unmarshal(rawDS, &newDS); err != nil {
-				fmt.Fprint(os.Stderr, fmt.Sprintf("%s\n", err))
+				fmt.Fprint(os.Stderr, err)
 				continue
 			}
 			for _, existingDS := range datasources {
 				if existingDS.Name == newDS.Name {
-					c.DeleteDatasource(ctx, existingDS.ID)
+					if status, err = c.DeleteDatasource(ctx, existingDS.ID); err != nil {
+						fmt.Fprintf(os.Stderr, "error on deleting datasource %s with %s", newDS.Name, err)
+					}
 					break
 				}
 			}
 			if status, err = c.CreateDatasource(ctx, newDS); err != nil {
-				fmt.Fprint(os.Stderr, fmt.Sprintf("error on importing datasource %s with %s (%s)", newDS.Name, err, *status.Message))
+				fmt.Fprintf(os.Stderr, "error on importing datasource %s with %s (%s)", newDS.Name, err, *status.Message)
 			}
 		}
 	}

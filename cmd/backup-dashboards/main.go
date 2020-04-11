@@ -48,16 +48,16 @@ func main() {
 	ctx := context.Background()
 	c := sdk.NewClient(os.Args[1], os.Args[2], sdk.DefaultHTTPClient)
 	if boardLinks, err = c.SearchDashboards(ctx, "", false); err != nil {
-		fmt.Fprintf(os.Stderr, fmt.Sprintf("%s\n", err))
+		fmt.Fprint(os.Stderr, err)
 		os.Exit(1)
 	}
 	for _, link := range boardLinks {
 		if rawBoard, meta, err = c.GetRawDashboardBySlug(ctx, link.URI); err != nil {
-			fmt.Fprintf(os.Stderr, fmt.Sprintf("%s for %s\n", err, link.URI))
+			fmt.Fprintf(os.Stderr, "%s for %s\n", err, link.URI)
 			continue
 		}
 		if err = ioutil.WriteFile(fmt.Sprintf("%s.json", meta.Slug), rawBoard, os.FileMode(int(0666))); err != nil {
-			fmt.Fprintf(os.Stderr, fmt.Sprintf("%s for %s\n", err, meta.Slug))
+			fmt.Fprintf(os.Stderr, "%s for %s\n", err, meta.Slug)
 		}
 	}
 }

@@ -33,7 +33,9 @@ func TestStackVal_UnmarshalJSON_GotTrue(t *testing.T) {
 	}
 	var sampleIn = []byte(`{"val":true}`)
 
-	json.Unmarshal(sampleIn, &sampleOut)
+	if err := json.Unmarshal(sampleIn, &sampleOut); err != nil {
+		t.Fatal(err)
+	}
 
 	if !sampleOut.Val.Flag {
 		t.Errorf("should be true but got false")
@@ -49,7 +51,9 @@ func TestStackVal_UnmarshalJSON_GotFalse(t *testing.T) {
 	}
 	var sampleIn = []byte(`{"val":false}`)
 
-	json.Unmarshal(sampleIn, &sampleOut)
+	if err := json.Unmarshal(sampleIn, &sampleOut); err != nil {
+		t.Fatal(err)
+	}
 
 	if sampleOut.Val.Flag {
 		t.Errorf("should be false but got true")
@@ -65,7 +69,9 @@ func TestStackVal_UnmarshalJSON_GotString(t *testing.T) {
 	}
 	var sampleIn = []byte(`{"val":"A"}`)
 
-	json.Unmarshal(sampleIn, &sampleOut)
+	if err := json.Unmarshal(sampleIn, &sampleOut); err != nil {
+		t.Fatal(err)
+	}
 
 	if sampleOut.Val.Flag {
 		t.Error("should be false but got true")
@@ -82,9 +88,12 @@ func TestStackVal_MarshalJSON_GotTrue(t *testing.T) {
 	sampleInp.Val.Flag = true
 	var sampleOut = []byte(`{"val":true}`)
 
-	data, _ := json.Marshal(sampleInp)
+	data, err := json.Marshal(sampleInp)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	if bytes.Compare(data, sampleOut) != 0 {
+	if !bytes.Equal(data, sampleOut) {
 		t.Errorf("should be %s but got %s", sampleOut, data)
 	}
 }
@@ -96,9 +105,12 @@ func TestStackVal_MarshalJSON_GotFalse(t *testing.T) {
 	sampleInp.Val.Flag = false
 	var sampleOut = []byte(`{"val":false}`)
 
-	data, _ := json.Marshal(sampleInp)
+	data, err := json.Marshal(sampleInp)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	if bytes.Compare(data, sampleOut) != 0 {
+	if !bytes.Equal(data, sampleOut) {
 		t.Errorf("should be %s but got %s", sampleOut, data)
 	}
 }
@@ -110,9 +122,12 @@ func TestStackVal_MarshalJSON_GotString(t *testing.T) {
 	sampleInp.Val.Value = "A"
 	var sampleOut = []byte(`{"val":"A"}`)
 
-	data, _ := json.Marshal(sampleInp)
+	data, err := json.Marshal(sampleInp)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	if bytes.Compare(data, sampleOut) != 0 {
+	if !bytes.Equal(data, sampleOut) {
 		t.Errorf("should be %s but got %s", sampleOut, data)
 	}
 }
@@ -123,7 +138,9 @@ func TestBoolInt_UnmarshalJSON_GotTrue(t *testing.T) {
 	}
 	var sampleIn = []byte(`{"val":true}`)
 
-	json.Unmarshal(sampleIn, &sampleOut)
+	if err := json.Unmarshal(sampleIn, &sampleOut); err != nil {
+		t.Fatal(err)
+	}
 
 	if !sampleOut.Val.Flag {
 		t.Errorf("should be true but got false")
@@ -139,7 +156,9 @@ func TestBoolInt_UnmarshalJSON_GotFalse(t *testing.T) {
 	}
 	var sampleIn = []byte(`{"val":false}`)
 
-	json.Unmarshal(sampleIn, &sampleOut)
+	if err := json.Unmarshal(sampleIn, &sampleOut); err != nil {
+		t.Fatal(err)
+	}
 
 	if sampleOut.Val.Flag {
 		t.Errorf("should be false but got true")
@@ -155,7 +174,9 @@ func TestBoolInt_UnmarshalJSON_GotInt(t *testing.T) {
 	}
 	var sampleIn = []byte(`{"val":123456789}`)
 
-	json.Unmarshal(sampleIn, &sampleOut)
+	if err := json.Unmarshal(sampleIn, &sampleOut); err != nil {
+		t.Fatal(err)
+	}
 
 	if sampleOut.Val.Flag {
 		t.Error("should be false but got true")
@@ -175,9 +196,12 @@ func TestBoolInt_MarshalJSON_GotTrue(t *testing.T) {
 	sampleInp.Val.Flag = true
 	var sampleOut = []byte(`{"val":true}`)
 
-	data, _ := json.Marshal(sampleInp)
+	data, err := json.Marshal(sampleInp)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	if bytes.Compare(data, sampleOut) != 0 {
+	if !bytes.Equal(data, sampleOut) {
 		t.Errorf("should be %s but got %s", sampleOut, data)
 	}
 }
@@ -189,9 +213,12 @@ func TestBoolInt_MarshalJSON_GotFalse(t *testing.T) {
 	sampleInp.Val.Flag = false
 	var sampleOut = []byte(`{"val":false}`)
 
-	data, _ := json.Marshal(sampleInp)
+	data, err := json.Marshal(sampleInp)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	if bytes.Compare(data, sampleOut) != 0 {
+	if !bytes.Equal(data, sampleOut) {
 		t.Errorf("should be %s but got %s", sampleOut, data)
 	}
 }
@@ -204,9 +231,12 @@ func TestBoolInt_MarshalJSON_GotInt(t *testing.T) {
 	sampleInp.Val.Value = &i
 	var sampleOut = []byte(`{"val":123456789}`)
 
-	data, _ := json.Marshal(sampleInp)
+	data, err := json.Marshal(sampleInp)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	if bytes.Compare(data, sampleOut) != 0 {
+	if !bytes.Equal(data, sampleOut) {
 		t.Errorf("should be %s but got %s", sampleOut, data)
 	}
 }
