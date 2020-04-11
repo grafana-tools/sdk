@@ -149,7 +149,7 @@ type link struct {
 type Height string
 
 func (h *Height) UnmarshalJSON(raw []byte) error {
-	if raw == nil || bytes.Compare(raw, []byte(`"null"`)) == 0 {
+	if raw == nil || bytes.Equal(raw, []byte(`"null"`)) {
 		return nil
 	}
 	if raw[0] != '"' {

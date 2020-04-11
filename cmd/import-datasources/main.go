@@ -59,17 +59,17 @@ func main() {
 	}
 	filesInDir, err = ioutil.ReadDir(".")
 	if err != nil {
-		fmt.Fprintf(os.Stderr, fmt.Sprintf("%s\n", err))
+		fmt.Fprint(os.Stderr, err.Error())
 	}
 	for _, file := range filesInDir {
 		if strings.HasSuffix(file.Name(), ".json") {
 			if rawDS, err = ioutil.ReadFile(file.Name()); err != nil {
-				fmt.Fprint(os.Stderr, fmt.Sprintf("%s\n", err))
+				fmt.Fprint(os.Stderr, err.Error())
 				continue
 			}
 			var newDS sdk.Datasource
 			if err = json.Unmarshal(rawDS, &newDS); err != nil {
-				fmt.Fprint(os.Stderr, fmt.Sprintf("%s\n", err))
+				fmt.Fprint(os.Stderr, err.Error())
 				continue
 			}
 			for _, existingDS := range datasources {
