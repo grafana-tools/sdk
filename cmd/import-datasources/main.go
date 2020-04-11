@@ -54,7 +54,7 @@ func main() {
 	ctx := context.Background()
 	c := sdk.NewClient(os.Args[1], os.Args[2], sdk.DefaultHTTPClient)
 	if datasources, err = c.GetAllDatasources(ctx); err != nil {
-		fmt.Fprintf(os.Stderr, fmt.Sprintf("%s\n", err))
+		fmt.Fprint(os.Stderr, err)
 		os.Exit(1)
 	}
 	filesInDir, err = ioutil.ReadDir(".")
@@ -74,7 +74,9 @@ func main() {
 			}
 			for _, existingDS := range datasources {
 				if existingDS.Name == newDS.Name {
-					c.DeleteDatasource(ctx, existingDS.ID)
+					if status, err = c.DeleteDatasource(ctx, existingDS.ID); err != nil {
+						fmt.Fprintf(os.Stderr, "error on deleting datasource %s with %s", newDS.Name, err)
+					}
 					break
 				}
 			}

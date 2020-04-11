@@ -67,7 +67,10 @@ func main() {
 				log.Println(err)
 				continue
 			}
-			c.DeleteDashboard(ctx, board.UpdateSlug())
+			if _, err = c.DeleteDashboard(ctx, board.UpdateSlug()); err != nil {
+				log.Println(err)
+				continue
+			}
 			params := sdk.SetDashboardParams{
 				FolderID:  sdk.DefaultFolderId,
 				Overwrite: false,
