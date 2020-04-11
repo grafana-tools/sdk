@@ -7,6 +7,26 @@ services:
 # Different Grafana + Go versions that will be tested.
 jobs:
  include:
+  - name: "Grafana 6.7.1 1.14.x"
+    env:
+     - "GRAFANA_VERSION=6.7.1"
+     - "GRAFANA_INTEGRATION=1"
+    go: "1.14.x"
+  - name: "Grafana 6.6.2 1.14.x"
+    env:
+     - "GRAFANA_VERSION=6.6.2"
+     - "GRAFANA_INTEGRATION=1"
+    go: "1.14.x"
+  - name: "Grafana 6.5.3 1.14.x"
+    env:
+     - "GRAFANA_VERSION=6.5.3"
+     - "GRAFANA_INTEGRATION=1"
+    go: "1.14.x"
+  - name: "Grafana 6.4.5 1.14.x"
+    env:
+     - "GRAFANA_VERSION=6.4.5 1.13.x"
+     - "GRAFANA_INTEGRATION=1"
+    go: "1.13.x"
   - name: "Grafana 6.7.1 1.13.x"
     env:
      - "GRAFANA_VERSION=6.7.1"
