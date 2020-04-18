@@ -443,3 +443,255 @@ func TestPanel_ElasticsearchSource_ParsedTargets(t *testing.T) {
 	}
 
 }
+
+// Test on the panel sample with stackdriver datasource.
+func TestPanel_Stackdriver_ParsedTargets(t *testing.T) {
+	var rawPanel = []byte(`{
+  "aliasColors": {},
+  "bars": false,
+  "dashLength": 10,
+  "dashes": false,
+  "datasource": "awesome-stackdriver",
+  "fill": 1,
+  "gridPos": {
+	"h": 8,
+	"w": 12,
+	"x": 0,
+	"y": 0
+  },
+  "id": 2,
+  "legend": {
+	"avg": false,
+	"current": false,
+	"max": false,
+	"min": false,
+	"show": true,
+	"total": false,
+	"values": false
+  },
+  "lines": true,
+  "linewidth": 1,
+  "links": [],
+  "nullPointMode": "null",
+  "options": {},
+  "percentage": false,
+  "pointradius": 2,
+  "points": false,
+  "renderer": "flot",
+  "seriesOverrides": [],
+  "spaceLength": 10,
+  "stack": false,
+  "steppedLine": false,
+  "targets": [
+	{
+	  "aliasBy": "",
+	  "alignOptions": [
+		{
+		  "expanded": true,
+		  "label": "Alignment options",
+		  "options": [
+			{
+			  "label": "delta",
+			  "metricKinds": [
+				"CUMULATIVE",
+				"DELTA"
+			  ],
+			  "text": "delta",
+			  "value": "ALIGN_DELTA",
+			  "valueTypes": [
+				"INT64",
+				"DOUBLE",
+				"MONEY",
+				"DISTRIBUTION"
+			  ]
+			},
+			{
+			  "label": "rate",
+			  "metricKinds": [
+				"CUMULATIVE",
+				"DELTA"
+			  ],
+			  "text": "rate",
+			  "value": "ALIGN_RATE",
+			  "valueTypes": [
+				"INT64",
+				"DOUBLE",
+				"MONEY"
+			  ]
+			},
+			{
+			  "label": "min",
+			  "metricKinds": [
+				"GAUGE",
+				"DELTA"
+			  ],
+			  "text": "min",
+			  "value": "ALIGN_MIN",
+			  "valueTypes": [
+				"INT64",
+				"DOUBLE",
+				"MONEY"
+			  ]
+			},
+			{
+			  "label": "max",
+			  "metricKinds": [
+				"GAUGE",
+				"DELTA"
+			  ],
+			  "text": "max",
+			  "value": "ALIGN_MAX",
+			  "valueTypes": [
+				"INT64",
+				"DOUBLE",
+				"MONEY"
+			  ]
+			},
+			{
+			  "label": "mean",
+			  "metricKinds": [
+				"GAUGE",
+				"DELTA"
+			  ],
+			  "text": "mean",
+			  "value": "ALIGN_MEAN",
+			  "valueTypes": [
+				"INT64",
+				"DOUBLE",
+				"MONEY"
+			  ]
+			},
+			{
+			  "label": "count",
+			  "metricKinds": [
+				"GAUGE",
+				"DELTA"
+			  ],
+			  "text": "count",
+			  "value": "ALIGN_COUNT",
+			  "valueTypes": [
+				"INT64",
+				"DOUBLE",
+				"MONEY",
+				"BOOL"
+			  ]
+			},
+			{
+			  "label": "sum",
+			  "metricKinds": [
+				"GAUGE",
+				"DELTA"
+			  ],
+			  "text": "sum",
+			  "value": "ALIGN_SUM",
+			  "valueTypes": [
+				"INT64",
+				"DOUBLE",
+				"MONEY",
+				"DISTRIBUTION"
+			  ]
+			},
+			{
+			  "label": "stddev",
+			  "metricKinds": [
+				"GAUGE",
+				"DELTA"
+			  ],
+			  "text": "stddev",
+			  "value": "ALIGN_STDDEV",
+			  "valueTypes": [
+				"INT64",
+				"DOUBLE",
+				"MONEY"
+			  ]
+			},
+			{
+			  "label": "percent change",
+			  "metricKinds": [
+				"GAUGE",
+				"DELTA"
+			  ],
+			  "text": "percent change",
+			  "value": "ALIGN_PERCENT_CHANGE",
+			  "valueTypes": [
+				"INT64",
+				"DOUBLE",
+				"MONEY"
+			  ]
+			}
+		  ]
+		}
+	  ],
+	  "alignmentPeriod": "stackdriver-auto",
+	  "crossSeriesReducer": "REDUCE_MEAN",
+	  "defaultProject": "loading project...",
+	  "filters": [
+		"resource.label.subscription_id",
+		"=",
+		"some_subscription_id"
+	  ],
+	  "groupBys": [],
+	  "metricKind": "DELTA",
+	  "metricType": "pubsub.googleapis.com/subscription/ack_message_count",
+	  "perSeriesAligner": "ALIGN_DELTA",
+	  "refId": "A",
+	  "unit": "1",
+	  "usedAlignmentPeriod": 60,
+	  "valueType": "INT64"
+	}
+  ],
+  "thresholds": [],
+  "timeFrom": null,
+  "timeRegions": [],
+  "timeShift": null,
+  "title": "Pubsub Ack msg count",
+  "tooltip": {
+	"shared": true,
+	"sort": 0,
+	"value_type": "individual"
+  },
+  "type": "graph",
+  "xaxis": {
+	"buckets": null,
+	"mode": "time",
+	"name": null,
+	"show": true,
+	"values": []
+  },
+  "yaxes": [
+	{
+	  "format": "short",
+	  "label": null,
+	  "logBase": 1,
+	  "max": null,
+	  "min": null,
+	  "show": true
+	},
+	{
+	  "format": "short",
+	  "label": null,
+	  "logBase": 1,
+	  "max": null,
+	  "min": null,
+	  "show": true
+	}
+  ],
+  "yaxis": {
+	"align": false,
+	"alignLevel": null
+  }
+}`)
+
+	var graph sdk.Panel
+	err := json.Unmarshal(rawPanel, &graph)
+
+	if err != nil {
+		t.Fatalf("%s", err)
+	}
+	if len(graph.GraphPanel.Targets) != 1 {
+		t.Errorf("should be 1 but %d", len(graph.GraphPanel.Targets))
+	}
+	if graph.GraphPanel.Targets[0].MetricType != "pubsub.googleapis.com/subscription/ack_message_count" {
+		t.Fatalf("should be \"pubsub.googleapis.com/subscription/ack_message_count\" but is not")
+	}
+}
