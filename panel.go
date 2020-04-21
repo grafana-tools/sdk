@@ -421,7 +421,7 @@ type StackdriverAlignOptions struct {
 	Options  []StackdriverAlignOption `json:"options"`
 }
 
-// StackdriverAlignOption defines a single alignment options shown in Grafana
+// StackdriverAlignOption defines a single alignment option shown in Grafana
 // during query configuration.
 type StackdriverAlignOption struct {
 	Label       string   `json:"label"`
