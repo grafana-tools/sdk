@@ -398,6 +398,37 @@ type Target struct {
 	Dimensions map[string]string `json:"dimensions,omitempty"`
 	Period     string            `json:"period,omitempty"`
 	Region     string            `json:"region,omitempty"`
+
+	// For the Stackdriver data source. Find out more information at
+	// https:/grafana.com/docs/grafana/v6.0/features/datasources/stackdriver/
+	AlignOptions       []StackdriverAlignOptions `json:"alignOptions,omitempty"`
+	AliasBy            string                    `json:"aliasBy,omitempty"`
+	MetricType         string                    `json:"metricType,omitempty"`
+	MetricKind         string                    `json:"metricKind,omitempty"`
+	Filters            []string                  `json:"filters,omitempty"`
+	AlignmentPeriod    string                    `json:"alignmentPeriod,omitempty"`
+	CrossSeriesReducer string                    `json:"crossSeriesReducer,omitempty"`
+	PerSeriesAligner   string                    `json:"perSeriesAligner,omitempty"`
+	ValueType          string                    `json:"valueType,omitempty"`
+	GroupBys           []string                  `json:"groupBys,omitempty"`
+}
+
+// StackdriverAlignOptions defines the list of alignment options shown in
+// Grafana during query configuration.
+type StackdriverAlignOptions struct {
+	Expanded bool                     `json:"expanded"`
+	Label    string                   `json:"label"`
+	Options  []StackdriverAlignOption `json:"options"`
+}
+
+// StackdriverAlignOption defines a single alignment option shown in Grafana
+// during query configuration.
+type StackdriverAlignOption struct {
+	Label       string   `json:"label"`
+	MetricKinds []string `json:"metricKinds"`
+	Text        string   `json:"text"`
+	Value       string   `json:"value"`
+	ValueTypes  []string `json:"valueTypes"`
 }
 
 type MapType struct {
