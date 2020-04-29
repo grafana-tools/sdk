@@ -42,6 +42,10 @@ func Test_Dashboard_CRUD(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	if boardLinks, err = client.SearchWithParams(ctx, sdk.WithSearchStarred(false)); err != nil {
+		t.Fatal(err)
+	}
+
 	for _, link := range boardLinks {
 		_, _, err = client.GetDashboardByUID(ctx, link.UID)
 		if err != nil {
