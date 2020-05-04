@@ -343,7 +343,7 @@ type (
 	SearchType string
 )
 
-var (
+const (
 	SearchTypeFolder    SearchType = "dash-folder"
 	SearchTypeDashboard SearchType = "dash-db"
 )

@@ -40,7 +40,7 @@ func TestWithSearchType(t *testing.T) {
 	var (
 		sp         = sdk.WithSearchType
 		key        = "type"
-		testValues = []sdk.SearchType{"foo", "bar"}
+		testValues = []sdk.SearchType{sdk.SearchTypeFolder, sdk.SearchTypeDashboard}
 	)
 
 	v := make(url.Values)
