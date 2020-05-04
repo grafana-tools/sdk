@@ -174,31 +174,15 @@ type FoundBoard struct {
 // Deprecated: This interface does not allow for API extension and is out of date.
 // Please use SearchWithParams(WithSearchType(SearchTypeDashboard))
 func (r *Client) SearchDashboards(ctx context.Context, query string, starred bool, tags ...string) ([]FoundBoard, error) {
-	var (
-		raw    []byte
-		boards []FoundBoard
-		code   int
-		err    error
-	)
-	u := url.URL{}
-	q := u.Query()
-	if query != "" {
-		q.Set("query", query)
-	}
-	if starred {
-		q.Set("starred", "true")
+	params := []SearchParam{
+		WithSearchType(SearchTypeDashboard),
+		WithSearchQuery(query),
+		WithSearchStarred(starred),
 	}
 	for _, tag := range tags {
-		q.Add("tag", tag)
+		params = append(params, WithSearchTag(tag))
 	}
-	if raw, code, err = r.get(ctx, "api/search", q); err != nil {
-		return nil, err
-	}
-	if code != 200 {
-		return nil, fmt.Errorf("HTTP error %d: returns %s", code, raw)
-	}
-	err = json.Unmarshal(raw, &boards)
-	return boards, err
+	return r.SearchWithParams(ctx, params...)
 }
 
 // SearchWithParams searches folders and dashboards with query params specified.
