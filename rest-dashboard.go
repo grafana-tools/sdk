@@ -327,6 +327,7 @@ type (
 	SearchType string
 )
 
+// Search entities to be used with WithSearchType().
 const (
 	SearchTypeFolder    SearchType = "dash-folder"
 	SearchTypeDashboard SearchType = "dash-db"
