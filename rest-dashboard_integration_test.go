@@ -20,6 +20,7 @@ func Test_Dashboard_CRUD(t *testing.T) {
 	client := getClient(t)
 
 	var board sdk.Board
+
 	raw, _ := ioutil.ReadFile("testdata/new-empty-dashboard-2.6.json")
 
 	if err = json.Unmarshal(raw, &board); err != nil {
@@ -38,12 +39,12 @@ func Test_Dashboard_CRUD(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if boardLinks, err = client.SearchDashboards(ctx, "", false); err != nil {
+	if boardLinks, err = client.SearchWithParams(ctx, sdk.WithSearchType(sdk.SearchTypeDashboard)); err != nil {
 		t.Fatal(err)
 	}
 
-	if boardLinks, err = client.SearchWithParams(ctx, sdk.WithSearchStarred(false)); err != nil {
-		t.Fatal(err)
+	if len(boardLinks) == 0 {
+		t.Fatal("search query returned empty dashboard list")
 	}
 
 	for _, link := range boardLinks {
