@@ -52,7 +52,7 @@ func TestClient_SearchDashboards(t *testing.T) {
 	}
 }
 
-func TestClient_SearchWithParams(t *testing.T) {
+func TestClient_Search(t *testing.T) {
 	type testCase struct {
 		In  []sdk.SearchParam
 		Out url.Values
@@ -65,17 +65,17 @@ func TestClient_SearchWithParams(t *testing.T) {
 		{
 			// Test all options given their correct usage.
 			In: []sdk.SearchParam{
-				sdk.WithSearchDashboardID(234),
-				sdk.WithSearchDashboardID(432),
-				sdk.WithSearchFolderID(123),
-				sdk.WithSearchFolderID(321),
-				sdk.WithSearchLimit(10),
-				sdk.WithSearchPage(99),
-				sdk.WithSearchQuery("Q"),
-				sdk.WithSearchStarred(true),
-				sdk.WithSearchTag("Foo"),
-				sdk.WithSearchTag("Bar"),
-				sdk.WithSearchType(sdk.SearchTypeFolder),
+				sdk.SearchDashboardID(234),
+				sdk.SearchDashboardID(432),
+				sdk.SearchFolderID(123),
+				sdk.SearchFolderID(321),
+				sdk.SearchLimit(10),
+				sdk.SearchPage(99),
+				sdk.SearchQuery("Q"),
+				sdk.SearchStarred(true),
+				sdk.SearchTag("Foo"),
+				sdk.SearchTag("Bar"),
+				sdk.SearchType(sdk.SearchTypeFolder),
 			},
 			Out: url.Values{
 				"dashboardIds": []string{"234", "432"},
@@ -91,16 +91,16 @@ func TestClient_SearchWithParams(t *testing.T) {
 		{
 			// Test non-repeatable options.
 			In: []sdk.SearchParam{
-				sdk.WithSearchLimit(10),
-				sdk.WithSearchLimit(100),
-				sdk.WithSearchPage(88),
-				sdk.WithSearchPage(99),
-				sdk.WithSearchQuery("Q1"),
-				sdk.WithSearchQuery("Q2"),
-				sdk.WithSearchStarred(true),
-				sdk.WithSearchStarred(false),
-				sdk.WithSearchType(sdk.SearchTypeFolder),
-				sdk.WithSearchType(sdk.SearchTypeDashboard),
+				sdk.SearchLimit(10),
+				sdk.SearchLimit(100),
+				sdk.SearchPage(88),
+				sdk.SearchPage(99),
+				sdk.SearchQuery("Q1"),
+				sdk.SearchQuery("Q2"),
+				sdk.SearchStarred(true),
+				sdk.SearchStarred(false),
+				sdk.SearchType(sdk.SearchTypeFolder),
+				sdk.SearchType(sdk.SearchTypeDashboard),
 			},
 			Out: url.Values{
 				"limit":   []string{"100"},
@@ -114,7 +114,7 @@ func TestClient_SearchWithParams(t *testing.T) {
 		ts := httptest.NewServer(http.HandlerFunc(testSearchQuery(t, i, tc.Out)))
 		client := sdk.NewClient(ts.URL, "", ts.Client())
 		ctx := context.Background()
-		_, err := client.SearchWithParams(ctx, tc.In...)
+		_, err := client.Search(ctx, tc.In...)
 		ts.Close()
 		if err != nil {
 			t.Fatalf("SearchDashboards test %d failed: %s", i, err)
@@ -144,39 +144,39 @@ func testSearchQuery(t *testing.T, testID int, exp url.Values) func(w http.Respo
 	}
 }
 
-func TestWithSearchQuery(t *testing.T) {
-	testStringSearchParam(t, sdk.WithSearchQuery, "query", []string{"foo", "bar"})
+func TestSearchQuery(t *testing.T) {
+	testStringSearchParam(t, sdk.SearchQuery, "query", []string{"foo", "bar"})
 }
 
-func TestWithSearchTag(t *testing.T) {
-	testRepeatableStringSearchParam(t, sdk.WithSearchTag, "tag", []string{"foo", "bar"})
+func TestSearchTag(t *testing.T) {
+	testRepeatableStringSearchParam(t, sdk.SearchTag, "tag", []string{"foo", "bar"})
 }
 
-func TestWithSearchDashboardID(t *testing.T) {
-	testRepeatableIntSearchParam(t, sdk.WithSearchDashboardID, "dashboardIds", []int{100, 200})
+func TestSearchDashboardID(t *testing.T) {
+	testRepeatableIntSearchParam(t, sdk.SearchDashboardID, "dashboardIds", []int{100, 200})
 }
 
-func TestWithSearchFolderID(t *testing.T) {
-	testRepeatableIntSearchParam(t, sdk.WithSearchFolderID, "folderIds", []int{100, 200})
+func TestSearchFolderID(t *testing.T) {
+	testRepeatableIntSearchParam(t, sdk.SearchFolderID, "folderIds", []int{100, 200})
 }
 
-func TestWithSearchPage(t *testing.T) {
-	testNonZeroUIntSearchParam(t, sdk.WithSearchPage, "page", []uint{100, 200})
+func TestSearchPage(t *testing.T) {
+	testNonZeroUIntSearchParam(t, sdk.SearchPage, "page", []uint{100, 200})
 }
 
-func TestWithSearchLimit(t *testing.T) {
-	testNonZeroUIntSearchParam(t, sdk.WithSearchLimit, "limit", []uint{100, 200})
+func TestSearchLimit(t *testing.T) {
+	testNonZeroUIntSearchParam(t, sdk.SearchLimit, "limit", []uint{100, 200})
 }
 
-func TestWithSearchStarred(t *testing.T) {
-	testBoolSearchParam(t, sdk.WithSearchStarred, "starred", []bool{true, false})
+func TestSearchStarred(t *testing.T) {
+	testBoolSearchParam(t, sdk.SearchStarred, "starred", []bool{true, false})
 }
 
-func TestWithSearchType(t *testing.T) {
+func TestSearchType(t *testing.T) {
 	var (
-		sp         = sdk.WithSearchType
+		sp         = sdk.SearchType
 		key        = "type"
-		testValues = []sdk.SearchType{sdk.SearchTypeFolder, sdk.SearchTypeDashboard}
+		testValues = []sdk.SearchParamType{sdk.SearchTypeFolder, sdk.SearchTypeDashboard}
 	)
 
 	v := make(url.Values)

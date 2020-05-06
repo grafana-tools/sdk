@@ -172,23 +172,23 @@ type FoundBoard struct {
 //
 // Reflects GET /api/search API call.
 // Deprecated: This interface does not allow for API extension and is out of date.
-// Please use SearchWithParams(WithSearchType(SearchTypeDashboard))
+// Please use Search(SearchType(SearchTypeDashboard))
 func (r *Client) SearchDashboards(ctx context.Context, query string, starred bool, tags ...string) ([]FoundBoard, error) {
 	params := []SearchParam{
-		WithSearchType(SearchTypeDashboard),
-		WithSearchQuery(query),
-		WithSearchStarred(starred),
+		SearchType(SearchTypeDashboard),
+		SearchQuery(query),
+		SearchStarred(starred),
 	}
 	for _, tag := range tags {
-		params = append(params, WithSearchTag(tag))
+		params = append(params, SearchTag(tag))
 	}
-	return r.SearchWithParams(ctx, params...)
+	return r.Search(ctx, params...)
 }
 
-// SearchWithParams searches folders and dashboards with query params specified.
+// Search searches folders and dashboards with query params specified.
 //
 // Reflects GET /api/search API call.
-func (r *Client) SearchWithParams(ctx context.Context, params ...SearchParam) ([]FoundBoard, error) {
+func (r *Client) Search(ctx context.Context, params ...SearchParam) ([]FoundBoard, error) {
 	var (
 		raw    []byte
 		boards []FoundBoard
@@ -321,22 +321,22 @@ func (r *Client) DeleteDashboard(ctx context.Context, slug string) (StatusMessag
 }
 
 type (
-	// SearchParam is a type for specifying SearchWithParams params.
+	// SearchParam is a type for specifying Search params.
 	SearchParam func(*url.Values)
-	// SearchType is a type accepted by WithSearchType func.
-	SearchType string
+	// SearchParamType is a type accepted by SearchType func.
+	SearchParamType string
 )
 
-// Search entities to be used with WithSearchType().
+// Search entities to be used with SearchType().
 const (
-	SearchTypeFolder    SearchType = "dash-folder"
-	SearchTypeDashboard SearchType = "dash-db"
+	SearchTypeFolder    SearchParamType = "dash-folder"
+	SearchTypeDashboard SearchParamType = "dash-db"
 )
 
-// WithSearchQuery specifies SearchWithParams search query.
+// SearchQuery specifies Search search query.
 // Empty query is silently ignored.
 // Specifying it multiple times is futile, only last one will be sent.
-func WithSearchQuery(query string) SearchParam {
+func SearchQuery(query string) SearchParam {
 	return func(v *url.Values) {
 		if query != "" {
 			v.Set("query", query)
@@ -344,10 +344,10 @@ func WithSearchQuery(query string) SearchParam {
 	}
 }
 
-// WithSearchTag specifies SearchWithParams tag to search for.
+// SearchTag specifies Search tag to search for.
 // Empty tag is silently ignored.
 // Can be specified multiple times, logical OR is applied.
-func WithSearchTag(tag string) SearchParam {
+func SearchTag(tag string) SearchParam {
 	return func(v *url.Values) {
 		if tag != "" {
 			v.Add("tag", tag)
@@ -355,42 +355,42 @@ func WithSearchTag(tag string) SearchParam {
 	}
 }
 
-// WithSearchType specifies SearchWithParams type to search for.
+// SearchType specifies Search type to search for.
 // Specifying it multiple times is futile, only last one will be sent.
-func WithSearchType(searchType SearchType) SearchParam {
+func SearchType(searchType SearchParamType) SearchParam {
 	return func(v *url.Values) {
 		v.Set("type", string(searchType))
 	}
 }
 
-// WithSearchDashboardID specifies SearchWithParams dashboard id's to search for.
+// SearchDashboardID specifies Search dashboard id's to search for.
 // Can be specified multiple times, logical OR is applied.
-func WithSearchDashboardID(dashboardID int) SearchParam {
+func SearchDashboardID(dashboardID int) SearchParam {
 	return func(v *url.Values) {
 		v.Add("dashboardIds", strconv.Itoa(dashboardID))
 	}
 }
 
-// WithSearchFolderID specifies SearchWithParams folder id's to search for.
+// SearchFolderID specifies Search folder id's to search for.
 // Can be specified multiple times, logical OR is applied.
-func WithSearchFolderID(folderID int) SearchParam {
+func SearchFolderID(folderID int) SearchParam {
 	return func(v *url.Values) {
 		v.Add("folderIds", strconv.Itoa(folderID))
 	}
 }
 
-// WithSearchStarred specifies if SearchWithParams should search for starred dashboards only.
+// SearchStarred specifies if Search should search for starred dashboards only.
 // Specifying it multiple times is futile, only last one will be sent.
-func WithSearchStarred(starred bool) SearchParam {
+func SearchStarred(starred bool) SearchParam {
 	return func(v *url.Values) {
 		v.Set("starred", strconv.FormatBool(starred))
 	}
 }
 
-// WithSearchLimit specifies maximum number of results from SearchWithParams query.
+// SearchLimit specifies maximum number of results from Search query.
 // As of grafana 6.7 it has to be <= 5000. 0 stands for absence of parameter in a query.
 // Specifying it multiple times is futile, only last one will be sent.
-func WithSearchLimit(limit uint) SearchParam {
+func SearchLimit(limit uint) SearchParam {
 	return func(v *url.Values) {
 		if limit > 0 {
 			v.Set("limit", strconv.FormatUint(uint64(limit), 10))
@@ -398,10 +398,10 @@ func WithSearchLimit(limit uint) SearchParam {
 	}
 }
 
-// WithSearchPage specifies SearchWithParams page number to be queried for.
+// SearchPage specifies Search page number to be queried for.
 // Zero page is silently ignored, page numbers start from one.
 // Specifying it multiple times is futile, only last one will be sent.
-func WithSearchPage(page uint) SearchParam {
+func SearchPage(page uint) SearchParam {
 	return func(v *url.Values) {
 		if page > 0 {
 			v.Set("page", strconv.FormatUint(uint64(page), 10))

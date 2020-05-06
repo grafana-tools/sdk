@@ -39,7 +39,7 @@ func Test_Dashboard_CRUD(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if boardLinks, err = client.SearchWithParams(ctx, sdk.WithSearchType(sdk.SearchTypeDashboard)); err != nil {
+	if boardLinks, err = client.Search(ctx, sdk.SearchType(sdk.SearchTypeDashboard)); err != nil {
 		t.Fatal(err)
 	}
 
