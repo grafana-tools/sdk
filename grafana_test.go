@@ -129,7 +129,8 @@ func ExampleNewBoard() {
 	//                         {
 	//                             "refId": "A",
 	//                             "datasource": "Sample Source 1",
-	//                             "expr": "sample request 1"
+	//                             "expr": "sample request 1",
+	//                             "rawQuery": false
 	//                         }
 	//                     ],
 	//                     "tooltip": {
