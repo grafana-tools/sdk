@@ -737,6 +737,12 @@ func (p *Panel) UnmarshalJSON(b []byte) (err error) {
 			if err = json.Unmarshal(b, &dashlist); err == nil {
 				p.DashlistPanel = &dashlist
 			}
+		case "row":
+			var row RowPanel
+			p.OfType = RowType
+			if err = json.Unmarshal(b, &row); err == nil {
+				p.RowPanel = &row
+			}
 		default:
 			var custom = make(CustomPanel)
 			p.OfType = CustomType
