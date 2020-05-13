@@ -237,7 +237,7 @@ type (
 		DashboardTags         []string `json:"dashboardTags,omitempty"`
 	}
 	RowPanel struct {
-		Panels []Panel
+		Panels []Panel `json:"panels,omitempty"`
 	}
 	CustomPanel map[string]interface{}
 )
