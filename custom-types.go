@@ -234,7 +234,6 @@ func (v *FloatOrString) UnmarshalJSON(raw []byte) error {
 
 // MarshalJSON implements custom marshalling for FloatOrString type.
 func (v *FloatOrString) MarshalJSON() ([]byte, error) {
-	return nil, fmt.Errorf("FOOoooooooo")
 	switch v.actual {
 	case actualFloat:
 		strVal := strconv.FormatFloat(v.FValue, 'g', -1, 64)
