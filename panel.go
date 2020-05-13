@@ -237,7 +237,7 @@ type (
 		DashboardTags         []string `json:"dashboardTags,omitempty"`
 	}
 	RowPanel struct {
-		Panels []Panel `json:"panels,omitempty"`
+		Panels []*Panel `json:"panels,omitempty"`
 	}
 	CustomPanel map[string]interface{}
 )
@@ -373,7 +373,7 @@ type Target struct {
 	} `json:"metrics,omitempty"`
 	Query      string     `json:"query,omitempty"`
 	Alias      string     `json:"alias,omitempty"`
-	RawQuery   BoolString `json:"rawQuery,omitempty"`
+	RawQuery   *BoolString `json:"rawQuery,omitempty"`
 	TimeField  string     `json:"timeField,omitempty"`
 	BucketAggs []struct {
 		ID       string `json:"id"`
