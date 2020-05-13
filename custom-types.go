@@ -239,7 +239,11 @@ func (v *FloatOrString) MarshalJSON() ([]byte, error) {
 		strVal := strconv.FormatFloat(v.FValue, 'g', -1, 64)
 		return []byte(strVal), nil
 	case actualString:
-		return []byte(v.SValue), nil
+		var buf bytes.Buffer
+		buf.WriteRune('"')
+		buf.WriteString(v.SValue)
+		buf.WriteRune('"')
+		return buf.Bytes(), nil
 	case actualNull:
 		return []byte(`"null"`), nil
 	default:
