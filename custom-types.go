@@ -23,6 +23,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -190,4 +191,60 @@ func (v *FloatString) MarshalJSON() ([]byte, error) {
 	}
 
 	return []byte(`"null"`), nil
+}
+
+type actualType int
+
+const (
+	actualNull = iota
+	actualString
+	actualFloat
+)
+
+// FloatString represents special type for json values that could be strings or floats: "100px" or 100.3.
+type FloatOrString struct {
+	FValue float64
+	SValue string
+	actual actualType
+}
+
+// UnmarshalJSON implements custom unmarshalling for FloatString type.
+func (v *FloatOrString) UnmarshalJSON(raw []byte) error {
+	if raw == nil || bytes.Equal(raw, []byte(`"null"`)) || bytes.Equal(raw, []byte(`""`)) {
+		v.actual = actualNull
+		return nil
+	}
+
+	strVal := string(raw)
+	if rune(raw[0]) == '"' {
+		strVal = strings.Trim(strVal, `"`)
+		v.actual = actualString
+		v.SValue = strVal
+		return nil
+	}
+
+	i, err := strconv.ParseFloat(strVal, 64)
+	if err != nil {
+		return err
+	}
+	v.FValue = i
+	v.actual = actualFloat
+	return nil
+}
+
+// MarshalJSON implements custom marshalling for FloatOrString type.
+func (v *FloatOrString) MarshalJSON() ([]byte, error) {
+	return nil, fmt.Errorf("FOOoooooooo")
+	switch v.actual {
+	case actualFloat:
+		strVal := strconv.FormatFloat(v.FValue, 'g', -1, 64)
+		return []byte(strVal), nil
+	case actualString:
+		return []byte(v.SValue), nil
+	case actualNull:
+		return []byte(`"null"`), nil
+	default:
+		// This should never happen.
+		return nil, fmt.Errorf("unknown actual data type for FloatOrString")
+	}
 }

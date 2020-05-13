@@ -61,20 +61,20 @@ type (
 		Editable   bool    `json:"editable"`
 		Error      bool    `json:"error"`
 		GridPos    struct {
-			H float32 `json:"h,omitempty"`
-			W float32 `json:"w,omitempty"`
-			X float32 `json:"x,omitempty"`
-			Y float32 `json:"y,omitempty"`
+			H *float32 `json:"h,omitempty"`
+			W *float32 `json:"w,omitempty"`
+			X *float32 `json:"x,omitempty"`
+			Y *float32 `json:"y,omitempty"`
 		} `json:"gridPos,omitempty"`
-		Height           *string   `json:"height,omitempty"` // general
-		HideTimeOverride *bool     `json:"hideTimeOverride,omitempty"`
-		ID               uint      `json:"id"`
-		IsNew            bool      `json:"isNew"`
-		Links            []link    `json:"links,omitempty"`    // general
-		MinSpan          *float32  `json:"minSpan,omitempty"`  // templating options
-		OfType           panelType `json:"-"`                  // it required for defining type of the panel
-		Renderer         *string   `json:"renderer,omitempty"` // display styles
-		Repeat           *string   `json:"repeat,omitempty"`   // templating options
+		Height           *FloatOrString `json:"height,omitempty"` // general
+		HideTimeOverride *bool          `json:"hideTimeOverride,omitempty"`
+		ID               uint           `json:"id"`
+		IsNew            bool           `json:"isNew"`
+		Links            []link         `json:"links,omitempty"`    // general
+		MinSpan          *float32       `json:"minSpan,omitempty"`  // templating options
+		OfType           panelType      `json:"-"`                  // it required for defining type of the panel
+		Renderer         *string        `json:"renderer,omitempty"` // display styles
+		Repeat           *string        `json:"repeat,omitempty"`   // templating options
 		// RepeatIteration *int64   `json:"repeatIteration,omitempty"`
 		RepeatPanelID *uint `json:"repeatPanelId,omitempty"`
 		ScopedVars    map[string]struct {
@@ -123,10 +123,10 @@ type (
 	GraphPanel struct {
 		AliasColors interface{} `json:"aliasColors"` // XXX
 		Bars        bool        `json:"bars"`
-		DashLength  uint        `json:"dashLength,omitempty"`
-		Dashes      bool        `json:"dashes,omitempty"`
-		Decimals    uint        `json:"decimals,omitempty"`
-		Description string      `json:"description,omitempty"`
+		DashLength  *uint       `json:"dashLength,omitempty"`
+		Dashes      *bool       `json:"dashes,omitempty"`
+		Decimals    *uint       `json:"decimals,omitempty"`
+		Description *string     `json:"description,omitempty"`
 		Fill        int         `json:"fill"`
 		//		Grid        grid        `json:"grid"` obsoleted in 4.1 by xaxis and yaxis
 
@@ -314,15 +314,15 @@ type (
 		Value    string `json:"value"`
 	}
 	ColumnStyle struct {
-		Alias      string   `json:"alias"`
-		DateFormat string   `json:"dateFormat,omitempty"`
-		Pattern    string   `json:"pattern"`
-		Type       string   `json:"type"`
-		ColorMode  string   `json:"colorMode,omitempty"`
-		Colors     []string `json:"colors,omitempty"`
-		Decimals   int      `json:"decimals,omitempty"`
-		Thresholds []string `json:"thresholds,omitempty"`
-		Unit       string   `json:"unit,omitempty"`
+		Alias      *string   `json:"alias"`
+		DateFormat *string   `json:"dateFormat,omitempty"`
+		Pattern    string    `json:"pattern"`
+		Type       string    `json:"type"`
+		ColorMode  *string   `json:"colorMode,omitempty"`
+		Colors     *[]string `json:"colors,omitempty"`
+		Decimals   *int      `json:"decimals,omitempty"`
+		Thresholds *[]string `json:"thresholds,omitempty"`
+		Unit       *string   `json:"unit,omitempty"`
 	}
 )
 
