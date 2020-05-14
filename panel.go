@@ -58,9 +58,9 @@ type (
 	panelType   int8
 	CommonPanel struct {
 		Datasource *string `json:"datasource,omitempty"` // metrics
-		Editable   bool    `json:"editable"`
-		Error      bool    `json:"error"`
-		GridPos    struct {
+		Editable   *bool   `json:"editable"`
+		Error      *bool   `json:"error"`
+		GridPos    *struct {
 			H *float32 `json:"h,omitempty"`
 			W *float32 `json:"w,omitempty"`
 			X *float32 `json:"x,omitempty"`
@@ -69,7 +69,7 @@ type (
 		Height           *FloatOrString `json:"height,omitempty"` // general
 		HideTimeOverride *bool          `json:"hideTimeOverride,omitempty"`
 		ID               uint           `json:"id"`
-		IsNew            bool           `json:"isNew"`
+		IsNew            *bool          `json:"isNew"`
 		Links            []link         `json:"links,omitempty"`    // general
 		MinSpan          *float32       `json:"minSpan,omitempty"`  // templating options
 		OfType           panelType      `json:"-"`                  // it required for defining type of the panel
@@ -371,10 +371,10 @@ type Target struct {
 		Field string `json:"field"`
 		Type  string `json:"type"`
 	} `json:"metrics,omitempty"`
-	Query      string     `json:"query,omitempty"`
-	Alias      string     `json:"alias,omitempty"`
+	Query      string      `json:"query,omitempty"`
+	Alias      string      `json:"alias,omitempty"`
 	RawQuery   *BoolString `json:"rawQuery,omitempty"`
-	TimeField  string     `json:"timeField,omitempty"`
+	TimeField  string      `json:"timeField,omitempty"`
 	BucketAggs []struct {
 		ID       string `json:"id"`
 		Field    string `json:"field"`
@@ -442,6 +442,11 @@ type RangeMap struct {
 	To   *string `json:"to,omitempty"`
 }
 
+func newTrue() *bool {
+	b := true
+	return &b
+}
+
 // NewDashlist initializes panel with a dashlist panel.
 func NewDashlist(title string) *Panel {
 	if title == "" {
@@ -454,7 +459,7 @@ func NewDashlist(title string) *Panel {
 			Title:    title,
 			Type:     "dashlist",
 			Renderer: &render,
-			IsNew:    true},
+			IsNew:    newTrue()},
 		DashlistPanel: &DashlistPanel{}}
 }
 
@@ -471,7 +476,7 @@ func NewGraph(title string) *Panel {
 			Type:     "graph",
 			Renderer: &render,
 			Span:     12,
-			IsNew:    true},
+			IsNew:    newTrue()},
 		GraphPanel: &GraphPanel{
 			NullPointMode: "connected",
 			Pointradius:   5,
@@ -492,7 +497,7 @@ func NewTable(title string) *Panel {
 			Title:    title,
 			Type:     "table",
 			Renderer: &render,
-			IsNew:    true},
+			IsNew:    newTrue()},
 		TablePanel: &TablePanel{}}
 }
 
@@ -508,7 +513,7 @@ func NewText(title string) *Panel {
 			Title:    title,
 			Type:     "text",
 			Renderer: &render,
-			IsNew:    true},
+			IsNew:    newTrue()},
 		TextPanel: &TextPanel{}}
 }
 
@@ -524,7 +529,7 @@ func NewSinglestat(title string) *Panel {
 			Title:    title,
 			Type:     "singlestat",
 			Renderer: &render,
-			IsNew:    true},
+			IsNew:    newTrue()},
 		SinglestatPanel: &SinglestatPanel{}}
 }
 
@@ -540,7 +545,7 @@ func NewPluginlist(title string) *Panel {
 			Title:    title,
 			Type:     "pluginlist",
 			Renderer: &render,
-			IsNew:    true},
+			IsNew:    newTrue()},
 		PluginlistPanel: &PluginlistPanel{}}
 }
 
@@ -555,7 +560,7 @@ func NewAlertlist(title string) *Panel {
 			Title:    title,
 			Type:     "alertlist",
 			Renderer: &render,
-			IsNew:    true},
+			IsNew:    newTrue()},
 		AlertlistPanel: &AlertlistPanel{}}
 }
 
@@ -571,7 +576,7 @@ func NewCustom(title string) *Panel {
 			Title:    title,
 			Type:     "singlestat",
 			Renderer: &render,
-			IsNew:    true},
+			IsNew:    newTrue()},
 		CustomPanel: &CustomPanel{}}
 }
 
