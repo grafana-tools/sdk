@@ -57,6 +57,7 @@ type (
 	}
 	panelType   int8
 	CommonPanel struct {
+		Collapsed  *bool   `json:"collapsed,omitempty"`
 		Datasource *string `json:"datasource,omitempty"` // metrics
 		Editable   *bool   `json:"editable"`
 		Error      *bool   `json:"error"`
@@ -69,7 +70,7 @@ type (
 		Height           *FloatOrString `json:"height,omitempty"` // general
 		HideTimeOverride *bool          `json:"hideTimeOverride,omitempty"`
 		ID               uint           `json:"id"`
-		IsNew            *bool          `json:"isNew"`
+		IsNew            *bool          `json:"isNew,omitempty"`
 		Links            []link         `json:"links,omitempty"`    // general
 		MinSpan          *float32       `json:"minSpan,omitempty"`  // templating options
 		OfType           panelType      `json:"-"`                  // it required for defining type of the panel
