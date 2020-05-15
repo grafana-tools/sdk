@@ -20,8 +20,6 @@ package sdk
 */
 
 import (
-	"bytes"
-	"encoding/json"
 	"strings"
 
 	"github.com/gosimple/slug"
@@ -41,62 +39,68 @@ const (
 type (
 	// Board represents Grafana dashboard.
 	Board struct {
-		ID              uint       `json:"id,omitempty"`
-		UID             string     `json:"uid,omitempty"`
-		Slug            string     `json:"slug"`
-		Title           string     `json:"title"`
-		OriginalTitle   string     `json:"originalTitle"`
-		Tags            []string   `json:"tags"`
-		Style           string     `json:"style"`
-		Timezone        string     `json:"timezone"`
-		Editable        bool       `json:"editable"`
-		HideControls    bool       `json:"hideControls" graf:"hide-controls"`
-		SharedCrosshair bool       `json:"sharedCrosshair" graf:"shared-crosshair"`
-		Panels          []*Panel   `json:"panels"`
-		Rows            []*Row     `json:"rows"`
-		Templating      Templating `json:"templating"`
-		Annotations     struct {
-			List []Annotation `json:"list"`
+		// Default fields as described by schema v17.
+		// See https://grafana.com/docs/grafana/latest/reference/dashboard/
+		ID           uint       `json:"id,omitempty"`
+		UID          string     `json:"uid,omitempty"`
+		Title        string     `json:"title"`
+		Tags         []string   `json:"tags"`
+		Style        string     `json:"style"`
+		Timezone     string     `json:"timezone"`
+		Editable     bool       `json:"editable"`
+		HideControls bool       `json:"hideControls" graf:"hide-controls"`
+		GraphTooltip int        `json:"graphTooltip,omitempty"`
+		Panels       []*Panel   `json:"panels"`
+		Time         Time       `json:"time"`
+		Timepicker   Timepicker `json:"timepicker"`
+		Templating   Templating `json:"templating"`
+		Annotations  struct {
+			List []*Annotation `json:"list"`
 		} `json:"annotations"`
-		Refresh       *BoolString `json:"refresh,omitempty"`
+		Refresh       *BoolString `json:"refresh"`
 		SchemaVersion uint        `json:"schemaVersion"`
 		Version       uint        `json:"version"`
-		Links         []link      `json:"links"`
-		Time          Time        `json:"time"`
-		Timepicker    Timepicker  `json:"timepicker"`
-		GraphTooltip  int         `json:"graphTooltip,omitempty"`
+		Links         []*Link     `json:"links"`
+
+		// Optional fields.
+		Slug            *string `json:"slug,omitempty""`
+		OriginalTitle   *string `json:"originalTitle,omitempty"`
+		SharedCrosshair bool    `json:"sharedCrosshair,omitempty" graf:"shared-crosshair"`
+		Rows            []*Row  `json:"rows,omitempty"`
 	}
 	Time struct {
 		From string `json:"from"`
 		To   string `json:"to"`
 	}
 	Timepicker struct {
-		Now              *bool    `json:"now,omitempty"`
+		// Default fields.
 		RefreshIntervals []string `json:"refresh_intervals"`
 		TimeOptions      []string `json:"time_options"`
+		// Optional fields.
+		Now *bool `json:"now,omitempty"`
 	}
 	Templating struct {
-		List []TemplateVar `json:"list"`
+		List []*TemplateVar `json:"list"`
 	}
 	TemplateVar struct {
-		Name        string   `json:"name"`
-		Type        string   `json:"type"`
-		Auto        bool     `json:"auto,omitempty"`
-		AutoCount   *int     `json:"auto_count,omitempty"`
-		Datasource  *string  `json:"datasource"`
-		Refresh     BoolInt  `json:"refresh"`
-		Options     []Option `json:"options"`
-		IncludeAll  bool     `json:"includeAll"`
-		AllFormat   string   `json:"allFormat"`
-		AllValue    string   `json:"allValue"`
-		Multi       bool     `json:"multi"`
-		MultiFormat string   `json:"multiFormat"`
-		Query       string   `json:"query"`
-		Regex       string   `json:"regex"`
-		Current     Current  `json:"current"`
-		Label       string   `json:"label"`
-		Hide        uint8    `json:"hide"`
-		Sort        int      `json:"sort"`
+		Name        string    `json:"name"`
+		Type        string    `json:"type"`
+		Auto        bool      `json:"auto,omitempty"`
+		AutoCount   *int      `json:"auto_count,omitempty"`
+		Datasource  *string   `json:"datasource"`
+		Refresh     BoolInt   `json:"refresh"`
+		Options     []*Option `json:"options"`
+		IncludeAll  bool      `json:"includeAll"`
+		AllFormat   string    `json:"allFormat"`
+		AllValue    string    `json:"allValue"`
+		Multi       bool      `json:"multi"`
+		MultiFormat string    `json:"multiFormat"`
+		Query       string    `json:"query"`
+		Regex       string    `json:"regex"`
+		Current     Current   `json:"current"`
+		Label       string    `json:"label"`
+		Hide        uint8     `json:"hide"`
+		Sort        int       `json:"sort"`
 	}
 	// for templateVar
 	Option struct {
@@ -106,7 +110,7 @@ type (
 	}
 	// for templateVar
 	Current struct {
-		Tags  []*string   `json:"tags,omitempty"`
+		Tags  []string    `json:"tags,omitempty"`
 		Text  string      `json:"text"`
 		Value interface{} `json:"value"` // TODO select more precise type
 	}
@@ -126,8 +130,8 @@ type (
 	}
 )
 
-// link represents link to another dashboard or external weblink
-type link struct {
+// Link represents Link to another dashboard or external weblink
+type Link struct {
 	Title       string   `json:"title"`
 	Type        string   `json:"type"`
 	AsDropdown  *bool    `json:"asDropdown,omitempty"`
@@ -141,25 +145,6 @@ type link struct {
 	TargetBlank *bool    `json:"targetBlank,omitempty"`
 	Tooltip     *string  `json:"tooltip,omitempty"`
 	URL         *string  `json:"url,omitempty"`
-}
-
-// Height of rows maybe passed as number (ex 200) or
-// as string (ex "200px") or empty string
-type Height string
-
-func (h *Height) UnmarshalJSON(raw []byte) error {
-	if raw == nil || bytes.Equal(raw, []byte(`"null"`)) {
-		return nil
-	}
-	if raw[0] != '"' {
-		tmp := []byte{'"'}
-		raw = append(tmp, raw...)
-		raw = append(raw, byte('"'))
-	}
-	var tmp string
-	err := json.Unmarshal(raw, &tmp)
-	*h = Height(tmp)
-	return err
 }
 
 func NewBoard(title string) *Board {
@@ -220,13 +205,14 @@ func (b *Board) AddRow(title string) *Row {
 		Title:    title,
 		Collapse: false,
 		Editable: true,
-		Height:   "250px",
+		Height:   NewFloatOrString(FloatOrStringString("250px")),
 	}
 	b.Rows = append(b.Rows, row)
 	return row
 }
 
 func (b *Board) UpdateSlug() string {
-	b.Slug = strings.ToLower(slug.Make(b.Title))
-	return b.Slug
+	s := strings.ToLower(slug.Make(b.Title))
+	b.Slug = &s
+	return s
 }

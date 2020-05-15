@@ -244,8 +244,15 @@ func (r *Client) SetDashboard(ctx context.Context, board Board, params SetDashbo
 		code int
 		err  error
 	)
-	if board.Slug, isBoardFromDB = cleanPrefix(board.Slug); !isBoardFromDB {
-		return StatusMessage{}, errors.New("only database dashboard (with 'db/' prefix in a slug) can be set")
+	if board.Slug != nil {
+		var b string
+		b, isBoardFromDB = cleanPrefix(*board.Slug)
+		if !isBoardFromDB {
+			return StatusMessage{}, errors.New(
+				"only database dashboard (with 'db/' prefix in a slug) can be set",
+			)
+		}
+		board.Slug = &b
 	}
 	newBoard.Dashboard = board
 	newBoard.FolderID = params.FolderID

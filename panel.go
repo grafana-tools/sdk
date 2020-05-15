@@ -57,21 +57,26 @@ type (
 	}
 	panelType   int8
 	CommonPanel struct {
-		Collapsed  *bool   `json:"collapsed,omitempty"`
-		Datasource *string `json:"datasource,omitempty"` // metrics
-		Editable   *bool   `json:"editable"`
-		Error      *bool   `json:"error"`
-		GridPos    *struct {
+		// Default fields.
+		GridPos struct {
 			H *float32 `json:"h,omitempty"`
 			W *float32 `json:"w,omitempty"`
 			X *float32 `json:"x,omitempty"`
 			Y *float32 `json:"y,omitempty"`
-		} `json:"gridPos,omitempty"`
-		Height           *FloatOrString `json:"height,omitempty"` // general
+		} `json:"gridPos"`
+		ID    uint   `json:"id"`
+		Title string `json:"title"`
+		Type  string `json:"type"`
+
+		// Optional fields.
+		Collapsed        *bool          `json:"collapsed,omitempty"`
+		Datasource       *string        `json:"datasource,omitempty"`
+		Editable         *bool          `json:"editable,omitempty"`
+		Error            *bool          `json:"error,omitempty"`
+		Height           *FloatOrString `json:"height,omitempty"`
 		HideTimeOverride *bool          `json:"hideTimeOverride,omitempty"`
-		ID               uint           `json:"id"`
 		IsNew            *bool          `json:"isNew,omitempty"`
-		Links            []link         `json:"links,omitempty"`    // general
+		Links            []Link         `json:"links,omitempty"`
 		MinSpan          *float32       `json:"minSpan,omitempty"`  // templating options
 		OfType           panelType      `json:"-"`                  // it required for defining type of the panel
 		Renderer         *string        `json:"renderer,omitempty"` // display styles
@@ -83,10 +88,8 @@ type (
 			Text     string `json:"text"`
 			Value    string `json:"value"`
 		} `json:"scopedVars,omitempty"`
-		Span        float32 `json:"span"`  // general
-		Title       string  `json:"title"` // general
-		Transparent bool    `json:"transparent"`
-		Type        string  `json:"type"`
+		Span        float32 `json:"span,omitempty"`
+		Transparent bool    `json:"transparent,omitempty"`
 		Alert       *Alert  `json:"alert,omitempty"`
 	}
 	AlertEvaluator struct {
@@ -188,8 +191,11 @@ type (
 		Scroll    bool          `json:"scroll"` // from grafana 3.x
 	}
 	TextPanel struct {
-		Content    string        `json:"content"`
-		Mode       string        `json:"mode"`
+		// Default.
+		Content string `json:"content"`
+		Mode    string `json:"mode"`
+
+		// Optional.
 		PageSize   uint          `json:"pageSize"`
 		Scroll     bool          `json:"scroll"`
 		ShowHeader bool          `json:"showHeader"`
@@ -267,12 +273,12 @@ type (
 		Values *[]string   `json:"values,omitempty"`
 	}
 	Axis struct {
-		Format  string       `json:"format"`
-		LogBase int          `json:"logBase"`
-		Max     *FloatString `json:"max,omitempty"`
-		Min     *FloatString `json:"min,omitempty"`
-		Show    bool         `json:"show"`
-		Label   string       `json:"label,omitempty"`
+		Format  string         `json:"format"`
+		LogBase int            `json:"logBase"`
+		Max     *FloatOrString `json:"max,omitempty"`
+		Min     *FloatOrString `json:"min,omitempty"`
+		Show    bool           `json:"show"`
+		Label   string         `json:"label,omitempty"`
 	}
 	SeriesOverride struct {
 		Alias         string      `json:"alias"`
@@ -355,6 +361,7 @@ type (
 type Target struct {
 	RefID      string `json:"refId"`
 	Datasource string `json:"datasource,omitempty"`
+	Hide       *bool  `json:"hide,omitempty"`
 
 	// For Prometheus
 	Expr           string `json:"expr,omitempty"`
@@ -412,6 +419,11 @@ type Target struct {
 	PerSeriesAligner   string                    `json:"perSeriesAligner,omitempty"`
 	ValueType          string                    `json:"valueType,omitempty"`
 	GroupBys           []string                  `json:"groupBys,omitempty"`
+
+	// For JSON data source.
+	// https://grafana.com/grafana/plugins/simpod-json-datasource
+	Data string `json:"data,omitempty"`
+	Type string `json:"type,omitempty"`
 }
 
 // StackdriverAlignOptions defines the list of alignment options shown in

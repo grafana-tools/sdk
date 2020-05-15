@@ -151,11 +151,11 @@ func TestUnmarshal_DashboardWithMixedYaxes(t *testing.T) {
 	min3, max3 := p2.Yaxes[0].Min, p2.Yaxes[0].Max
 	min4, max4 := p2.Yaxes[1].Min, p2.Yaxes[1].Max
 
-	if min1.Value != 0 || min1.Valid != true {
-		t.Errorf("panel #1 has wrong min value: %f, expected: %f", min1.Value, 0.0)
+	if min1.Value() != "0" {
+		t.Errorf("panel #1 has wrong min value: %v, expected: \"%s\"", min1.Value(), "0")
 	}
-	if max1.Value != 100 || max1.Valid != true {
-		t.Errorf("panel #1 has wrong max value: %f, expected: %f", max1.Value, 100.0)
+	if max1.Value() != "100" {
+		t.Errorf("panel #1 has wrong max value: %v, expected: \"%s\"", max1.Value(), "100")
 	}
 
 	if min2 != nil {
@@ -165,8 +165,8 @@ func TestUnmarshal_DashboardWithMixedYaxes(t *testing.T) {
 		t.Errorf("panel #1 has wrong max value: %v, expected: %v", max2, nil)
 	}
 
-	if min3.Value != 0 || min3.Valid != true {
-		t.Errorf("panel #2 has wrong min value: %f, expected: %f", min3.Value, 0.0)
+	if min3.Value() != 0.0 {
+		t.Errorf("panel #2 has wrong min value: %v, expected: %f", min3.Value(), 0.0)
 	}
 	if max3 != nil {
 		t.Errorf("panel #2 has wrong max value: %v, expected: %v", max3, nil)
@@ -175,7 +175,7 @@ func TestUnmarshal_DashboardWithMixedYaxes(t *testing.T) {
 	if min4 != nil {
 		t.Errorf("panel #2 has wrong min value: %v, expected: %v", min4, nil)
 	}
-	if max4.Value != 50 || max4.Valid != true {
-		t.Errorf("panel #1 has wrong max value: %f, expected: %f", max4.Value, 100.0)
+	if max4.Value() != 50.0 {
+		t.Errorf("panel #1 has wrong max value: %f, expected: %f", max4.Value(), 50.0)
 	}
 }

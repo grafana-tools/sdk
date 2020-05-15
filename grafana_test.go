@@ -24,16 +24,31 @@ func ExampleNewBoard() {
 	// Output:
 	// {
 	//     "id": 1,
-	//     "slug": "",
 	//     "title": "Sample dashboard title",
-	//     "originalTitle": "",
 	//     "tags": null,
 	//     "style": "dark",
 	//     "timezone": "browser",
 	//     "editable": true,
 	//     "hideControls": false,
-	//     "sharedCrosshair": false,
 	//     "panels": null,
+	//     "time": {
+	//         "from": "",
+	//         "to": ""
+	//     },
+	//     "timepicker": {
+	//         "refresh_intervals": null,
+	//         "time_options": null
+	//     },
+	//     "templating": {
+	//         "list": null
+	//     },
+	//     "annotations": {
+	//         "list": null
+	//     },
+	//     "refresh": null,
+	//     "schemaVersion": 0,
+	//     "version": 0,
+	//     "links": null,
 	//     "rows": [
 	//         {
 	//             "title": "Sample row title",
@@ -43,16 +58,13 @@ func ExampleNewBoard() {
 	//             "height": "250px",
 	//             "panels": [
 	//                 {
-	//                     "editable": false,
-	//                     "error": false,
 	//                     "gridPos": {},
 	//                     "id": 1,
+	//                     "title": "Sample graph",
+	//                     "type": "graph",
 	//                     "isNew": true,
 	//                     "renderer": "flot",
 	//                     "span": 12,
-	//                     "title": "Sample graph",
-	//                     "transparent": false,
-	//                     "type": "graph",
 	//                     "aliasColors": null,
 	//                     "bars": false,
 	//                     "fill": 0,
@@ -91,16 +103,13 @@ func ExampleNewBoard() {
 	//                     "yaxes": null
 	//                 },
 	//                 {
-	//                     "editable": false,
-	//                     "error": false,
 	//                     "gridPos": {},
 	//                     "id": 2,
+	//                     "title": "Sample graph 2",
+	//                     "type": "graph",
 	//                     "isNew": true,
 	//                     "renderer": "flot",
 	//                     "span": 12,
-	//                     "title": "Sample graph 2",
-	//                     "transparent": false,
-	//                     "type": "graph",
 	//                     "aliasColors": null,
 	//                     "bars": false,
 	//                     "fill": 0,
@@ -129,8 +138,7 @@ func ExampleNewBoard() {
 	//                         {
 	//                             "refId": "A",
 	//                             "datasource": "Sample Source 1",
-	//                             "expr": "sample request 1",
-	//                             "rawQuery": false
+	//                             "expr": "sample request 1"
 	//                         }
 	//                     ],
 	//                     "tooltip": {
@@ -149,23 +157,6 @@ func ExampleNewBoard() {
 	//             ],
 	//             "repeat": null
 	//         }
-	//     ],
-	//     "templating": {
-	//         "list": null
-	//     },
-	//     "annotations": {
-	//         "list": null
-	//     },
-	//     "schemaVersion": 0,
-	//     "version": 0,
-	//     "links": null,
-	//     "time": {
-	//         "from": "",
-	//         "to": ""
-	//     },
-	//     "timepicker": {
-	//         "refresh_intervals": null,
-	//         "time_options": null
-	//     }
+	//     ]
 	// }
 }

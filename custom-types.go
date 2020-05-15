@@ -201,14 +201,56 @@ const (
 	actualFloat
 )
 
-// FloatString represents special type for json values that could be strings or floats: "100px" or 100.3.
+type FloatOrStringOpt func(v *FloatOrString)
+
+func NewFloatOrString(opts ...FloatOrStringOpt) FloatOrString {
+	var f FloatOrString
+	for _, opt := range opts {
+		opt(&f)
+	}
+	return f
+}
+
+func FloatOrStringString(s string) FloatOrStringOpt {
+	return func(v *FloatOrString) {
+		v.SetString(s)
+	}
+}
+
+func FloatOrStringFloat(f float64) FloatOrStringOpt {
+	return func(v *FloatOrString) {
+		v.SetFloat(f)
+	}
+}
+
+// FloatOrString represents special type for json values that could be strings or floats: "100px" or 100.3.
 type FloatOrString struct {
-	FValue float64
-	SValue string
+	Float  float64
+	String string
 	actual actualType
 }
 
-// UnmarshalJSON implements custom unmarshalling for FloatString type.
+func (v *FloatOrString) SetString(s string) {
+	v.actual = actualString
+	v.String = s
+}
+
+func (v *FloatOrString) SetFloat(f float64) {
+	v.actual = actualFloat
+	v.Float = f
+}
+
+func (v *FloatOrString) Value() interface{} {
+	switch v.actual {
+	case actualFloat:
+		return v.Float
+	case actualString:
+		return v.String
+	}
+	return nil
+}
+
+// UnmarshalJSON implements custom unmarshalling for FloatOrString type.
 func (v *FloatOrString) UnmarshalJSON(raw []byte) error {
 	if raw == nil || bytes.Equal(raw, []byte(`"null"`)) || bytes.Equal(raw, []byte(`""`)) {
 		v.actual = actualNull
@@ -219,7 +261,7 @@ func (v *FloatOrString) UnmarshalJSON(raw []byte) error {
 	if rune(raw[0]) == '"' {
 		strVal = strings.Trim(strVal, `"`)
 		v.actual = actualString
-		v.SValue = strVal
+		v.String = strVal
 		return nil
 	}
 
@@ -227,7 +269,7 @@ func (v *FloatOrString) UnmarshalJSON(raw []byte) error {
 	if err != nil {
 		return err
 	}
-	v.FValue = i
+	v.Float = i
 	v.actual = actualFloat
 	return nil
 }
@@ -236,18 +278,18 @@ func (v *FloatOrString) UnmarshalJSON(raw []byte) error {
 func (v *FloatOrString) MarshalJSON() ([]byte, error) {
 	switch v.actual {
 	case actualFloat:
-		strVal := strconv.FormatFloat(v.FValue, 'g', -1, 64)
+		strVal := strconv.FormatFloat(v.Float, 'g', -1, 64)
 		return []byte(strVal), nil
 	case actualString:
 		var buf bytes.Buffer
 		buf.WriteRune('"')
-		buf.WriteString(v.SValue)
+		buf.WriteString(v.String)
 		buf.WriteRune('"')
 		return buf.Bytes(), nil
 	case actualNull:
 		return []byte(`"null"`), nil
 	default:
 		// This should never happen.
-		return nil, fmt.Errorf("unknown actual data type for FloatOrString")
+		return nil, fmt.Errorf("wrong actual data type for FloatOrString: %v", v.actual)
 	}
 }
