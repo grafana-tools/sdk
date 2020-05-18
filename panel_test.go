@@ -695,3 +695,42 @@ func TestPanel_Stackdriver_ParsedTargets(t *testing.T) {
 		t.Fatalf("should be \"pubsub.googleapis.com/subscription/ack_message_count\" but is not")
 	}
 }
+
+// TestCustomPanelOutput_MarshalJSON marshals new custom panel to JSON,
+// then marshals that json to map[string]interface{},\
+// and then checks both custom and non-custom keys are present and correct.
+func TestCustomPanelOutput_MarshalJSON(t *testing.T) {
+	var (
+		titleKey    = "title"
+		titleValue  = "test title"
+		customKey   = "test_key"
+		customValue = "bar_value"
+	)
+	p := sdk.NewCustom(titleValue)
+	custom := map[string]interface{}(*p.CustomPanel)
+	custom[customKey] = customValue
+	b, err := json.Marshal(p)
+	if err != nil {
+		t.Fatalf("failed to marshal custom panel: %v", err)
+	}
+	var j = make(map[string]interface{})
+	err = json.Unmarshal(b, &j)
+	if err != nil {
+		t.Fatalf("failed to unmarshal: %v", err)
+	}
+	val, ok := j[customKey]
+	if !ok {
+		t.Fatalf("failed to find key %s in map %v", customKey, j)
+	}
+	if val != customValue {
+		t.Fatalf("wrong value of %s: got %s, expected %s", customKey, val, customValue)
+	}
+	val, ok = j[titleKey]
+	if !ok {
+		t.Fatalf("failed to find key %s in map %v", titleKey, j)
+	}
+	if val != titleValue {
+		t.Fatalf("wrong value of %s: got %s, expected %s", titleKey, val, titleValue)
+	}
+
+}

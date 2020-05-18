@@ -20,6 +20,7 @@ package sdk
 */
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 )
@@ -1053,13 +1054,40 @@ func (p *Panel) MarshalJSON() ([]byte, error) {
 		}{p.CommonPanel, *p.HeatmapPanel}
 		return json.Marshal(outHeatmap)
 	case CustomType:
-		var outCustom = struct {
-			CommonPanel
-			CustomPanel
-		}{p.CommonPanel, *p.CustomPanel}
+		var outCustom = customPanelOutput{
+			p.CommonPanel,
+			*p.CustomPanel,
+		}
 		return json.Marshal(outCustom)
 	}
 	return nil, errors.New("can't marshal unknown panel type")
+}
+
+type customPanelOutput struct {
+	CommonPanel
+	CustomPanel
+}
+
+func (c customPanelOutput) MarshalJSON() ([]byte, error) {
+	b, err := json.Marshal(c.CommonPanel)
+	if err != nil {
+		return b, err
+	}
+	// Append custom keys to marshalled CommonPanel.
+	buf := bytes.NewBuffer(b[:len(b)-1])
+
+	for k, v := range c.CustomPanel {
+		buf.WriteString(`,"`)
+		buf.WriteString(k)
+		buf.WriteString(`":`)
+		b, err := json.Marshal(v)
+		if err != nil {
+			return b, err
+		}
+		buf.Write(b)
+	}
+	buf.WriteString("}")
+	return buf.Bytes(), nil
 }
 
 func incRefID(refID string) string {
