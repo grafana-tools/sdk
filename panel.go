@@ -85,6 +85,7 @@ type (
 		Repeat           *string        `json:"repeat,omitempty"`   // templating options
 		// RepeatIteration *int64   `json:"repeatIteration,omitempty"`
 		RepeatPanelID *uint `json:"repeatPanelId,omitempty"`
+		RepeatedByRow bool  `json:"repeatedByRow,omitempty"`
 		ScopedVars    map[string]struct {
 			Selected bool   `json:"selected"`
 			Text     string `json:"text"`
@@ -254,34 +255,15 @@ type (
 
 // for a graph panel
 type (
-	// TODO look at schema versions carefully
-	// grid was obsoleted by xaxis and yaxes
-	grid struct { //nolint: unused,deadcode
-		LeftLogBase     *int     `json:"leftLogBase"`
-		LeftMax         *int     `json:"leftMax"`
-		LeftMin         *int     `json:"leftMin"`
-		RightLogBase    *int     `json:"rightLogBase"`
-		RightMax        *int     `json:"rightMax"`
-		RightMin        *int     `json:"rightMin"`
-		Threshold1      *float64 `json:"threshold1"`
-		Threshold1Color string   `json:"threshold1Color"`
-		Threshold2      *float64 `json:"threshold2"`
-		Threshold2Color string   `json:"threshold2Color"`
-		ThresholdLine   bool     `json:"thresholdLine"`
-	}
-	xaxis struct { //nolint:unused,deadcode
-		Mode   string      `json:"mode"`
-		Name   interface{} `json:"name"` // TODO what is this?
-		Show   bool        `json:"show"`
-		Values *[]string   `json:"values,omitempty"`
-	}
 	Axis struct {
-		Format  string         `json:"format"`
-		LogBase int            `json:"logBase"`
-		Max     *FloatOrString `json:"max,omitempty"`
-		Min     *FloatOrString `json:"min,omitempty"`
-		Show    bool           `json:"show"`
-		Label   string         `json:"label,omitempty"`
+		Decimals int            `json:"decimals,omitempty"`
+		Format   string         `json:"format,omitempty"`
+		LogBase  int            `json:"logBase,omitempty"`
+		Max      *FloatOrString `json:"max,omitempty"`
+		Min      *FloatOrString `json:"min,omitempty"`
+		Mode     string         `json:"mode,omitempty"`
+		Show     bool           `json:"show"`
+		Label    string         `json:"label,omitempty"`
 	}
 	SeriesOverride struct {
 		Alias         string      `json:"alias"`
@@ -303,18 +285,20 @@ type (
 		Desc bool `json:"desc"`
 	}
 	Legend struct {
-		AlignAsTable bool  `json:"alignAsTable"`
-		Avg          bool  `json:"avg"`
-		Current      bool  `json:"current"`
-		HideEmpty    bool  `json:"hideEmpty"`
-		HideZero     bool  `json:"hideZero"`
-		Max          bool  `json:"max"`
-		Min          bool  `json:"min"`
-		RightSide    bool  `json:"rightSide"`
-		Show         bool  `json:"show"`
-		SideWidth    *uint `json:"sideWidth,omitempty"`
-		Total        bool  `json:"total"`
-		Values       bool  `json:"values"`
+		AlignAsTable bool   `json:"alignAsTable"`
+		Avg          bool   `json:"avg"`
+		Current      bool   `json:"current"`
+		HideEmpty    bool   `json:"hideEmpty"`
+		HideZero     bool   `json:"hideZero"`
+		Max          bool   `json:"max"`
+		Min          bool   `json:"min"`
+		RightSide    bool   `json:"rightSide"`
+		Show         bool   `json:"show"`
+		SideWidth    *uint  `json:"sideWidth,omitempty"`
+		Sort         string `json:"sort,omitempty"`
+		SortDesc     bool   `json:"sortDesc,omitempty"`
+		Total        bool   `json:"total"`
+		Values       bool   `json:"values"`
 	}
 )
 

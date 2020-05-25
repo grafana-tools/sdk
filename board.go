@@ -84,24 +84,31 @@ type (
 		List []*TemplateVar `json:"list"`
 	}
 	TemplateVar struct {
-		Name        string    `json:"name"`
-		Type        string    `json:"type"`
-		Auto        bool      `json:"auto,omitempty"`
-		AutoCount   *int      `json:"auto_count,omitempty"`
-		Datasource  *string   `json:"datasource"`
-		Refresh     BoolInt   `json:"refresh"`
-		Options     []*Option `json:"options"`
-		IncludeAll  bool      `json:"includeAll"`
-		AllFormat   string    `json:"allFormat"`
-		AllValue    string    `json:"allValue"`
-		Multi       bool      `json:"multi"`
-		MultiFormat string    `json:"multiFormat"`
-		Query       string    `json:"query"`
-		Regex       string    `json:"regex"`
-		Current     Current   `json:"current"`
-		Label       string    `json:"label"`
-		Hide        uint8     `json:"hide"`
-		Sort        int       `json:"sort"`
+		AllFormat      string    `json:"allFormat,omitempty"`
+		AllValue       string    `json:"allValue,omitempty"`
+		Auto           bool      `json:"auto,omitempty"`
+		AutoCount      *int      `json:"auto_count,omitempty"`
+		Current        Current   `json:"current"`
+		Datasource     *string   `json:"datasource"`
+		Definition     string    `json:"definition,omitempty"`
+		Hide           uint8     `json:"hide"`
+		Index          int       `json:"index,omitempty"`
+		IncludeAll     bool      `json:"includeAll"`
+		Label          string    `json:"label"`
+		Multi          bool      `json:"multi"`
+		MultiFormat    string    `json:"multiFormat,omitempty"`
+		Name           string    `json:"name"`
+		Options        []*Option `json:"options"`
+		Query          string    `json:"query"`
+		Refresh        BoolInt   `json:"refresh"`
+		Regex          string    `json:"regex"`
+		SkipUrlSync    bool      `json:"skipUrlSync"`
+		Sort           int       `json:"sort,omitempty"`
+		TagValuesQuery string    `json:"tagValuesQuery,omitempty"`
+		Tags           []string  `json:"tags,omitempty"`
+		TagsQuery      string    `json:"tagsQuery,omitempty"`
+		Type           string    `json:"type"`
+		UseTags        bool      `json:"useTags,omitempty"`
 	}
 	// for templateVar
 	Option struct {
@@ -111,9 +118,10 @@ type (
 	}
 	// for templateVar
 	Current struct {
-		Tags  []string    `json:"tags,omitempty"`
-		Text  string      `json:"text"`
-		Value interface{} `json:"value"` // TODO select more precise type
+		Selected bool        `json:"selected,omitempty"`
+		Tags     []string    `json:"tags,omitempty"`
+		Text     string      `json:"text"`
+		Value    interface{} `json:"value"` // TODO select more precise type
 	}
 	Annotation struct {
 		BuiltIn    int      `json:"builtIn,omitempty"`
@@ -131,7 +139,7 @@ type (
 		Tags       []string `json:"tags,omitempty"`
 		TagsField  string   `json:"tagsField,omitempty"`
 		TextField  string   `json:"textField,omitempty"`
-		Type       string   `json:"type"`
+		Type       string   `json:"type,omitempty"`
 	}
 )
 
