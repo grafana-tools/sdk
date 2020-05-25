@@ -269,6 +269,7 @@ type (
 		Alias         string      `json:"alias"`
 		Bars          *bool       `json:"bars,omitempty"`
 		Color         *string     `json:"color,omitempty"`
+		Dashes        bool        `json:"dashes,omitempty"`
 		Fill          *int        `json:"fill,omitempty"`
 		FillBelowTo   *string     `json:"fillBelowTo,omitempty"`
 		Legend        *bool       `json:"legend,omitempty"`
