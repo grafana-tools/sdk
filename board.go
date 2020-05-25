@@ -48,7 +48,7 @@ type (
 		Style        string     `json:"style"`
 		Timezone     string     `json:"timezone"`
 		Editable     bool       `json:"editable"`
-		HideControls bool       `json:"hideControls" graf:"hide-controls"`
+		HideControls bool       `json:"hideControls,omitempty" graf:"hide-controls"`
 		GraphTooltip int        `json:"graphTooltip,omitempty"`
 		Panels       []*Panel   `json:"panels"`
 		Time         Time       `json:"time"`
@@ -63,6 +63,7 @@ type (
 		Links         []*Link     `json:"links"`
 
 		// Optional fields.
+		Description     *string `json:"description,omitempty"`
 		Slug            *string `json:"slug,omitempty""`
 		OriginalTitle   *string `json:"originalTitle,omitempty"`
 		SharedCrosshair bool    `json:"sharedCrosshair,omitempty" graf:"shared-crosshair"`
@@ -115,25 +116,27 @@ type (
 		Value interface{} `json:"value"` // TODO select more precise type
 	}
 	Annotation struct {
-		Name       string   `json:"name"`
+		BuiltIn int `json:"builtIn,omitempty"`
 		Datasource *string  `json:"datasource"`
-		ShowLine   bool     `json:"showLine"`
-		IconColor  string   `json:"iconColor"`
-		LineColor  string   `json:"lineColor"`
-		IconSize   uint     `json:"iconSize"`
 		Enable     bool     `json:"enable"`
-		Query      string   `json:"query"`
-		TextField  string   `json:"textField"`
-		TagsField  string   `json:"tagsField"`
-		Tags       []string `json:"tags"`
+		Hide bool `json:"hide,omitempty"`
+		IconColor  string   `json:"iconColor"`
+		IconSize   uint     `json:"iconSize,omitempty"`
+		Limit int `json:"limit,omitempty"`
+		LineColor  string   `json:"lineColor,omitempty"`
+		Name       string   `json:"name"`
+		Query      string   `json:"query,omitempty"`
+		ShowIn int `json:"showIn"`
+		ShowLine   bool     `json:"showLine,omitempty"`
+		Tags       []string `json:"tags,omitempty"`
+		TagsField  string   `json:"tagsField,omitempty"`
+		TextField  string   `json:"textField,omitempty"`
 		Type       string   `json:"type"`
 	}
 )
 
 // Link represents Link to another dashboard or external weblink
 type Link struct {
-	Title       string   `json:"title"`
-	Type        string   `json:"type"`
 	AsDropdown  *bool    `json:"asDropdown,omitempty"`
 	DashURI     *string  `json:"dashUri,omitempty"`
 	Dashboard   *string  `json:"dashboard,omitempty"`
@@ -143,7 +146,9 @@ type Link struct {
 	Params      *string  `json:"params,omitempty"`
 	Tags        []string `json:"tags,omitempty"`
 	TargetBlank *bool    `json:"targetBlank,omitempty"`
+	Title       string   `json:"title,omitempty"`
 	Tooltip     *string  `json:"tooltip,omitempty"`
+	Type        string   `json:"type"`
 	URL         *string  `json:"url,omitempty"`
 }
 

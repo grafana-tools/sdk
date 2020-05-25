@@ -72,6 +72,7 @@ type (
 		// Optional fields.
 		Collapsed        *bool          `json:"collapsed,omitempty"`
 		Datasource       *string        `json:"datasource,omitempty"`
+		Description      *string        `json:"description,omitempty"`
 		Editable         *bool          `json:"editable,omitempty"`
 		Error            *bool          `json:"error,omitempty"`
 		Height           *FloatOrString `json:"height,omitempty"`
@@ -197,16 +198,18 @@ type (
 		Mode    string `json:"mode"`
 
 		// Optional.
-		PageSize   uint          `json:"pageSize"`
-		Scroll     bool          `json:"scroll"`
-		ShowHeader bool          `json:"showHeader"`
-		Sort       Sort          `json:"sort"`
-		Styles     []ColumnStyle `json:"styles"`
+		PageSize   uint          `json:"pageSize,omitempty"`
+		Scroll     bool          `json:"scroll,omitempty"`
+		ShowHeader bool          `json:"showHeader,omitempty"`
+		Sort       *Sort         `json:"sort,omitempty"`
+		Styles     []ColumnStyle `json:"styles,omitempty"`
 	}
 	SinglestatPanel struct {
 		Colors          []string    `json:"colors"`
 		ColorValue      bool        `json:"colorValue"`
 		ColorBackground bool        `json:"colorBackground"`
+		ColorPostfix    bool        `json:"colorPostfix"`
+		ColorPrefix     bool        `json:"colorPrefix"`
 		Decimals        int         `json:"decimals"`
 		Format          string      `json:"format"`
 		Gauge           Gauge       `json:"gauge,omitempty"`
