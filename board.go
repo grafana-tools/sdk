@@ -116,17 +116,17 @@ type (
 		Value interface{} `json:"value"` // TODO select more precise type
 	}
 	Annotation struct {
-		BuiltIn int `json:"builtIn,omitempty"`
+		BuiltIn    int      `json:"builtIn,omitempty"`
 		Datasource *string  `json:"datasource"`
 		Enable     bool     `json:"enable"`
-		Hide bool `json:"hide,omitempty"`
+		Hide       bool     `json:"hide,omitempty"`
 		IconColor  string   `json:"iconColor"`
 		IconSize   uint     `json:"iconSize,omitempty"`
-		Limit int `json:"limit,omitempty"`
+		Limit      int      `json:"limit,omitempty"`
 		LineColor  string   `json:"lineColor,omitempty"`
 		Name       string   `json:"name"`
 		Query      string   `json:"query,omitempty"`
-		ShowIn int `json:"showIn"`
+		ShowIn     int      `json:"showIn"`
 		ShowLine   bool     `json:"showLine,omitempty"`
 		Tags       []string `json:"tags,omitempty"`
 		TagsField  string   `json:"tagsField,omitempty"`

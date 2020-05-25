@@ -292,6 +292,7 @@ type (
 		FillBelowTo   *string     `json:"fillBelowTo,omitempty"`
 		Legend        *bool       `json:"legend,omitempty"`
 		Lines         *bool       `json:"lines,omitempty"`
+		Linewidth     *int        `json:"linewidth,omitempty"`
 		Stack         *BoolString `json:"stack,omitempty"`
 		Transform     *string     `json:"transform,omitempty"`
 		YAxis         *int        `json:"yaxis,omitempty"`
