@@ -72,7 +72,6 @@ type (
 		// Optional fields.
 		Collapsed        *bool          `json:"collapsed,omitempty"`
 		Datasource       *string        `json:"datasource,omitempty"`
-		Description      *string        `json:"description,omitempty"`
 		Editable         *bool          `json:"editable,omitempty"`
 		Error            *bool          `json:"error,omitempty"`
 		Height           *FloatOrString `json:"height,omitempty"`
