@@ -72,6 +72,7 @@ type (
 		// Optional fields.
 		Collapsed        *bool          `json:"collapsed,omitempty"`
 		Datasource       *string        `json:"datasource,omitempty"`
+		Description      string         `json:"description,omitempty"`
 		Editable         *bool          `json:"editable,omitempty"`
 		Error            *bool          `json:"error,omitempty"`
 		Height           *FloatOrString `json:"height,omitempty"`
@@ -79,7 +80,7 @@ type (
 		IsNew            *bool          `json:"isNew,omitempty"`
 		Links            []Link         `json:"links,omitempty"`
 		MinSpan          *float32       `json:"minSpan,omitempty"`  // templating options
-		OfType           panelType      `json:"-"`                  // it required for defining type of the panel
+		OfType           panelType      `json:"-"`                  // it is required for defining type of the panel
 		Renderer         *string        `json:"renderer,omitempty"` // display styles
 		Repeat           *string        `json:"repeat,omitempty"`   // templating options
 		// RepeatIteration *int64   `json:"repeatIteration,omitempty"`
@@ -131,7 +132,6 @@ type (
 		DashLength  *uint       `json:"dashLength,omitempty"`
 		Dashes      *bool       `json:"dashes,omitempty"`
 		Decimals    *uint       `json:"decimals,omitempty"`
-		Description string      `json:"description,omitempty"`
 		Fill        int         `json:"fill"`
 		//		Grid        grid        `json:"grid"` obsoleted in 4.1 by xaxis and yaxis
 
