@@ -97,7 +97,6 @@ type (
 		Label       string   `json:"label"`
 		Hide        uint8    `json:"hide"`
 		Sort        int      `json:"sort"`
-		Definition  string   `json:"definition"`
 	}
 	// for templateVar
 	Option struct {
