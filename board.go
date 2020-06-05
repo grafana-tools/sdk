@@ -134,6 +134,7 @@ type (
 		LineColor  string   `json:"lineColor,omitempty"`
 		Name       string   `json:"name"`
 		Query      string   `json:"query,omitempty"`
+		RawQuery   string   `json:"rawQuery,omitempty"`
 		ShowIn     int      `json:"showIn"`
 		ShowLine   bool     `json:"showLine,omitempty"`
 		Tags       []string `json:"tags,omitempty"`
