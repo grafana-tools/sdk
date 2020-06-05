@@ -48,8 +48,8 @@ type (
 		Style        string     `json:"style"`
 		Timezone     string     `json:"timezone"`
 		Editable     bool       `json:"editable"`
-		HideControls bool       `json:"hideControls,omitempty" graf:"hide-controls"`
-		GraphTooltip int        `json:"graphTooltip,omitempty"`
+		HideControls *bool      `json:"hideControls,omitempty" graf:"hide-controls"`
+		GraphTooltip *int       `json:"graphTooltip,omitempty"`
 		Panels       []*Panel   `json:"panels"`
 		Time         Time       `json:"time"`
 		Timepicker   Timepicker `json:"timepicker"`
