@@ -169,7 +169,7 @@ func NewBoard(title string) *Board {
 		Style:        "dark",
 		Timezone:     "browser",
 		Editable:     true,
-		HideControls: false,
+		HideControls: newFalse(),
 		Rows:         []*Row{},
 	}
 }

@@ -453,6 +453,11 @@ func newTrue() *bool {
 	return &b
 }
 
+func newFalse() *bool {
+	b := false
+	return &b
+}
+
 // NewDashlist initializes panel with a dashlist panel.
 func NewDashlist(title string) *Panel {
 	if title == "" {
