@@ -354,6 +354,7 @@ type (
 type Target struct {
 	RefID      string `json:"refId"`
 	Datasource string `json:"datasource,omitempty"`
+	Hide       bool   `json:"hide,omitempty"`
 
 	// For Prometheus
 	Expr           string `json:"expr,omitempty"`
