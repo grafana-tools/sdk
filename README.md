@@ -99,6 +99,7 @@ datasources. State of support for misc API parts noted below.
 | Snapshots                   | -                         |
 | Frontend settings           | -                         |
 | Admin                       | partially                 |
+| Alerting                    | partially                 |
 
 There is no exact roadmap.  The integration tests are being run against the
 following Grafana versions:
