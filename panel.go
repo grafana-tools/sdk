@@ -269,7 +269,7 @@ type (
 	Axis struct {
 		Format   string       `json:"format"`
 		LogBase  int          `json:"logBase"`
-		Decimals int          `json:"decimals"`
+		Decimals int          `json:"decimals,omitempty"`
 		Max      *FloatString `json:"max,omitempty"`
 		Min      *FloatString `json:"min,omitempty"`
 		Show     bool         `json:"show"`
