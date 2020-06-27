@@ -84,7 +84,6 @@ jobs:
      - "GRAFANA_VERSION=6.4.5"
      - "GRAFANA_INTEGRATION=1"
     go: "1.12.x"
-
   - name: "Grafana 7.0.4 1.11.x"
     env:
      - "GRAFANA_VERSION=6.7.4"
