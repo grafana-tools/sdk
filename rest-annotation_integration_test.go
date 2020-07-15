@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/grafana-tools/sdk"
+	"github.com/galamiram/sdk"
 )
 
 func TestAnnotations(t *testing.T) {

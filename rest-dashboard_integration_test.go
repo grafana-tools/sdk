@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"testing"
 
-	"github.com/grafana-tools/sdk"
+	"github.com/galamiram/sdk"
 )
 
 func Test_Dashboard_CRUD(t *testing.T) {

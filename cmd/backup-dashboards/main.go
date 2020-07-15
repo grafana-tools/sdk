@@ -31,7 +31,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/grafana-tools/sdk"
+	"github.com/galamiram/sdk"
 )
 
 func main() {

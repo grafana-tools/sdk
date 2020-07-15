@@ -1,6 +1,6 @@
-module github.com/grafana-tools/sdk
+module github.com/galamiram/sdk
 
-go 1.13
+go 1.14
 
 require (
 	github.com/gosimple/slug v1.1.1

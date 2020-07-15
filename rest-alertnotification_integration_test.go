@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/grafana-tools/sdk"
+	"github.com/galamiram/sdk"
 )
 
 func Test_Alertnotification_CRUD(t *testing.T) {
