@@ -112,6 +112,12 @@ func (r *Client) doRequest(ctx context.Context, method, query string, params url
 	if err != nil {
 		return nil, 0, err
 	}
+
+	if resp.StatusCode != http.StatusOK {
+
+		return nil, resp.StatusCode, fmt.Errorf("bad http status:", resp.StatusCode)
+	}
+
 	data, err := ioutil.ReadAll(resp.Body)
 	resp.Body.Close()
 	return data, resp.StatusCode, err
