@@ -18,13 +18,17 @@ func (r *Client) CreateAnnotation(ctx context.Context, a CreateAnnotationRequest
 	var (
 		raw  []byte
 		resp StatusMessage
+		code int
 		err  error
 	)
 	if raw, err = json.Marshal(a); err != nil {
 		return StatusMessage{}, errors.Wrap(err, "marshal request")
 	}
-	if raw, _, err = r.post(ctx, "api/annotations", nil, raw); err != nil {
+	if raw, code, err = r.post(ctx, "api/annotations", nil, raw); err != nil {
 		return StatusMessage{}, errors.Wrap(err, "create annotation")
+	}
+	if code != 200 {
+		return StatusMessage{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
 		return StatusMessage{}, errors.Wrap(err, "unmarshal response message")

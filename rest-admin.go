@@ -13,13 +13,17 @@ func (r *Client) CreateUser(ctx context.Context, user User) (StatusMessage, erro
 	var (
 		raw  []byte
 		resp StatusMessage
+		code int
 		err  error
 	)
 	if raw, err = json.Marshal(user); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, _, err = r.post(ctx, "api/admin/users", nil, raw); err != nil {
+	if raw, code, err = r.post(ctx, "api/admin/users", nil, raw); err != nil {
 		return StatusMessage{}, err
+	}
+	if code != 200 {
+		return StatusMessage{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
 		return StatusMessage{}, err

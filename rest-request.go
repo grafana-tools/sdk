@@ -45,14 +45,14 @@ type Client struct {
 
 // StatusMessage reflects status message as it returned by Grafana REST API.
 type StatusMessage struct {
-	ID      *uint   `json:"id"`
-	OrgID   *uint   `json:"orgId"`
-	Message *string `json:"message"`
-	Slug    *string `json:"slug"`
-	Version *int    `json:"version"`
-	Status  *string `json:"status"`
-	UID     *string `json:"uid"`
-	URL     *string `json:"url"`
+	ID      *uint   `json:"id,omitempty"`
+	OrgID   *uint   `json:"orgId,omitempty"`
+	Message *string `json:"message,omitempty"`
+	Slug    *string `json:"slug,omitempty"`
+	Version *int    `json:"version,omitempty"`
+	Status  *string `json:"status,omitempty"`
+	UID     *string `json:"uid,omitempty"`
+	URL     *string `json:"url,omitempty"`
 }
 
 // NewClient initializes client for interacting with an instance of Grafana server;
@@ -112,12 +112,6 @@ func (r *Client) doRequest(ctx context.Context, method, query string, params url
 	if err != nil {
 		return nil, 0, err
 	}
-
-	if resp.StatusCode != http.StatusOK {
-
-		return nil, resp.StatusCode, fmt.Errorf("bad http status: %d", resp.StatusCode)
-	}
-
 	data, err := ioutil.ReadAll(resp.Body)
 	resp.Body.Close()
 	return data, resp.StatusCode, err
