@@ -165,6 +165,11 @@ type FoundBoard struct {
 	Type      string   `json:"type"`
 	Tags      []string `json:"tags"`
 	IsStarred bool     `json:"isStarred"`
+
+	FolderID    string `json:"folderId"`
+	FolderUID   string `json:"folderUid"`
+	FolderTitle string `json:"folderTitle"`
+	FolderURL   string `json:"folderURL"`
 }
 
 // SearchDashboards search dashboards by substring of their title. It allows restrict the result set with
