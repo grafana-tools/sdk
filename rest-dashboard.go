@@ -169,7 +169,7 @@ type FoundBoard struct {
 	FolderID    string `json:"folderId"`
 	FolderUID   string `json:"folderUid"`
 	FolderTitle string `json:"folderTitle"`
-	FolderURL   string `json:"folderURL"`
+	FolderURL   string `json:"folderUrl"`
 }
 
 // SearchDashboards search dashboards by substring of their title. It allows restrict the result set with
