@@ -361,6 +361,26 @@ type Target struct {
 	Datasource string `json:"datasource,omitempty"`
 	Hide       bool   `json:"hide,omitempty"`
 
+	// For PostgreSQL
+	Table        string `json:"table,omitempty"`
+	TimeColumn   string `json:"timeColumn,omitempty"`
+	MetricColumn string `json:"metricColumn,omitempty"`
+	RawSql       string `json:"rawSql,omitempty"`
+	Select       [][]struct {
+		Params []string `json:"params,omitempty"`
+		Type   string   `json:"type,omitempty"`
+	} `json:"select,omitempty"`
+	Where []struct {
+		Type     string   `json:"type,omitempty"`
+		Name     string   `json:"name,omitempty"`
+		Params   []string `json:"params,omitempty"`
+		Datatype string   `json:"datatype,omitempty"`
+	} `json:"where,omitempty"`
+	Group []struct {
+		Type   string   `json:"type,omitempty"`
+		Params []string `json:"params,omitempty"`
+	} `json:"group,omitempty"`
+
 	// For Prometheus
 	Expr           string `json:"expr,omitempty"`
 	IntervalFactor int    `json:"intervalFactor,omitempty"`
