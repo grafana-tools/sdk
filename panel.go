@@ -70,7 +70,7 @@ type (
 		HideTimeOverride *bool     `json:"hideTimeOverride,omitempty"`
 		ID               uint      `json:"id"`
 		IsNew            bool      `json:"isNew"`
-		Links            []link    `json:"links,omitempty"`    // general
+		Links            []Link    `json:"links,omitempty"`    // general
 		MinSpan          *float32  `json:"minSpan,omitempty"`  // templating options
 		OfType           panelType `json:"-"`                  // it required for defining type of the panel
 		Renderer         *string   `json:"renderer,omitempty"` // display styles
