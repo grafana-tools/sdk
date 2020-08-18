@@ -90,3 +90,16 @@ func TestBoardHasTag_TagNotExists(t *testing.T) {
 		t.Error("tag not exists but found")
 	}
 }
+
+func TestBoardAddLink(t *testing.T) {
+  b := sdk.NewBoard("Sample")
+  b.AddLink(sdk.Link {
+    Title: "test",
+    Type: "external_link",
+    IncludeVars: false,
+  })
+
+  if len(b.Links) != 1 {
+		t.Error("Link wasn't added")
+  }
+}
