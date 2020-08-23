@@ -88,6 +88,7 @@ type (
 		AllValue       string    `json:"allValue,omitempty"`
 		Auto           bool      `json:"auto,omitempty"`
 		AutoCount      *int      `json:"auto_count,omitempty"`
+		AutoMin        string    `json:"auto_min,omitempty"`
 		Current        Current   `json:"current"`
 		Datasource     *string   `json:"datasource"`
 		Definition     string    `json:"definition,omitempty"`
