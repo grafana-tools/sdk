@@ -414,7 +414,7 @@ func setPrefix(slug string) string {
 	if strings.HasPrefix(slug, "db") {
 		return slug
 	}
-	if strings.HasPrefix(slug, "file") {
+	if strings.HasPrefix(slug, "file/") {
 		return slug
 	}
 	return fmt.Sprintf("db/%s", slug)
