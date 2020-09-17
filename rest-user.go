@@ -25,6 +25,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"strconv"
 )
 
 // GetActualUser gets an actual user.
@@ -120,8 +121,8 @@ func (r *Client) SearchUsersWithPaging(ctx context.Context, query *string, perpa
 		if params == nil {
 			params = url.Values{}
 		}
-		params["perpage"] = []string{string(*perpage)}
-		params["page"] = []string{string(*page)}
+		params["perpage"] = []string{strconv.Itoa(*perpage)}
+		params["page"] = []string{strconv.Itoa(*page)}
 	}
 
 	if query != nil {
