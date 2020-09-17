@@ -131,7 +131,6 @@ func TestStringSliceString_Unmarshal(t *testing.T) {
 				if fmt.Sprintf("%#v", test.exp.Value) != fmt.Sprintf("%#v", got.Value) {
 					t.Errorf("Value field is not valid, expected %#v; got: %#v", test.exp.Value, got.Value)
 				}
-
 			}
 		})
 	}

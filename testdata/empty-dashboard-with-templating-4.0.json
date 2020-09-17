@@ -28,7 +28,7 @@
         "allValue": null,
         "current": {
           "tags": [],
-          "text": "one",
+          "text": ["one"],
           "value": "one"
         },
         "datasource": null,
