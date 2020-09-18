@@ -166,7 +166,7 @@ type FoundBoard struct {
 	Tags      []string `json:"tags"`
 	IsStarred bool     `json:"isStarred"`
 
-	FolderID    string `json:"folderId"`
+	FolderID    uint   `json:"folderId"`
 	FolderUID   string `json:"folderUid"`
 	FolderTitle string `json:"folderTitle"`
 	FolderURL   string `json:"folderUrl"`
