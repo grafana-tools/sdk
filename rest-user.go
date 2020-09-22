@@ -144,3 +144,21 @@ func (r *Client) SearchUsersWithPaging(ctx context.Context, query *string, perpa
 	}
 	return pageUsers, err
 }
+
+// SwitchActualUserContext switches current user context to the given organization.
+// Reflects POST /api/user/using/:organizationId API call.
+func (r *Client) SwitchActualUserContext(ctx context.Context, oid uint) (StatusMessage, error) {
+	var (
+		raw  []byte
+		resp StatusMessage
+		err  error
+	)
+
+	if raw, _, err = r.post(ctx, fmt.Sprintf("/api/user/using/%d", oid), nil, raw); err != nil {
+		return StatusMessage{}, err
+	}
+	if err = json.Unmarshal(raw, &resp); err != nil {
+		return StatusMessage{}, err
+	}
+	return resp, nil
+}
