@@ -98,16 +98,26 @@ type (
 	AlertEvaluator struct {
 		Params []float64 `json:"params,omitempty"`
 		Type   string    `json:"type,omitempty"`
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 	AlertOperator struct {
 		Type string `json:"type,omitempty"`
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 	AlertQuery struct {
 		Params []string `json:"params,omitempty"`
+
+		catchall   map[string]interface{} `catchall:"json"`
+
 	}
 	AlertReducer struct {
 		Params []string `json:"params,omitempty"`
 		Type   string   `json:"type,omitempty"`
+
+		catchall   map[string]interface{} `catchall:"json"`
+
 	}
 	AlertCondition struct {
 		Evaluator AlertEvaluator `json:"evaluator,omitempty"`
@@ -115,6 +125,8 @@ type (
 		Query     AlertQuery     `json:"query,omitempty"`
 		Reducer   AlertReducer   `json:"reducer,omitempty"`
 		Type      string         `json:"type,omitempty"`
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 	Alert struct {
 		Conditions          []AlertCondition    `json:"conditions,omitempty"`
@@ -126,6 +138,8 @@ type (
 		Notifications       []AlertNotification `json:"notifications,omitempty"`
 		Message             string              `json:"message,omitempty"`
 		For                 string              `json:"for,omitempty"`
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 	GraphPanel struct {
 		AliasColors interface{} `json:"aliasColors"` // XXX
@@ -159,6 +173,8 @@ type (
 		YFormats        []string         `json:"y_formats,omitempty"`
 		Xaxis           Axis             `json:"xaxis"` // was added in Grafana 4.x?
 		Yaxes           []Axis           `json:"yaxes"` // was added in Grafana 4.x?
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 	Threshold struct {
 		// the alert threshold value, we do not omitempty, since 0 is a valid
@@ -176,6 +192,8 @@ type (
 		LineColor string `json:"lineColor,omitempty"`
 		// left or right
 		Yaxis string `json:"yaxis,omitempty"`
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 
 	Tooltip struct {
@@ -183,6 +201,8 @@ type (
 		ValueType    string `json:"value_type"`
 		MsResolution bool   `json:"msResolution,omitempty"` // was added in Grafana 3.x
 		Sort         int    `json:"sort,omitempty"`
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 	TablePanel struct {
 		Columns   []Column      `json:"columns"`
@@ -191,6 +211,8 @@ type (
 		Transform string        `json:"transform"`
 		Targets   []Target      `json:"targets,omitempty"`
 		Scroll    bool          `json:"scroll"` // from grafana 3.x
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 	TextPanel struct {
 		// Default.
@@ -203,6 +225,8 @@ type (
 		ShowHeader bool          `json:"showHeader,omitempty"`
 		Sort       *Sort         `json:"sort,omitempty"`
 		Styles     []ColumnStyle `json:"styles,omitempty"`
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 	SinglestatPanel struct {
 		Colors          []string    `json:"colors"`
@@ -228,15 +252,21 @@ type (
 		ValueFontSize   string      `json:"valueFontSize"`
 		ValueMaps       []ValueMap  `json:"valueMaps"`
 		ValueName       string      `json:"valueName"`
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 	DashlistPanel struct {
 		Mode  string   `json:"mode"`
 		Limit uint     `json:"limit"`
 		Query string   `json:"query"`
 		Tags  []string `json:"tags"`
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 	PluginlistPanel struct {
 		Limit int `json:"limit,omitempty"`
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 	AlertlistPanel struct {
 		OnlyAlertsOnDashboard bool     `json:"onlyAlertsOnDashboard"`
@@ -246,9 +276,13 @@ type (
 		StateFilter           []string `json:"stateFilter"`
 		NameFilter            string   `json:"nameFilter,omitempty"`
 		DashboardTags         []string `json:"dashboardTags,omitempty"`
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 	RowPanel struct {
 		Panels []*Panel `json:"panels,omitempty"`
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 	CustomPanel map[string]interface{}
 )
@@ -264,6 +298,8 @@ type (
 		Mode     string         `json:"mode,omitempty"`
 		Show     bool           `json:"show"`
 		Label    string         `json:"label,omitempty"`
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 	SeriesOverride struct {
 		Alias         string      `json:"alias"`
@@ -280,10 +316,14 @@ type (
 		YAxis         *int        `json:"yaxis,omitempty"`
 		ZIndex        *int        `json:"zindex,omitempty"`
 		NullPointMode *string     `json:"nullPointMode,omitempty"`
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 	Sort struct {
 		Col  int  `json:"col"`
 		Desc bool `json:"desc"`
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 	Legend struct {
 		AlignAsTable bool   `json:"alignAsTable"`
@@ -300,6 +340,8 @@ type (
 		SortDesc     bool   `json:"sortDesc,omitempty"`
 		Total        bool   `json:"total"`
 		Values       bool   `json:"values"`
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 )
 
@@ -308,6 +350,8 @@ type (
 	Column struct {
 		TextType string `json:"text"`
 		Value    string `json:"value"`
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 	ColumnStyle struct {
 		Alias           *string   `json:"alias"`
@@ -323,6 +367,8 @@ type (
 		Thresholds      *[]string `json:"thresholds,omitempty"`
 		Type            string    `json:"type"`
 		Unit            *string   `json:"unit,omitempty"`
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 )
 
@@ -332,6 +378,8 @@ type (
 		Op       string `json:"op"`
 		TextType string `json:"text"`
 		Value    string `json:"value"`
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 	Gauge struct {
 		MaxValue         float32 `json:"maxValue"`
@@ -339,6 +387,8 @@ type (
 		Show             bool    `json:"show"`
 		ThresholdLabels  bool    `json:"thresholdLabels"`
 		ThresholdMarkers bool    `json:"thresholdMarkers"`
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 	SparkLine struct {
 		FillColor *string  `json:"fillColor,omitempty"`
@@ -347,8 +397,36 @@ type (
 		Show      bool     `json:"show,omitempty"`
 		YMin      *float64 `json:"ymin,omitempty"`
 		YMax      *float64 `json:"ymax,omitempty"`
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
-)
+Metric struct {
+ID    string `json:"id"`
+Field string `json:"field"`
+Type  string `json:"type"`
+
+	catchall   map[string]interface{} `catchall:"json"`
+}
+
+	SettingsType struct {
+		Interval    string `json:"interval,omitempty"`
+		MinDocCount int    `json:"min_doc_count"`
+		Order       string `json:"order,omitempty"`
+		OrderBy     string `json:"orderBy,omitempty"`
+		Size        string `json:"size,omitempty"`
+
+		catchall   map[string]interface{} `catchall:"json"`
+	}
+
+	BucketAgg struct {
+		ID       string `json:"id"`
+		Field    string `json:"field"`
+		Type     string `json:"type"`
+		Settings SettingsType `json:"settings"`
+
+		catchall   map[string]interface{} `catchall:"json"`
+		}
+	)
 
 // for an any panel
 type Target struct {
@@ -367,27 +445,12 @@ type Target struct {
 
 	// For Elasticsearch
 	DsType  *string `json:"dsType,omitempty"`
-	Metrics []struct {
-		ID    string `json:"id"`
-		Field string `json:"field"`
-		Type  string `json:"type"`
-	} `json:"metrics,omitempty"`
+	Metrics []Metric `json:"metrics,omitempty"`
 	Query      string      `json:"query,omitempty"`
 	Alias      string      `json:"alias,omitempty"`
 	RawQuery   *BoolString `json:"rawQuery,omitempty"`
 	TimeField  string      `json:"timeField,omitempty"`
-	BucketAggs []struct {
-		ID       string `json:"id"`
-		Field    string `json:"field"`
-		Type     string `json:"type"`
-		Settings struct {
-			Interval    string `json:"interval,omitempty"`
-			MinDocCount int    `json:"min_doc_count"`
-			Order       string `json:"order,omitempty"`
-			OrderBy     string `json:"orderBy,omitempty"`
-			Size        string `json:"size,omitempty"`
-		} `json:"settings"`
-	} `json:"bucketAggs,omitempty"`
+	BucketAggs []BucketAgg `json:"bucketAggs,omitempty"`
 
 	// For Graphite
 	Target string `json:"target,omitempty"`
@@ -417,6 +480,8 @@ type Target struct {
 	// https://grafana.com/grafana/plugins/simpod-json-datasource
 	Data string `json:"data,omitempty"`
 	Type string `json:"type,omitempty"`
+
+	catchall   map[string]interface{} `catchall:"json"`
 }
 
 // StackdriverAlignOptions defines the list of alignment options shown in
@@ -425,6 +490,8 @@ type StackdriverAlignOptions struct {
 	Expanded bool                     `json:"expanded"`
 	Label    string                   `json:"label"`
 	Options  []StackdriverAlignOption `json:"options"`
+
+	catchall   map[string]interface{} `catchall:"json"`
 }
 
 // StackdriverAlignOption defines a single alignment option shown in Grafana
@@ -435,17 +502,23 @@ type StackdriverAlignOption struct {
 	Text        string   `json:"text"`
 	Value       string   `json:"value"`
 	ValueTypes  []string `json:"valueTypes"`
+
+	catchall   map[string]interface{} `catchall:"json"`
 }
 
 type MapType struct {
 	Name  *string `json:"name,omitempty"`
 	Value *int    `json:"value,omitempty"`
+
+	catchall   map[string]interface{} `catchall:"json"`
 }
 
 type RangeMap struct {
 	From *string `json:"from,omitempty"`
 	Text *string `json:"text,omitempty"`
 	To   *string `json:"to,omitempty"`
+
+	catchall   map[string]interface{} `catchall:"json"`
 }
 
 func newTrue() *bool {

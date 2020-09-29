@@ -28,4 +28,6 @@ type AlertNotification struct {
 	Frequency             string      `json:"frequency"`
 	Settings              interface{} `json:"settings"`
 	UID                   string      `json:"uid,omitempty"`
+
+	catchall   map[string]interface{} `catchall:"json"`
 }

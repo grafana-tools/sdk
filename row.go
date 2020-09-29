@@ -28,6 +28,8 @@ type Row struct {
 	Height    FloatOrString `json:"height"`
 	Panels    []Panel       `json:"panels"`
 	Repeat    *string       `json:"repeat"`
+
+	catchall   map[string]interface{} `catchall:"json"`
 }
 
 var lastPanelID uint

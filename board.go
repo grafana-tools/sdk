@@ -35,7 +35,9 @@ const (
 	TemplatingHideLabel
 	TemplatingHideVariable
 )
-
+type AnnotationsType struct {
+	List []*Annotation `json:"list"`
+}
 type (
 	// Board represents Grafana dashboard.
 	Board struct {
@@ -54,9 +56,7 @@ type (
 		Time         Time       `json:"time"`
 		Timepicker   Timepicker `json:"timepicker"`
 		Templating   Templating `json:"templating"`
-		Annotations  struct {
-			List []*Annotation `json:"list"`
-		} `json:"annotations"`
+		Annotations  AnnotationsType `json:"annotations"`
 		Refresh       *BoolString `json:"refresh"`
 		SchemaVersion uint        `json:"schemaVersion"`
 		Version       uint        `json:"version"`
@@ -68,10 +68,14 @@ type (
 		OriginalTitle   *string `json:"originalTitle,omitempty"`
 		SharedCrosshair bool    `json:"sharedCrosshair,omitempty" graf:"shared-crosshair"`
 		Rows            []*Row  `json:"rows,omitempty"`
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 	Time struct {
 		From string `json:"from"`
 		To   string `json:"to"`
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 	Timepicker struct {
 		// Default fields.
@@ -79,9 +83,13 @@ type (
 		TimeOptions      []string `json:"time_options"`
 		// Optional fields.
 		Now *bool `json:"now,omitempty"`
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 	Templating struct {
 		List []*TemplateVar `json:"list"`
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 	TemplateVar struct {
 		AllFormat      string    `json:"allFormat,omitempty"`
@@ -110,12 +118,16 @@ type (
 		TagsQuery      string    `json:"tagsQuery,omitempty"`
 		Type           string    `json:"type"`
 		UseTags        bool      `json:"useTags,omitempty"`
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 	// for templateVar
 	Option struct {
 		Text     string `json:"text"`
 		Value    string `json:"value"`
 		Selected bool   `json:"selected"`
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 	// for templateVar
 	Current struct {
@@ -123,6 +135,8 @@ type (
 		Tags     []string    `json:"tags,omitempty"`
 		Text     string      `json:"text"`
 		Value    interface{} `json:"value"` // TODO select more precise type
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 	Annotation struct {
 		BuiltIn    int      `json:"builtIn,omitempty"`
@@ -142,6 +156,8 @@ type (
 		TagsField  string   `json:"tagsField,omitempty"`
 		TextField  string   `json:"textField,omitempty"`
 		Type       string   `json:"type,omitempty"`
+
+		catchall   map[string]interface{} `catchall:"json"`
 	}
 )
 
@@ -160,6 +176,8 @@ type Link struct {
 	Tooltip     *string  `json:"tooltip,omitempty"`
 	Type        string   `json:"type"`
 	URL         *string  `json:"url,omitempty"`
+
+	catchall   map[string]interface{} `catchall:"json"`
 }
 
 func NewBoard(title string) *Board {
