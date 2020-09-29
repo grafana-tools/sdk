@@ -46,14 +46,7 @@ type (
 		CommonPanel
 		// Should be initialized only one type of panels.
 		// OfType field defines which of types below will be used.
-		*GraphPanel
-		*TablePanel
-		*TextPanel
-		*SinglestatPanel
-		*DashlistPanel
-		*PluginlistPanel
 		*RowPanel
-		*AlertlistPanel
 		*CustomPanel
 	}
 	panelType   int8
@@ -91,9 +84,10 @@ type (
 			Text     string `json:"text"`
 			Value    string `json:"value"`
 		} `json:"scopedVars,omitempty"`
-		Span        float32 `json:"span,omitempty"`
-		Transparent bool    `json:"transparent,omitempty"`
-		Alert       *Alert  `json:"alert,omitempty"`
+		Span        float32  `json:"span,omitempty"`
+		Transparent bool     `json:"transparent,omitempty"`
+		Alert       *Alert   `json:"alert,omitempty"`
+		Targets     []Target `json:"targets,omitempty"`
 	}
 	AlertEvaluator struct {
 		Params []float64 `json:"params,omitempty"`
@@ -127,39 +121,6 @@ type (
 		Message             string              `json:"message,omitempty"`
 		For                 string              `json:"for,omitempty"`
 	}
-	GraphPanel struct {
-		AliasColors interface{} `json:"aliasColors"` // XXX
-		Bars        bool        `json:"bars"`
-		DashLength  *uint       `json:"dashLength,omitempty"`
-		Dashes      *bool       `json:"dashes,omitempty"`
-		Decimals    *uint       `json:"decimals,omitempty"`
-		Fill        int         `json:"fill"`
-		//		Grid        grid        `json:"grid"` obsoleted in 4.1 by xaxis and yaxis
-
-		Legend          Legend           `json:"legend,omitempty"`
-		LeftYAxisLabel  *string          `json:"leftYAxisLabel,omitempty"`
-		Lines           bool             `json:"lines"`
-		Linewidth       uint             `json:"linewidth"`
-		NullPointMode   string           `json:"nullPointMode"`
-		Percentage      bool             `json:"percentage"`
-		Pointradius     float32          `json:"pointradius"`
-		Points          bool             `json:"points"`
-		RightYAxisLabel *string          `json:"rightYAxisLabel,omitempty"`
-		SeriesOverrides []SeriesOverride `json:"seriesOverrides,omitempty"`
-		SpaceLength     *uint            `json:"spaceLength,omitempty"`
-		Stack           bool             `json:"stack"`
-		SteppedLine     bool             `json:"steppedLine"`
-		Targets         []Target         `json:"targets,omitempty"`
-		Thresholds      []Threshold      `json:"thresholds,omitempty"`
-		TimeFrom        *string          `json:"timeFrom,omitempty"`
-		TimeShift       *string          `json:"timeShift,omitempty"`
-		Tooltip         Tooltip          `json:"tooltip"`
-		XAxis           bool             `json:"x-axis,omitempty"`
-		YAxis           bool             `json:"y-axis,omitempty"`
-		YFormats        []string         `json:"y_formats,omitempty"`
-		Xaxis           Axis             `json:"xaxis"` // was added in Grafana 4.x?
-		Yaxes           []Axis           `json:"yaxes"` // was added in Grafana 4.x?
-	}
 	Threshold struct {
 		// the alert threshold value, we do not omitempty, since 0 is a valid
 		// threshold
@@ -184,73 +145,10 @@ type (
 		MsResolution bool   `json:"msResolution,omitempty"` // was added in Grafana 3.x
 		Sort         int    `json:"sort,omitempty"`
 	}
-	TablePanel struct {
-		Columns   []Column      `json:"columns"`
-		Sort      *Sort         `json:"sort,omitempty"`
-		Styles    []ColumnStyle `json:"styles"`
-		Transform string        `json:"transform"`
-		Targets   []Target      `json:"targets,omitempty"`
-		Scroll    bool          `json:"scroll"` // from grafana 3.x
-	}
-	TextPanel struct {
-		// Default.
-		Content string `json:"content"`
-		Mode    string `json:"mode"`
-
-		// Optional.
-		PageSize   uint          `json:"pageSize,omitempty"`
-		Scroll     bool          `json:"scroll,omitempty"`
-		ShowHeader bool          `json:"showHeader,omitempty"`
-		Sort       *Sort         `json:"sort,omitempty"`
-		Styles     []ColumnStyle `json:"styles,omitempty"`
-	}
-	SinglestatPanel struct {
-		Colors          []string    `json:"colors"`
-		ColorValue      bool        `json:"colorValue"`
-		ColorBackground bool        `json:"colorBackground"`
-		ColorPostfix    bool        `json:"colorPostfix"`
-		ColorPrefix     bool        `json:"colorPrefix"`
-		Decimals        int         `json:"decimals"`
-		Format          string      `json:"format"`
-		Gauge           Gauge       `json:"gauge,omitempty"`
-		MappingType     *uint       `json:"mappingType,omitempty"`
-		MappingTypes    []*MapType  `json:"mappingTypes,omitempty"`
-		MaxDataPoints   *IntString  `json:"maxDataPoints,omitempty"`
-		NullPointMode   string      `json:"nullPointMode"`
-		Postfix         *string     `json:"postfix,omitempty"`
-		PostfixFontSize *string     `json:"postfixFontSize,omitempty"`
-		Prefix          *string     `json:"prefix,omitempty"`
-		PrefixFontSize  *string     `json:"prefixFontSize,omitempty"`
-		RangeMaps       []*RangeMap `json:"rangeMaps,omitempty"`
-		SparkLine       SparkLine   `json:"sparkline,omitempty"`
-		Targets         []Target    `json:"targets,omitempty"`
-		Thresholds      string      `json:"thresholds"`
-		ValueFontSize   string      `json:"valueFontSize"`
-		ValueMaps       []ValueMap  `json:"valueMaps"`
-		ValueName       string      `json:"valueName"`
-	}
-	DashlistPanel struct {
-		Mode  string   `json:"mode"`
-		Limit uint     `json:"limit"`
-		Query string   `json:"query"`
-		Tags  []string `json:"tags"`
-	}
-	PluginlistPanel struct {
-		Limit int `json:"limit,omitempty"`
-	}
-	AlertlistPanel struct {
-		OnlyAlertsOnDashboard bool     `json:"onlyAlertsOnDashboard"`
-		Show                  string   `json:"show"`
-		SortOrder             int      `json:"sortOrder"`
-		Limit                 int      `json:"limit"`
-		StateFilter           []string `json:"stateFilter"`
-		NameFilter            string   `json:"nameFilter,omitempty"`
-		DashboardTags         []string `json:"dashboardTags,omitempty"`
-	}
 	RowPanel struct {
 		Panels []*Panel `json:"panels,omitempty"`
 	}
-	CustomPanel map[string]interface{}
+	CustomPanel map[string]json.RawMessage
 )
 
 // for a graph panel
@@ -365,58 +263,156 @@ type Target struct {
 	Instant        bool   `json:"instant,omitempty"`
 	Format         string `json:"format,omitempty"`
 
-	// For Elasticsearch
-	DsType  *string `json:"dsType,omitempty"`
-	Metrics []struct {
-		ID    string `json:"id"`
-		Field string `json:"field"`
-		Type  string `json:"type"`
-	} `json:"metrics,omitempty"`
-	Query      string      `json:"query,omitempty"`
-	Alias      string      `json:"alias,omitempty"`
-	RawQuery   *BoolString `json:"rawQuery,omitempty"`
-	TimeField  string      `json:"timeField,omitempty"`
-	BucketAggs []struct {
-		ID       string `json:"id"`
-		Field    string `json:"field"`
-		Type     string `json:"type"`
-		Settings struct {
-			Interval    string `json:"interval,omitempty"`
-			MinDocCount int    `json:"min_doc_count"`
-			Order       string `json:"order,omitempty"`
-			OrderBy     string `json:"orderBy,omitempty"`
-			Size        string `json:"size,omitempty"`
-		} `json:"settings"`
-	} `json:"bucketAggs,omitempty"`
+	catchall map[string]json.RawMessage
+}
 
-	// For Graphite
-	Target string `json:"target,omitempty"`
+// UnmarshalJSON implements json.Unmarshaler.
+func (t *Target) UnmarshalJSON(data []byte) error {
+	catchall := make(map[string]json.RawMessage)
+	err := json.Unmarshal(data, &catchall)
+	if err != nil {
+		return err
+	}
+	t.catchall = catchall
+	if v, ok := t.catchall["refId"]; ok {
+		vt := t.RefID
+		err := json.Unmarshal(v, &vt)
+		if err != nil {
+			return err
+		}
+		delete(t.catchall, "refId")
+		t.RefID = vt
+	}
+	if v, ok := t.catchall["datasource"]; ok {
+		vt := t.Datasource
+		err := json.Unmarshal(v, &vt)
+		if err != nil {
+			return err
+		}
+		delete(t.catchall, "datasource")
+		t.Datasource = vt
+	}
+	if v, ok := t.catchall["hide"]; ok {
+		vt := t.Hide
+		err := json.Unmarshal(v, &vt)
+		if err != nil {
+			return err
+		}
+		delete(t.catchall, "hide")
+		t.Hide = vt
+	}
+	if v, ok := t.catchall["expr"]; ok {
+		vt := t.Expr
+		err := json.Unmarshal(v, &vt)
+		if err != nil {
+			return err
+		}
+		delete(t.catchall, "expr")
+		t.Expr = vt
+	}
+	if v, ok := t.catchall["intervalFactor"]; ok {
+		vt := t.IntervalFactor
+		err := json.Unmarshal(v, &vt)
+		if err != nil {
+			return err
+		}
+		delete(t.catchall, "intervalFactor")
+		t.IntervalFactor = vt
+	}
+	if v, ok := t.catchall["interval"]; ok {
+		vt := t.Interval
+		err := json.Unmarshal(v, &vt)
+		if err != nil {
+			return err
+		}
+		delete(t.catchall, "interval")
+		t.Interval = vt
+	}
+	if v, ok := t.catchall["step"]; ok {
+		vt := t.Step
+		err := json.Unmarshal(v, &vt)
+		if err != nil {
+			return err
+		}
+		delete(t.catchall, "step")
+		t.Step = vt
+	}
+	if v, ok := t.catchall["legendFormat"]; ok {
+		vt := t.LegendFormat
+		err := json.Unmarshal(v, &vt)
+		if err != nil {
+			return err
+		}
+		delete(t.catchall, "legendFormat")
+		t.LegendFormat = vt
+	}
+	if v, ok := t.catchall["instant"]; ok {
+		vt := t.Instant
+		err := json.Unmarshal(v, &vt)
+		if err != nil {
+			return err
+		}
+		delete(t.catchall, "instant")
+		t.Instant = vt
+	}
+	if v, ok := t.catchall["format"]; ok {
+		vt := t.Format
+		err := json.Unmarshal(v, &vt)
+		if err != nil {
+			return err
+		}
+		delete(t.catchall, "format")
+		t.Format = vt
+	}
+	return nil
+}
 
-	// For CloudWatch
-	Namespace  string            `json:"namespace,omitempty"`
-	MetricName string            `json:"metricName,omitempty"`
-	Statistics []string          `json:"statistics,omitempty"`
-	Dimensions map[string]string `json:"dimensions,omitempty"`
-	Period     string            `json:"period,omitempty"`
-	Region     string            `json:"region,omitempty"`
+// MarshalJSON implements json.Marshaler.
+func (t *Target) MarshalJSON() ([]byte, error) {
+	// Marshal struct without custom fields.
+	tmp := struct {
+		RefID      string `json:"refId"`
+		Datasource string `json:"datasource,omitempty"`
+		Hide       *bool  `json:"hide,omitempty"`
 
-	// For the Stackdriver data source. Find out more information at
-	// https:/grafana.com/docs/grafana/v6.0/features/datasources/stackdriver/
-	AlignOptions       []StackdriverAlignOptions `json:"alignOptions,omitempty"`
-	AliasBy            string                    `json:"aliasBy,omitempty"`
-	MetricType         string                    `json:"metricType,omitempty"`
-	MetricKind         string                    `json:"metricKind,omitempty"`
-	Filters            []string                  `json:"filters,omitempty"`
-	AlignmentPeriod    string                    `json:"alignmentPeriod,omitempty"`
-	CrossSeriesReducer string                    `json:"crossSeriesReducer,omitempty"`
-	PerSeriesAligner   string                    `json:"perSeriesAligner,omitempty"`
-	ValueType          string                    `json:"valueType,omitempty"`
-	GroupBys           []string                  `json:"groupBys,omitempty"`
-
-	// For JSON data source.
-	// https://grafana.com/grafana/plugins/simpod-json-datasource
-	Data string `json:"data,omitempty"`
-	Type string `json:"type,omitempty"`
+		// For Prometheus
+		Expr           string `json:"expr,omitempty"`
+		IntervalFactor int    `json:"intervalFactor,omitempty"`
+		Interval       string `json:"interval,omitempty"`
+		Step           int    `json:"step,omitempty"`
+		LegendFormat   string `json:"legendFormat,omitempty"`
+		Instant        bool   `json:"instant,omitempty"`
+		Format         string `json:"format,omitempty"`
+	}{
+		RefID:          t.RefID,
+		Datasource:     t.Datasource,
+		Hide:           t.Hide,
+		Expr:           t.Expr,
+		IntervalFactor: t.IntervalFactor,
+		Interval:       t.Interval,
+		Step:           t.Step,
+		LegendFormat:   t.LegendFormat,
+		Instant:        t.Instant,
+		Format:         t.Format,
+	}
+	b, err := json.Marshal(tmp)
+	if err != nil {
+		return b, err
+	}
+	// Append custom keys to marshalled Target.
+	buf := bytes.NewBuffer(b[:len(b)-1])
+	for k, v := range t.catchall {
+		buf.WriteString(`,"`)
+		buf.WriteString(k)
+		buf.WriteString(`":`)
+		b, err := json.Marshal(v)
+		if err != nil {
+			return b, err
+		}
+		buf.Write(b)
+	}
+	buf.WriteString("}")
+	return buf.Bytes(), nil
 }
 
 // StackdriverAlignOptions defines the list of alignment options shown in
@@ -458,123 +454,6 @@ func newFalse() *bool {
 	return &b
 }
 
-// NewDashlist initializes panel with a dashlist panel.
-func NewDashlist(title string) *Panel {
-	if title == "" {
-		title = "Panel Title"
-	}
-	render := "flot"
-	return &Panel{
-		CommonPanel: CommonPanel{
-			OfType:   DashlistType,
-			Title:    title,
-			Type:     "dashlist",
-			Renderer: &render,
-			IsNew:    newTrue()},
-		DashlistPanel: &DashlistPanel{}}
-}
-
-// NewGraph initializes panel with a graph panel.
-func NewGraph(title string) *Panel {
-	if title == "" {
-		title = "Panel Title"
-	}
-	render := "flot"
-	return &Panel{
-		CommonPanel: CommonPanel{
-			OfType:   GraphType,
-			Title:    title,
-			Type:     "graph",
-			Renderer: &render,
-			Span:     12,
-			IsNew:    newTrue()},
-		GraphPanel: &GraphPanel{
-			NullPointMode: "connected",
-			Pointradius:   5,
-			XAxis:         true,
-			YAxis:         true,
-		}}
-}
-
-// NewTable initializes panel with a table panel.
-func NewTable(title string) *Panel {
-	if title == "" {
-		title = "Panel Title"
-	}
-	render := "flot"
-	return &Panel{
-		CommonPanel: CommonPanel{
-			OfType:   TableType,
-			Title:    title,
-			Type:     "table",
-			Renderer: &render,
-			IsNew:    newTrue()},
-		TablePanel: &TablePanel{}}
-}
-
-// NewText initializes panel with a text panel.
-func NewText(title string) *Panel {
-	if title == "" {
-		title = "Panel Title"
-	}
-	render := "flot"
-	return &Panel{
-		CommonPanel: CommonPanel{
-			OfType:   TextType,
-			Title:    title,
-			Type:     "text",
-			Renderer: &render,
-			IsNew:    newTrue()},
-		TextPanel: &TextPanel{}}
-}
-
-// NewSinglestat initializes panel with a singlestat panel.
-func NewSinglestat(title string) *Panel {
-	if title == "" {
-		title = "Panel Title"
-	}
-	render := "flot"
-	return &Panel{
-		CommonPanel: CommonPanel{
-			OfType:   SinglestatType,
-			Title:    title,
-			Type:     "singlestat",
-			Renderer: &render,
-			IsNew:    newTrue()},
-		SinglestatPanel: &SinglestatPanel{}}
-}
-
-// NewPluginlist initializes panel with a singlestat panel.
-func NewPluginlist(title string) *Panel {
-	if title == "" {
-		title = "Panel Title"
-	}
-	render := "flot"
-	return &Panel{
-		CommonPanel: CommonPanel{
-			OfType:   PluginlistType,
-			Title:    title,
-			Type:     "pluginlist",
-			Renderer: &render,
-			IsNew:    newTrue()},
-		PluginlistPanel: &PluginlistPanel{}}
-}
-
-func NewAlertlist(title string) *Panel {
-	if title == "" {
-		title = "Panel Title"
-	}
-	render := "flot"
-	return &Panel{
-		CommonPanel: CommonPanel{
-			OfType:   AlertlistType,
-			Title:    title,
-			Type:     "alertlist",
-			Renderer: &render,
-			IsNew:    newTrue()},
-		AlertlistPanel: &AlertlistPanel{}}
-}
-
 // NewCustom initializes panel with a singlestat panel.
 func NewCustom(title string) *Panel {
 	if title == "" {
@@ -593,14 +472,7 @@ func NewCustom(title string) *Panel {
 
 // ResetTargets delete all targets defined for a panel.
 func (p *Panel) ResetTargets() {
-	switch p.OfType {
-	case GraphType:
-		p.GraphPanel.Targets = nil
-	case SinglestatType:
-		p.SinglestatPanel.Targets = nil
-	case TableType:
-		p.TablePanel.Targets = nil
-	}
+	p.CommonPanel.Targets = nil
 }
 
 // AddTarget adds a new target as defined in the argument
@@ -608,14 +480,7 @@ func (p *Panel) ResetTargets() {
 // the argument will be used only if no target with such
 // value already exists.
 func (p *Panel) AddTarget(t *Target) {
-	switch p.OfType {
-	case GraphType:
-		p.GraphPanel.Targets = append(p.GraphPanel.Targets, *t)
-	case SinglestatType:
-		p.SinglestatPanel.Targets = append(p.SinglestatPanel.Targets, *t)
-	case TableType:
-		p.TablePanel.Targets = append(p.TablePanel.Targets, *t)
-	}
+	p.CommonPanel.Targets = append(p.CommonPanel.Targets, *t)
 	// TODO check for existing refID
 }
 
@@ -631,14 +496,7 @@ func (p *Panel) SetTarget(t *Target) {
 		}
 		(*targets) = append((*targets), *t)
 	}
-	switch p.OfType {
-	case GraphType:
-		setTarget(t, &p.GraphPanel.Targets)
-	case SinglestatType:
-		setTarget(t, &p.SinglestatPanel.Targets)
-	case TableType:
-		setTarget(t, &p.TablePanel.Targets)
-	}
+	setTarget(t, &p.CommonPanel.Targets)
 }
 
 // MapDatasources on all existing targets for the panel.
@@ -658,14 +516,7 @@ func (p *Panel) RepeatDatasourcesForEachTarget(dsNames ...string) {
 			}
 		}
 	}
-	switch p.OfType {
-	case GraphType:
-		repeatDS(dsNames, &p.GraphPanel.Targets)
-	case SinglestatType:
-		repeatDS(dsNames, &p.SinglestatPanel.Targets)
-	case TableType:
-		repeatDS(dsNames, &p.TablePanel.Targets)
-	}
+	repeatDS(dsNames, &p.CommonPanel.Targets)
 }
 
 // RepeatTargetsForDatasources repeats all existing targets for a panel
@@ -688,29 +539,13 @@ func (p *Panel) RepeatTargetsForDatasources(dsNames ...string) {
 			}
 		}
 	}
-	switch p.OfType {
-	case GraphType:
-		repeatTarget(dsNames, &p.GraphPanel.Targets)
-	case SinglestatType:
-		repeatTarget(dsNames, &p.SinglestatPanel.Targets)
-	case TableType:
-		repeatTarget(dsNames, &p.TablePanel.Targets)
-	}
+	repeatTarget(dsNames, &p.CommonPanel.Targets)
 }
 
 // GetTargets is iterate over all panel targets. It just returns nil if
 // no targets defined for panel of concrete type.
 func (p *Panel) GetTargets() *[]Target {
-	switch p.OfType {
-	case GraphType:
-		return &p.GraphPanel.Targets
-	case SinglestatType:
-		return &p.SinglestatPanel.Targets
-	case TableType:
-		return &p.TablePanel.Targets
-	default:
-		return nil
-	}
+	return &p.CommonPanel.Targets
 }
 
 type probePanel struct {
@@ -723,36 +558,6 @@ func (p *Panel) UnmarshalJSON(b []byte) (err error) {
 	if err = json.Unmarshal(b, &probe); err == nil {
 		p.CommonPanel = probe.CommonPanel
 		switch probe.Type {
-		case "graph":
-			var graph GraphPanel
-			p.OfType = GraphType
-			if err = json.Unmarshal(b, &graph); err == nil {
-				p.GraphPanel = &graph
-			}
-		case "table":
-			var table TablePanel
-			p.OfType = TableType
-			if err = json.Unmarshal(b, &table); err == nil {
-				p.TablePanel = &table
-			}
-		case "text":
-			var text TextPanel
-			p.OfType = TextType
-			if err = json.Unmarshal(b, &text); err == nil {
-				p.TextPanel = &text
-			}
-		case "singlestat":
-			var singlestat SinglestatPanel
-			p.OfType = SinglestatType
-			if err = json.Unmarshal(b, &singlestat); err == nil {
-				p.SinglestatPanel = &singlestat
-			}
-		case "dashlist":
-			var dashlist DashlistPanel
-			p.OfType = DashlistType
-			if err = json.Unmarshal(b, &dashlist); err == nil {
-				p.DashlistPanel = &dashlist
-			}
 		case "row":
 			var row RowPanel
 			p.OfType = RowType
@@ -765,6 +570,30 @@ func (p *Panel) UnmarshalJSON(b []byte) (err error) {
 			if err = json.Unmarshal(b, &custom); err == nil {
 				p.CustomPanel = &custom
 			}
+			for _, key := range []string{
+				"gridPos",
+				"collapsed",
+				"datasource",
+				"description",
+				"editable",
+				"error",
+				"height",
+				"hideTimeOverride",
+				"isNew",
+				"links",
+				"minSpan",
+				"renderer",
+				"repeat",
+				"repeatPanelId",
+				"repeatedByRow",
+				"scopedVars",
+				"span",
+				"transparent",
+				"alert",
+				"targets",
+			} {
+				delete(*p.CustomPanel, key)
+			}
 		}
 	}
 	return
@@ -772,48 +601,6 @@ func (p *Panel) UnmarshalJSON(b []byte) (err error) {
 
 func (p *Panel) MarshalJSON() ([]byte, error) {
 	switch p.OfType {
-	case GraphType:
-		var outGraph = struct {
-			CommonPanel
-			GraphPanel
-		}{p.CommonPanel, *p.GraphPanel}
-		return json.Marshal(outGraph)
-	case TableType:
-		var outTable = struct {
-			CommonPanel
-			TablePanel
-		}{p.CommonPanel, *p.TablePanel}
-		return json.Marshal(outTable)
-	case TextType:
-		var outText = struct {
-			CommonPanel
-			TextPanel
-		}{p.CommonPanel, *p.TextPanel}
-		return json.Marshal(outText)
-	case SinglestatType:
-		var outSinglestat = struct {
-			CommonPanel
-			SinglestatPanel
-		}{p.CommonPanel, *p.SinglestatPanel}
-		return json.Marshal(outSinglestat)
-	case DashlistType:
-		var outDashlist = struct {
-			CommonPanel
-			DashlistPanel
-		}{p.CommonPanel, *p.DashlistPanel}
-		return json.Marshal(outDashlist)
-	case PluginlistType:
-		var outPluginlist = struct {
-			CommonPanel
-			PluginlistPanel
-		}{p.CommonPanel, *p.PluginlistPanel}
-		return json.Marshal(outPluginlist)
-	case AlertlistType:
-		var outAlertlist = struct {
-			CommonPanel
-			AlertlistPanel
-		}{p.CommonPanel, *p.AlertlistPanel}
-		return json.Marshal(outAlertlist)
 	case RowType:
 		var outRow = struct {
 			CommonPanel

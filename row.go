@@ -38,46 +38,6 @@ func (r *Row) Add(panel *Panel) {
 	r.Panels = append(r.Panels, *panel)
 }
 
-func (r *Row) AddDashlist(data *DashlistPanel) {
-	lastPanelID++
-	panel := NewDashlist("")
-	panel.ID = lastPanelID
-	panel.DashlistPanel = data
-	r.Panels = append(r.Panels, *panel)
-}
-
-func (r *Row) AddGraph(data *GraphPanel) {
-	lastPanelID++
-	panel := NewGraph("")
-	panel.ID = lastPanelID
-	panel.GraphPanel = data
-	r.Panels = append(r.Panels, *panel)
-}
-
-func (r *Row) AddTable(data *TablePanel) {
-	lastPanelID++
-	panel := NewTable("")
-	panel.ID = lastPanelID
-	panel.TablePanel = data
-	r.Panels = append(r.Panels, *panel)
-}
-
-func (r *Row) AddText(data *TextPanel) {
-	lastPanelID++
-	panel := NewText("")
-	panel.ID = lastPanelID
-	panel.TextPanel = data
-	r.Panels = append(r.Panels, *panel)
-}
-
-func (r *Row) AddSinglestat(data *SinglestatPanel) {
-	lastPanelID++
-	panel := NewSinglestat("")
-	panel.ID = lastPanelID
-	panel.SinglestatPanel = data
-	r.Panels = append(r.Panels, *panel)
-}
-
 func (r *Row) AddCustom(data *CustomPanel) {
 	lastPanelID++
 	panel := NewCustom("")
