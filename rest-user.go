@@ -120,8 +120,8 @@ func (r *Client) SearchUsersWithPaging(ctx context.Context, query *string, perpa
 		if params == nil {
 			params = url.Values{}
 		}
-		params["perpage"] = []string{string(*perpage)}
-		params["page"] = []string{string(*page)}
+		params["perpage"] = []string{fmt.Sprint(*perpage)}
+		params["page"] = []string{fmt.Sprint(*page)}
 	}
 
 	if query != nil {
