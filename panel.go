@@ -390,6 +390,9 @@ type Target struct {
 	Instant        bool   `json:"instant,omitempty"`
 	Format         string `json:"format,omitempty"`
 
+	// For InfluxDB
+	Measurement string `json:"measurement,omitempty"`
+
 	// For Elasticsearch
 	DsType  *string `json:"dsType,omitempty"`
 	Metrics []struct {
