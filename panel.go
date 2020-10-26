@@ -770,7 +770,7 @@ func (p *Panel) UnmarshalJSON(b []byte) (err error) {
 		case "row":
 			var rowpanel RowPanel
 			p.OfType = RowType
-			if err = json.Unmarshal(b, &rowpanel); err = nil {
+			if err = json.Unmarshal(b, &rowpanel); err == nil {
 				p.RowPanel = &rowpanel
 			}
 		default:
