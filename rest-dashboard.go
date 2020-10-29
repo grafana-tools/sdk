@@ -216,6 +216,7 @@ type SetDashboardParams struct {
 	FolderID  int
 	Overwrite bool
 	Message   string
+	Refresh   string
 }
 
 // SetDashboard updates existing dashboard or creates a new one.
@@ -234,6 +235,7 @@ func (r *Client) SetDashboard(ctx context.Context, board Board, params SetDashbo
 			FolderID  int    `json:"folderId"`
 			Overwrite bool   `json:"overwrite"`
 			Message   string `json:"message,omitempty"`
+			Refresh   string `json:"refresh,omitempty"`
 		}
 		raw  []byte
 		resp StatusMessage
@@ -247,6 +249,7 @@ func (r *Client) SetDashboard(ctx context.Context, board Board, params SetDashbo
 	newBoard.FolderID = params.FolderID
 	newBoard.Overwrite = params.Overwrite
 	newBoard.Message = params.Message
+	newBoard.Refresh = params.Refresh
 	if !params.Overwrite {
 		newBoard.Dashboard.ID = 0
 	}
