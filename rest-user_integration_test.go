@@ -3,6 +3,8 @@ package sdk_test
 import (
 	"context"
 	"testing"
+
+	"github.com/grafana-tools/sdk"
 )
 
 func Test_User_SmokeTests(t *testing.T) {
@@ -92,5 +94,37 @@ func Test_User_SearchUsers(t *testing.T) {
 	}
 	if afterInd != -1 {
 		t.Fatal("actually found the user when we were not supposed to")
+	}
+}
+
+func Test_User_SwitchActualUserContext(t *testing.T) {
+	shouldSkip(t)
+
+	client := getClient(t)
+	ctx := context.Background()
+
+	const orgName = "Test Organization"
+	org := sdk.Org{
+		Name: orgName,
+	}
+
+	status, err := client.CreateOrg(ctx, org)
+	if err != nil {
+		t.Fatalf("failed to create organization '%s': %s", orgName, err.Error())
+	}
+
+	status, err = client.SwitchActualUserContext(ctx, *status.OrgID)
+	if err != nil {
+		t.Fatalf("failed to switch user context to new organization: %s", err.Error())
+	}
+
+	actualOrg, err := client.GetActualOrg(ctx)
+	if err != nil {
+		t.Fatalf("failed to get current organization: %s", err.Error())
+	}
+
+	if actualOrg.Name != orgName {
+		t.Fatalf("current organization is not the expected one. got: %s, want: %s",
+			actualOrg.Name, orgName)
 	}
 }
