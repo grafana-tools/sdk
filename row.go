@@ -70,11 +70,11 @@ func (r *Row) AddText(data *TextPanel) {
 	r.Panels = append(r.Panels, *panel)
 }
 
-func (r *Row) AddSinglestat(data *SinglestatPanel) {
+func (r *Row) AddSinglestat(data *StatPanel) {
 	lastPanelID++
-	panel := NewSinglestat("")
+	panel := NewStat("")
 	panel.ID = lastPanelID
-	panel.SinglestatPanel = data
+	panel.StatPanel = data
 	r.Panels = append(r.Panels, *panel)
 }
 

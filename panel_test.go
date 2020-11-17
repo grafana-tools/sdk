@@ -255,7 +255,7 @@ func TestNewGraph(t *testing.T) {
 	if graph.DashlistPanel != nil {
 		t.Error("should be nil")
 	}
-	if graph.SinglestatPanel != nil {
+	if graph.StatPanel != nil {
 		t.Error("should be nil")
 	}
 	if graph.Title != title {

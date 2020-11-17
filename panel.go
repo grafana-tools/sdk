@@ -33,8 +33,9 @@ const (
 	TextType
 	PluginlistType
 	AlertlistType
-	SinglestatType
+	StatType
 	RowType
+	BarGaugeType
 )
 
 const MixedSource = "-- Mixed --"
@@ -48,11 +49,12 @@ type (
 		*GraphPanel
 		*TablePanel
 		*TextPanel
-		*SinglestatPanel
+		*StatPanel
 		*DashlistPanel
 		*PluginlistPanel
 		*RowPanel
 		*AlertlistPanel
+		*BarGaugePanel
 		*CustomPanel
 	}
 	panelType   int8
@@ -84,6 +86,7 @@ type (
 		} `json:"scopedVars,omitempty"`
 		Span        float32 `json:"span"`  // general
 		Title       string  `json:"title"` // general
+		Description string  `json:"description"`
 		Transparent bool    `json:"transparent"`
 		Type        string  `json:"type"`
 		Alert       *Alert  `json:"alert,omitempty"`
@@ -127,7 +130,6 @@ type (
 		DashLength  *uint       `json:"dashLength,omitempty"`
 		Dashes      *bool       `json:"dashes,omitempty"`
 		Decimals    *uint       `json:"decimals,omitempty"`
-		Description *string     `json:"description,omitempty"`
 		Fill        int         `json:"fill"`
 		//		Grid        grid        `json:"grid"` obsoleted in 4.1 by xaxis and yaxis
 
@@ -154,6 +156,31 @@ type (
 		YFormats        []string         `json:"y_formats,omitempty"`
 		Xaxis           Axis             `json:"xaxis"` // was added in Grafana 4.x?
 		Yaxes           []Axis           `json:"yaxes"` // was added in Grafana 4.x?
+	}
+	FieldConfig struct {
+		Defaults struct {
+			Threshold struct {
+				Mode  string `json:"mode"`
+				Steps []struct {
+					Color string `json:"color"`
+					Value string `json:"value"`
+				} `json:"steps"`
+			} `json:"threshold"`
+		} `json:"defaults"`
+	}
+	Options struct {
+		Orientation   string `json:"orientation"`
+		TextMode      string `json:"textMode"`
+		ColorMode     string `json:"colorMode"`
+		GraphMode     string `json:"graphMode"`
+		JustifyMode   string `json:"justifyMode"`
+		Content       string `json:"content"`
+		Mode          string `json:"mode"`
+		ReduceOptions struct {
+			Values bool     `json:"values"`
+			Fields string   `json:"fields"`
+			Calcs  []string `json:"calcs"`
+		} `json:"reduceOptions"`
 	}
 	Threshold struct {
 		// the alert threshold value, we do not omitempty, since 0 is a valid
@@ -188,15 +215,20 @@ type (
 		Scroll    bool          `json:"scroll"` // from grafana 3.x
 	}
 	TextPanel struct {
-		Content    string        `json:"content"`
-		Mode       string        `json:"mode"`
-		PageSize   uint          `json:"pageSize"`
-		Scroll     bool          `json:"scroll"`
-		ShowHeader bool          `json:"showHeader"`
-		Sort       Sort          `json:"sort"`
-		Styles     []ColumnStyle `json:"styles"`
+		Content     string        `json:"content"`
+		Mode        string        `json:"mode"`
+		PageSize    uint          `json:"pageSize"`
+		Scroll      bool          `json:"scroll"`
+		ShowHeader  bool          `json:"showHeader"`
+		Sort        Sort          `json:"sort"`
+		Styles      []ColumnStyle `json:"styles"`
+		FieldConfig FieldConfig   `json:"fieldConfig"`
+		Options     struct {
+			Content string `json:"content"`
+			Mode    string `json:"mode"`
+		} `json:"options"`
 	}
-	SinglestatPanel struct {
+	StatPanel struct {
 		Colors          []string    `json:"colors"`
 		ColorValue      bool        `json:"colorValue"`
 		ColorBackground bool        `json:"colorBackground"`
@@ -218,6 +250,7 @@ type (
 		ValueFontSize   string      `json:"valueFontSize"`
 		ValueMaps       []ValueMap  `json:"valueMaps"`
 		ValueName       string      `json:"valueName"`
+		Options         Options     `json:"options"`
 	}
 	DashlistPanel struct {
 		Mode  string   `json:"mode"`
@@ -236,6 +269,11 @@ type (
 		StateFilter           []string `json:"stateFilter"`
 		NameFilter            string   `json:"nameFilter,omitempty"`
 		DashboardTags         []string `json:"dashboardTags,omitempty"`
+	}
+	BarGaugePanel struct {
+		Options     Options     `json:"options"`
+		Targets     []Target    `json:"targets,omitempty"`
+		FieldConfig FieldConfig `json:"fieldConfig"`
 	}
 	RowPanel struct {
 		Panels    []Panel `json:"panels"`
@@ -331,7 +369,7 @@ type (
 	}
 )
 
-// for a singlestat
+// for a stat
 type (
 	ValueMap struct {
 		Op       string `json:"op"`
@@ -542,23 +580,23 @@ func NewText(title string) *Panel {
 		TextPanel: &TextPanel{}}
 }
 
-// NewSinglestat initializes panel with a singlestat panel.
-func NewSinglestat(title string) *Panel {
+// NewStat initializes panel with a stat panel.
+func NewStat(title string) *Panel {
 	if title == "" {
 		title = "Panel Title"
 	}
 	render := "flot"
 	return &Panel{
 		CommonPanel: CommonPanel{
-			OfType:   SinglestatType,
+			OfType:   StatType,
 			Title:    title,
-			Type:     "singlestat",
+			Type:     "stat",
 			Renderer: &render,
 			IsNew:    true},
-		SinglestatPanel: &SinglestatPanel{}}
+		StatPanel: &StatPanel{}}
 }
 
-// NewPluginlist initializes panel with a singlestat panel.
+// NewPluginlist initializes panel with a stat panel.
 func NewPluginlist(title string) *Panel {
 	if title == "" {
 		title = "Panel Title"
@@ -589,7 +627,7 @@ func NewAlertlist(title string) *Panel {
 		AlertlistPanel: &AlertlistPanel{}}
 }
 
-// NewCustom initializes panel with a singlestat panel.
+// NewCustom initializes panel with a stat panel.
 func NewCustom(title string) *Panel {
 	if title == "" {
 		title = "Panel Title"
@@ -599,7 +637,7 @@ func NewCustom(title string) *Panel {
 		CommonPanel: CommonPanel{
 			OfType:   CustomType,
 			Title:    title,
-			Type:     "singlestat",
+			Type:     "stat",
 			Renderer: &render,
 			IsNew:    true},
 		CustomPanel: &CustomPanel{}}
@@ -610,10 +648,12 @@ func (p *Panel) ResetTargets() {
 	switch p.OfType {
 	case GraphType:
 		p.GraphPanel.Targets = nil
-	case SinglestatType:
-		p.SinglestatPanel.Targets = nil
+	case StatType:
+		p.StatPanel.Targets = nil
 	case TableType:
 		p.TablePanel.Targets = nil
+	case BarGaugeType:
+		p.BarGaugePanel.Targets = nil
 	}
 }
 
@@ -625,8 +665,8 @@ func (p *Panel) AddTarget(t *Target) {
 	switch p.OfType {
 	case GraphType:
 		p.GraphPanel.Targets = append(p.GraphPanel.Targets, *t)
-	case SinglestatType:
-		p.SinglestatPanel.Targets = append(p.SinglestatPanel.Targets, *t)
+	case StatType:
+		p.StatPanel.Targets = append(p.StatPanel.Targets, *t)
 	case TableType:
 		p.TablePanel.Targets = append(p.TablePanel.Targets, *t)
 	}
@@ -648,8 +688,8 @@ func (p *Panel) SetTarget(t *Target) {
 	switch p.OfType {
 	case GraphType:
 		setTarget(t, &p.GraphPanel.Targets)
-	case SinglestatType:
-		setTarget(t, &p.SinglestatPanel.Targets)
+	case StatType:
+		setTarget(t, &p.StatPanel.Targets)
 	case TableType:
 		setTarget(t, &p.TablePanel.Targets)
 	}
@@ -675,8 +715,8 @@ func (p *Panel) RepeatDatasourcesForEachTarget(dsNames ...string) {
 	switch p.OfType {
 	case GraphType:
 		repeatDS(dsNames, &p.GraphPanel.Targets)
-	case SinglestatType:
-		repeatDS(dsNames, &p.SinglestatPanel.Targets)
+	case StatType:
+		repeatDS(dsNames, &p.StatPanel.Targets)
 	case TableType:
 		repeatDS(dsNames, &p.TablePanel.Targets)
 	}
@@ -705,8 +745,8 @@ func (p *Panel) RepeatTargetsForDatasources(dsNames ...string) {
 	switch p.OfType {
 	case GraphType:
 		repeatTarget(dsNames, &p.GraphPanel.Targets)
-	case SinglestatType:
-		repeatTarget(dsNames, &p.SinglestatPanel.Targets)
+	case StatType:
+		repeatTarget(dsNames, &p.StatPanel.Targets)
 	case TableType:
 		repeatTarget(dsNames, &p.TablePanel.Targets)
 	}
@@ -718,10 +758,12 @@ func (p *Panel) GetTargets() *[]Target {
 	switch p.OfType {
 	case GraphType:
 		return &p.GraphPanel.Targets
-	case SinglestatType:
-		return &p.SinglestatPanel.Targets
+	case StatType:
+		return &p.StatPanel.Targets
 	case TableType:
 		return &p.TablePanel.Targets
+	case BarGaugeType:
+		return &p.BarGaugePanel.Targets
 	default:
 		return nil
 	}
@@ -755,17 +797,23 @@ func (p *Panel) UnmarshalJSON(b []byte) (err error) {
 			if err = json.Unmarshal(b, &text); err == nil {
 				p.TextPanel = &text
 			}
-		case "singlestat":
-			var singlestat SinglestatPanel
-			p.OfType = SinglestatType
-			if err = json.Unmarshal(b, &singlestat); err == nil {
-				p.SinglestatPanel = &singlestat
+		case "stat":
+			var stat StatPanel
+			p.OfType = StatType
+			if err = json.Unmarshal(b, &stat); err == nil {
+				p.StatPanel = &stat
 			}
 		case "dashlist":
 			var dashlist DashlistPanel
 			p.OfType = DashlistType
 			if err = json.Unmarshal(b, &dashlist); err == nil {
 				p.DashlistPanel = &dashlist
+			}
+		case "bargauge":
+			var bargauge BarGaugePanel
+			p.OfType = BarGaugeType
+			if err = json.Unmarshal(b, &bargauge); err == nil {
+				p.BarGaugePanel = &bargauge
 			}
 		default:
 			var custom = make(CustomPanel)
@@ -798,11 +846,11 @@ func (p *Panel) MarshalJSON() ([]byte, error) {
 			TextPanel
 		}{p.CommonPanel, *p.TextPanel}
 		return json.Marshal(outText)
-	case SinglestatType:
+	case StatType:
 		var outSinglestat = struct {
 			CommonPanel
-			SinglestatPanel
-		}{p.CommonPanel, *p.SinglestatPanel}
+			StatPanel
+		}{p.CommonPanel, *p.StatPanel}
 		return json.Marshal(outSinglestat)
 	case DashlistType:
 		var outDashlist = struct {
@@ -810,6 +858,12 @@ func (p *Panel) MarshalJSON() ([]byte, error) {
 			DashlistPanel
 		}{p.CommonPanel, *p.DashlistPanel}
 		return json.Marshal(outDashlist)
+	case BarGaugeType:
+		var outBarGauge = struct {
+			CommonPanel
+			BarGaugePanel
+		}{p.CommonPanel, *p.BarGaugePanel}
+		return json.Marshal(outBarGauge)
 	case PluginlistType:
 		var outPluginlist = struct {
 			CommonPanel
