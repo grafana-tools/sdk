@@ -33,6 +33,7 @@ const (
 	TextType
 	PluginlistType
 	AlertlistType
+	SinglestatType
 	StatType
 	RowType
 	BarGaugeType
@@ -49,6 +50,7 @@ type (
 		*GraphPanel
 		*TablePanel
 		*TextPanel
+		*SinglestatPanel
 		*StatPanel
 		*DashlistPanel
 		*PluginlistPanel
@@ -84,9 +86,9 @@ type (
 			Text     string `json:"text"`
 			Value    string `json:"value"`
 		} `json:"scopedVars,omitempty"`
-		Span        float32 `json:"span"`  // general
-		Title       string  `json:"title"` // general
-		Description string  `json:"description"`
+		Span        float32 `json:"span"`                  // general
+		Title       string  `json:"title"`                 // general
+		Description *string `json:"description,omitempty"` // general
 		Transparent bool    `json:"transparent"`
 		Type        string  `json:"type"`
 		Alert       *Alert  `json:"alert,omitempty"`
@@ -227,6 +229,29 @@ type (
 			Content string `json:"content"`
 			Mode    string `json:"mode"`
 		} `json:"options"`
+	}
+	SinglestatPanel struct {
+		Colors          []string    `json:"colors"`
+		ColorValue      bool        `json:"colorValue"`
+		ColorBackground bool        `json:"colorBackground"`
+		Decimals        int         `json:"decimals"`
+		Format          string      `json:"format"`
+		Gauge           Gauge       `json:"gauge,omitempty"`
+		MappingType     *uint       `json:"mappingType,omitempty"`
+		MappingTypes    []*MapType  `json:"mappingTypes,omitempty"`
+		MaxDataPoints   *IntString  `json:"maxDataPoints,omitempty"`
+		NullPointMode   string      `json:"nullPointMode"`
+		Postfix         *string     `json:"postfix,omitempty"`
+		PostfixFontSize *string     `json:"postfixFontSize,omitempty"`
+		Prefix          *string     `json:"prefix,omitempty"`
+		PrefixFontSize  *string     `json:"prefixFontSize,omitempty"`
+		RangeMaps       []*RangeMap `json:"rangeMaps,omitempty"`
+		SparkLine       SparkLine   `json:"sparkline,omitempty"`
+		Targets         []Target    `json:"targets,omitempty"`
+		Thresholds      string      `json:"thresholds"`
+		ValueFontSize   string      `json:"valueFontSize"`
+		ValueMaps       []ValueMap  `json:"valueMaps"`
+		ValueName       string      `json:"valueName"`
 	}
 	StatPanel struct {
 		Colors          []string    `json:"colors"`
@@ -580,6 +605,22 @@ func NewText(title string) *Panel {
 		TextPanel: &TextPanel{}}
 }
 
+// NewSinglestat initializes panel with a singlestat panel.
+func NewSinglestat(title string) *Panel {
+	if title == "" {
+		title = "Panel Title"
+	}
+	render := "flot"
+	return &Panel{
+		CommonPanel: CommonPanel{
+			OfType:   SinglestatType,
+			Title:    title,
+			Type:     "singlestat",
+			Renderer: &render,
+			IsNew:    true},
+		SinglestatPanel: &SinglestatPanel{}}
+}
+
 // NewStat initializes panel with a stat panel.
 func NewStat(title string) *Panel {
 	if title == "" {
@@ -637,7 +678,7 @@ func NewCustom(title string) *Panel {
 		CommonPanel: CommonPanel{
 			OfType:   CustomType,
 			Title:    title,
-			Type:     "stat",
+			Type:     "singlestat",
 			Renderer: &render,
 			IsNew:    true},
 		CustomPanel: &CustomPanel{}}
@@ -648,6 +689,8 @@ func (p *Panel) ResetTargets() {
 	switch p.OfType {
 	case GraphType:
 		p.GraphPanel.Targets = nil
+	case SinglestatType:
+		p.SinglestatPanel.Targets = nil
 	case StatType:
 		p.StatPanel.Targets = nil
 	case TableType:
@@ -665,6 +708,8 @@ func (p *Panel) AddTarget(t *Target) {
 	switch p.OfType {
 	case GraphType:
 		p.GraphPanel.Targets = append(p.GraphPanel.Targets, *t)
+	case SinglestatType:
+		p.SinglestatPanel.Targets = append(p.SinglestatPanel.Targets, *t)
 	case StatType:
 		p.StatPanel.Targets = append(p.StatPanel.Targets, *t)
 	case TableType:
@@ -688,6 +733,8 @@ func (p *Panel) SetTarget(t *Target) {
 	switch p.OfType {
 	case GraphType:
 		setTarget(t, &p.GraphPanel.Targets)
+	case SinglestatType:
+		setTarget(t, &p.SinglestatPanel.Targets)
 	case StatType:
 		setTarget(t, &p.StatPanel.Targets)
 	case TableType:
@@ -715,6 +762,8 @@ func (p *Panel) RepeatDatasourcesForEachTarget(dsNames ...string) {
 	switch p.OfType {
 	case GraphType:
 		repeatDS(dsNames, &p.GraphPanel.Targets)
+	case SinglestatType:
+		repeatDS(dsNames, &p.SinglestatPanel.Targets)
 	case StatType:
 		repeatDS(dsNames, &p.StatPanel.Targets)
 	case TableType:
@@ -745,6 +794,8 @@ func (p *Panel) RepeatTargetsForDatasources(dsNames ...string) {
 	switch p.OfType {
 	case GraphType:
 		repeatTarget(dsNames, &p.GraphPanel.Targets)
+	case SinglestatType:
+		repeatTarget(dsNames, &p.SinglestatPanel.Targets)
 	case StatType:
 		repeatTarget(dsNames, &p.StatPanel.Targets)
 	case TableType:
@@ -796,6 +847,12 @@ func (p *Panel) UnmarshalJSON(b []byte) (err error) {
 			p.OfType = TextType
 			if err = json.Unmarshal(b, &text); err == nil {
 				p.TextPanel = &text
+			}
+		case "singlestat":
+			var singlestat SinglestatPanel
+			p.OfType = SinglestatType
+			if err = json.Unmarshal(b, &singlestat); err == nil {
+				p.SinglestatPanel = &singlestat
 			}
 		case "stat":
 			var stat StatPanel
@@ -852,6 +909,12 @@ func (p *Panel) MarshalJSON() ([]byte, error) {
 			TextPanel
 		}{p.CommonPanel, *p.TextPanel}
 		return json.Marshal(outText)
+	case SinglestatType:
+		var outSinglestat = struct {
+			CommonPanel
+			SinglestatPanel
+		}{p.CommonPanel, *p.SinglestatPanel}
+		return json.Marshal(outSinglestat)
 	case StatType:
 		var outSinglestat = struct {
 			CommonPanel
