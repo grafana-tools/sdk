@@ -165,10 +165,13 @@ type FoundBoard struct {
 	UID         string   `json:"uid"`
 	Title       string   `json:"title"`
 	URI         string   `json:"uri"`
+	URL         string   `json:"url"`
+	Slug        string   `json:"slug"`
 	Type        string   `json:"type"`
 	Tags        []string `json:"tags"`
 	IsStarred   bool     `json:"isStarred"`
 	FolderID    int      `json:"folderId"`
+	FolderUID   string   `json:"folderUid"`
 	FolderTitle string   `json:"folderTitle"`
 	FolderURL   string   `json:"folderUrl"`
 }
