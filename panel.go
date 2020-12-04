@@ -809,6 +809,8 @@ func (p *Panel) GetTargets() *[]Target {
 	switch p.OfType {
 	case GraphType:
 		return &p.GraphPanel.Targets
+	case SinglestatType:
+		return &p.SinglestatPanel.Targets
 	case StatType:
 		return &p.StatPanel.Targets
 	case TableType:
