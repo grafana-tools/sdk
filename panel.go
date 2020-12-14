@@ -278,10 +278,15 @@ type (
 		Options         Options     `json:"options"`
 	}
 	DashlistPanel struct {
-		Mode  string   `json:"mode"`
-		Limit uint     `json:"limit"`
-		Query string   `json:"query"`
-		Tags  []string `json:"tags"`
+		Mode     string   `json:"mode"`
+		Query    string   `json:"query"`
+		Tags     []string `json:"tags"`
+		FolderID int      `json:"folderId"`
+		Limit    int      `json:"limit"`
+		Headings bool     `json:"headings"`
+		Recent   bool     `json:"recent"`
+		Search   bool     `json:"search"`
+		Starred  bool     `json:"starred"`
 	}
 	PluginlistPanel struct {
 		Limit int `json:"limit,omitempty"`
