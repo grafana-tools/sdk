@@ -161,6 +161,7 @@ type (
 	}
 	FieldConfig struct {
 		Defaults struct {
+			Unit      string `json:"unit"`
 			Threshold struct {
 				Mode  string `json:"mode"`
 				Steps []struct {
@@ -176,6 +177,7 @@ type (
 		ColorMode     string `json:"colorMode"`
 		GraphMode     string `json:"graphMode"`
 		JustifyMode   string `json:"justifyMode"`
+		DisplayMode   string `json:"displayMode"`
 		Content       string `json:"content"`
 		Mode          string `json:"mode"`
 		ReduceOptions struct {
