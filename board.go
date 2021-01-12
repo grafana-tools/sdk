@@ -120,6 +120,7 @@ type (
 		Enable     bool     `json:"enable"`
 		Query      string   `json:"query"`
 		Expr       string   `json:"expr"`
+		Step       string   `json:"step"`
 		TextField  string   `json:"textField"`
 		TagsField  string   `json:"tagsField"`
 		Tags       []string `json:"tags"`
