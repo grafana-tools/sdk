@@ -119,6 +119,7 @@ type (
 		IconSize   uint     `json:"iconSize"`
 		Enable     bool     `json:"enable"`
 		Query      string   `json:"query"`
+		Expr       string   `json:"expr"`
 		TextField  string   `json:"textField"`
 		TagsField  string   `json:"tagsField"`
 		Tags       []string `json:"tags"`
