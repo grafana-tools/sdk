@@ -37,6 +37,7 @@ const (
 	StatType
 	RowType
 	BarGaugeType
+	HeatmapType
 )
 
 const MixedSource = "-- Mixed --"
@@ -57,6 +58,7 @@ type (
 		*RowPanel
 		*AlertlistPanel
 		*BarGaugePanel
+		*HeatmapPanel
 		*CustomPanel
 	}
 	panelType   int8
@@ -310,6 +312,51 @@ type (
 	RowPanel struct {
 		Panels    []Panel `json:"panels"`
 		Collapsed bool    `json:"collapsed"`
+	}
+	HeatmapPanel struct {
+		Cards struct {
+			CardPadding *float64 `json:"cardPadding"`
+			CardRound   *float64 `json:"cardRound"`
+		} `json:"cards"`
+		Color struct {
+			CardColor   string   `json:"cardColor"`
+			ColorScale  string   `json:"colorScale"`
+			ColorScheme string   `json:"colorScheme"`
+			Exponent    float64  `json:"exponent"`
+			Min         *float64 `json:"min,omitempty"`
+			Max         *float64 `json:"max,omitempty"`
+			Mode        string   `json:"mode"`
+		} `json:"color"`
+		DataFormat      string `json:"dataFormat"`
+		HideZeroBuckets bool   `json:"hideZeroBuckets"`
+		HighlightCards  bool   `json:"highlightCards"`
+		Legend          struct {
+			Show bool `json:"show"`
+		} `json:"legend"`
+		ReverseYBuckets bool     `json:"reverseYBuckets"`
+		Targets         []Target `json:"targets,omitempty"`
+		Tooltip         struct {
+			Show          bool `json:"show"`
+			ShowHistogram bool `json:"showHistogram"`
+		} `json:"tooltip"`
+		TooltipDecimals int `json:"tooltipDecimals"`
+		XAxis           struct {
+			Show bool `json:"show"`
+		} `json:"xAxis"`
+		XBucketNumber *float64 `json:"xBucketNumber"`
+		XBucketSize   *float64 `json:"xBucketSize"`
+		YAxis         struct {
+			Decimals    *int     `json:"decimals"`
+			Format      string   `json:"format"`
+			LogBase     int      `json:"logBase"`
+			Show        bool     `json:"show"`
+			Max         *float64 `json:"max"`
+			Min         *float64 `json:"min"`
+			SplitFactor *float64 `json:"splitFactor"`
+		} `json:"yAxis"`
+		YBucketBound  string   `json:"yBucketBound"`
+		YBucketNumber *float64 `json:"yBucketNumber"`
+		YBucketSize   *float64 `json:"yBucketSize"`
 	}
 	CustomPanel map[string]interface{}
 )
@@ -675,6 +722,21 @@ func NewAlertlist(title string) *Panel {
 		AlertlistPanel: &AlertlistPanel{}}
 }
 
+func NewHeatmap(title string) *Panel {
+	if title == "" {
+		title = "Panel Title"
+	}
+	render := "flot"
+	return &Panel{
+		CommonPanel: CommonPanel{
+			OfType:   HeatmapType,
+			Title:    title,
+			Type:     "heatmap",
+			Renderer: &render,
+			IsNew:    true},
+		HeatmapPanel: &HeatmapPanel{}}
+}
+
 // NewCustom initializes panel with a stat panel.
 func NewCustom(title string) *Panel {
 	if title == "" {
@@ -704,6 +766,8 @@ func (p *Panel) ResetTargets() {
 		p.TablePanel.Targets = nil
 	case BarGaugeType:
 		p.BarGaugePanel.Targets = nil
+	case HeatmapType:
+		p.HeatmapPanel.Targets = nil
 	}
 }
 
@@ -721,6 +785,8 @@ func (p *Panel) AddTarget(t *Target) {
 		p.StatPanel.Targets = append(p.StatPanel.Targets, *t)
 	case TableType:
 		p.TablePanel.Targets = append(p.TablePanel.Targets, *t)
+	case HeatmapType:
+		p.HeatmapPanel.Targets = append(p.HeatmapPanel.Targets, *t)
 	}
 	// TODO check for existing refID
 }
@@ -746,6 +812,8 @@ func (p *Panel) SetTarget(t *Target) {
 		setTarget(t, &p.StatPanel.Targets)
 	case TableType:
 		setTarget(t, &p.TablePanel.Targets)
+	case HeatmapType:
+		setTarget(t, &p.HeatmapPanel.Targets)
 	}
 }
 
@@ -775,6 +843,8 @@ func (p *Panel) RepeatDatasourcesForEachTarget(dsNames ...string) {
 		repeatDS(dsNames, &p.StatPanel.Targets)
 	case TableType:
 		repeatDS(dsNames, &p.TablePanel.Targets)
+	case HeatmapType:
+		repeatDS(dsNames, &p.HeatmapPanel.Targets)
 	}
 }
 
@@ -807,6 +877,8 @@ func (p *Panel) RepeatTargetsForDatasources(dsNames ...string) {
 		repeatTarget(dsNames, &p.StatPanel.Targets)
 	case TableType:
 		repeatTarget(dsNames, &p.TablePanel.Targets)
+	case HeatmapType:
+		repeatTarget(dsNames, &p.HeatmapPanel.Targets)
 	}
 }
 
@@ -824,6 +896,8 @@ func (p *Panel) GetTargets() *[]Target {
 		return &p.TablePanel.Targets
 	case BarGaugeType:
 		return &p.BarGaugePanel.Targets
+	case HeatmapType:
+		return &p.HeatmapPanel.Targets
 	default:
 		return nil
 	}
@@ -880,6 +954,12 @@ func (p *Panel) UnmarshalJSON(b []byte) (err error) {
 			p.OfType = BarGaugeType
 			if err = json.Unmarshal(b, &bargauge); err == nil {
 				p.BarGaugePanel = &bargauge
+			}
+		case "heatmap":
+			var heatmap HeatmapPanel
+			p.OfType = HeatmapType
+			if err = json.Unmarshal(b, &heatmap); err == nil {
+				p.HeatmapPanel = &heatmap
 			}
 		case "row":
 			var rowpanel RowPanel
@@ -960,6 +1040,12 @@ func (p *Panel) MarshalJSON() ([]byte, error) {
 			RowPanel
 		}{p.CommonPanel, *p.RowPanel}
 		return json.Marshal(outRow)
+	case HeatmapType:
+		var outHeatmap = struct {
+			CommonPanel
+			HeatmapPanel
+		}{p.CommonPanel, *p.HeatmapPanel}
+		return json.Marshal(outHeatmap)
 	case CustomType:
 		var outCustom = struct {
 			CommonPanel
