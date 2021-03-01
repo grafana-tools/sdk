@@ -344,14 +344,14 @@ type (
 			Show bool `json:"show"`
 		} `json:"xAxis"`
 		XBucketNumber *float64 `json:"xBucketNumber"`
-		XBucketSize   *float64 `json:"xBucketSize"`
+		XBucketSize   *string  `json:"xBucketSize"`
 		YAxis         struct {
 			Decimals    *int     `json:"decimals"`
 			Format      string   `json:"format"`
 			LogBase     int      `json:"logBase"`
 			Show        bool     `json:"show"`
-			Max         *float64 `json:"max"`
-			Min         *float64 `json:"min"`
+			Max         *string  `json:"max"`
+			Min         *string  `json:"min"`
 			SplitFactor *float64 `json:"splitFactor"`
 		} `json:"yAxis"`
 		YBucketBound  string   `json:"yBucketBound"`
