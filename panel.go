@@ -38,6 +38,7 @@ const (
 	RowType
 	BarGaugeType
 	HeatmapType
+	GaugeType
 )
 
 const MixedSource = "-- Mixed --"
@@ -59,6 +60,7 @@ type (
 		*AlertlistPanel
 		*BarGaugePanel
 		*HeatmapPanel
+		*GaugePanel
 		*CustomPanel
 	}
 	panelType   int8
@@ -357,6 +359,11 @@ type (
 		YBucketBound  string   `json:"yBucketBound"`
 		YBucketNumber *float64 `json:"yBucketNumber"`
 		YBucketSize   *float64 `json:"yBucketSize"`
+	}
+	GaugePanel struct {
+		Options     Options     `json:"options"`
+		Targets     []Target    `json:"targets,omitempty"`
+		FieldConfig FieldConfig `json:"fieldConfig"`
 	}
 	CustomPanel map[string]interface{}
 )
@@ -971,6 +978,12 @@ func (p *Panel) UnmarshalJSON(b []byte) (err error) {
 			if err = json.Unmarshal(b, &rowpanel); err == nil {
 				p.RowPanel = &rowpanel
 			}
+		case "gauge":
+			var gauge GaugePanel
+			p.OfType = GaugeType
+			if err = json.Unmarshal(b, &gauge); err == nil {
+				p.GaugePanel = &gauge
+			}
 		default:
 			var custom = make(CustomPanel)
 			p.OfType = CustomType
@@ -1050,6 +1063,12 @@ func (p *Panel) MarshalJSON() ([]byte, error) {
 			HeatmapPanel
 		}{p.CommonPanel, *p.HeatmapPanel}
 		return json.Marshal(outHeatmap)
+	case GaugeType:
+		var outGauge = struct {
+			CommonPanel
+			GaugePanel
+		}{p.CommonPanel, *p.GaugePanel}
+		return json.Marshal(outGauge)
 	case CustomType:
 		var outCustom = struct {
 			CommonPanel
