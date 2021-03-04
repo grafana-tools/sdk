@@ -14,6 +14,9 @@ jobs:
           go: [1.13, 1.14, 1.15]
           grafana: [6.7.1, 6.6.2, 6.5.3, 6.4.5]
 
+    env:
+      GRAFANA_INTEGRATION: 1
+
     services:
       # Label used to access the service container
       grafana:
