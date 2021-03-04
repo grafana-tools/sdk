@@ -24,6 +24,14 @@ jobs:
         image: "grafana/grafana:${{ matrix.grafana }}"
         ports:
           - 3000:3000
+        env:
+          GF_AUTH_ANONYMOUS_ENABLED: true
+      chromedp:
+        image: "chromedp/headless-shell"
+        ports:
+          - 9222:9222
+        options: >-
+          --shm-size 2G
 
     runs-on: ubuntu-latest
     steps:
