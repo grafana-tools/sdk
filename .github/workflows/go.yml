@@ -7,8 +7,34 @@ on:
     branches: [ master ]
 
 jobs:
+  lint:
+    strategy:
+      matrix:
+        go: [1.13, 1.14, 1.15]
 
-  linttest:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: ${{ matrix.go }}
+
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+
+    - name: Run linters
+      uses: golangci/golangci-lint-action@v2
+      with:
+        version: v1.37
+
+  test:
     strategy:
         matrix:
           go: [1.13, 1.14, 1.15]
@@ -49,11 +75,6 @@ jobs:
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
           ${{ runner.os }}-go-
-
-    - name: Run linters
-      uses: golangci/golangci-lint-action@v2
-      with:
-        version: v1.37
 
     - name: Test
       run: go test -v ./...
