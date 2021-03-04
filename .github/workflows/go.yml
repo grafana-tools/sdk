@@ -8,7 +8,19 @@ on:
 
 jobs:
 
-  build:
+  linttest:
+    strategy:
+      go: [1.13, 1.14, 1.15]
+      grafana: [6.7.1, 6.6.2, 6.5.3, 6.4.5]
+
+    services:
+      # Label used to access the service container
+      grafana:
+        # Docker Hub image
+        image: "grafana/grafana:${{ matrix.grafana }}"
+        ports:
+          - 3000:3000
+
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -16,10 +28,20 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.15
+        go-version: ${{ matrix.go }}
 
-    - name: Build
-      run: go build -v ./...
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+
+    - name: Run linters
+      uses: golangci/golangci-lint-action@v2
+      with:
+        version: v1.37
 
     - name: Test
       run: go test -v ./...
