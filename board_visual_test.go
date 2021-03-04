@@ -32,6 +32,8 @@ import (
 // Smoke tests for Grafana's singlestat panel.
 // Adds a new dashboard with example data via the API and checks if something is there.
 func TestSinglestatPanel(t *testing.T) {
+	shouldSkip(t)
+
 	/* These are just defaults values Grafana uses that I have tested */
 	b := sdk.NewBoard("exampleboard")
 	b.Time.From = "now-5m"
