@@ -82,6 +82,28 @@ func (r *Client) GetDatasourceByName(ctx context.Context, name string) (Datasour
 	return ds, err
 }
 
+// GetDatasourceByUID gets an datasource by UID.
+// Reflects GET /api/datasources/uid/:datasourceUID API call.
+func (r *Client) GetDatasourceByUID(ctx context.Context, uid string) (Datasource, error) {
+	var (
+		raw  []byte
+		ds   Datasource
+		code int
+		err  error
+	)
+	if raw, code, err = r.get(ctx, fmt.Sprintf("api/datasources/uid/%s", uid), nil); err != nil {
+		return ds, err
+	}
+	if code == 404 {
+		return ds, ErrNotFound{Message: fmt.Sprintf("Datasource with UID %s not found", uid)}
+	}
+	if code != 200 {
+		return ds, fmt.Errorf("HTTP error %d: returns %s", code, raw)
+	}
+	err = json.Unmarshal(raw, &ds)
+	return ds, err
+}
+
 // CreateDatasource creates a new datasource.
 // Reflects POST /api/datasources API call.
 func (r *Client) CreateDatasource(ctx context.Context, ds Datasource) (StatusMessage, error) {
