@@ -174,6 +174,21 @@ func (r *Client) DeleteDatasourceByName(ctx context.Context, name string) (Statu
 	return reply, err
 }
 
+// DeleteDatasourceByUID deletes an existing datasource by UID.
+// Reflects DELETE /api/datasources/uid/:datasourceUID API call.
+func (r *Client) DeleteDatasourceByUID(ctx context.Context, uid string) (StatusMessage, error) {
+	var (
+		raw   []byte
+		reply StatusMessage
+		err   error
+	)
+	if raw, _, err = r.delete(ctx, fmt.Sprintf("api/datasources/uid/%s", uid)); err != nil {
+		return StatusMessage{}, err
+	}
+	err = json.Unmarshal(raw, &reply)
+	return reply, err
+}
+
 // GetDatasourceTypes gets all available plugins for the datasources.
 // Reflects GET /api/datasources/plugins API call.
 func (r *Client) GetDatasourceTypes(ctx context.Context) (map[string]DatasourceType, error) {
