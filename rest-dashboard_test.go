@@ -2,6 +2,7 @@ package sdk_test
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -10,6 +11,7 @@ import (
 	"testing"
 
 	"github.com/grafana-tools/sdk"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestClient_SearchDashboards(t *testing.T) {
@@ -282,4 +284,62 @@ func testUIntSearchParam(t *testing.T, sp func(uint) sdk.SearchParam, key string
 			t.Errorf("expected value of %s to be %d, but was %s", key, testValue, value)
 		}
 	}
+}
+
+func Test_DecodeRawBoardPreserveId(t *testing.T) {
+	r := getRawBoardRequest(t, true)
+	//Serialize object
+	data, err := json.Marshal(r)
+	assert.Nil(t, err)
+	//Deserialize data
+	var rawData map[string]interface{} = make(map[string]interface{})
+	assert.Nil(t, json.Unmarshal(data, &rawData))
+	folderId := rawData["FolderID"]
+
+	assert.Equal(t, folderId.(float64), float64(27))
+	assert.Equal(t, rawData["Overwrite"].(bool), true)
+	rawData = rawData["dashboard"].(map[string]interface{})
+	assert.Equal(t, rawData["id"].(float64), float64(25))
+	assert.Equal(t, rawData["title"].(string), "woot")
+
+}
+
+func Test_DecodeRawBoardWipeId(t *testing.T) {
+
+	r := getRawBoardRequest(t, false)
+	//Serialize object
+	data, err := json.Marshal(r)
+	assert.Nil(t, err)
+	//Deserialize data
+	var rawData map[string]interface{} = make(map[string]interface{})
+	err = json.Unmarshal(data, &rawData)
+	assert.Nil(t, err)
+	folderId := rawData["FolderID"]
+
+	assert.Equal(t, folderId.(float64), float64(27))
+	assert.Equal(t, rawData["Overwrite"].(bool), true)
+	rawData = rawData["dashboard"].(map[string]interface{})
+	assert.Equal(t, rawData["id"].(float64), float64(0))
+	assert.Equal(t, rawData["title"].(string), "woot")
+
+}
+
+func getRawBoardRequest(t *testing.T, preserveId bool) sdk.RawBoardRequest {
+	r := sdk.RawBoardRequest{}
+	board := sdk.Board{}
+	board.ID = 25
+	board.Title = "woot"
+	rawBoard, err := json.Marshal(board)
+	assert.Nil(t, err)
+
+	params := sdk.SetDashboardParams{
+		FolderID:   27,
+		Overwrite:  true,
+		PreserveId: preserveId,
+	}
+	r.Dashboard = rawBoard
+	r.Parameters = params
+
+	return r
+
 }
