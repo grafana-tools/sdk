@@ -27,7 +27,7 @@ type User struct {
 	Theme          string `json:"theme"`
 	OrgID          uint   `json:"orgId"`
 	Password       string `json:"password"`
-	IsGrafanaAdmin bool   `json:"isGrafanaAdmin"`
+	IsGrafanaAdmin bool   `json:"isAdmin"`
 }
 
 type UserRole struct {
