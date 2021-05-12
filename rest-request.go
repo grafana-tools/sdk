@@ -28,6 +28,7 @@ import (
 	"net/http"
 	"net/url"
 	"path"
+	"strconv"
 	"strings"
 )
 
@@ -37,10 +38,29 @@ var DefaultHTTPClient = http.DefaultClient
 
 // Client uses Grafana REST API for interacting with Grafana server.
 type Client struct {
-	baseURL   string
-	key       string
-	basicAuth bool
-	client    *http.Client
+	baseURL       string
+	key           string
+	basicAuth     bool
+	client        *http.Client
+	customHeaders map[string]string
+}
+
+// SetCustomHeaders - set additional headers that will be sent with each request
+func (r *Client) SetCustomHeaders(headers map[string]string) {
+	r.customHeaders = headers
+}
+
+// SetCustomHeader - set additional header that will be sent with each request
+func (r *Client) SetCustomHeader(key, value string) {
+	if r.customHeaders == nil {
+		r.customHeaders = map[string]string{}
+	}
+	r.customHeaders[key] = value
+}
+
+// SetOrgIDHeader - set `X-Grafana-Org-Id`  to specified value
+func (r *Client) SetOrgIDHeader(oid uint) {
+	r.SetCustomHeader("X-Grafana-Org-Id", strconv.FormatUint(uint64(oid), 10))
 }
 
 // StatusMessage reflects status message as it returned by Grafana REST API.
@@ -104,6 +124,11 @@ func (r *Client) doRequest(ctx context.Context, method, query string, params url
 	req = req.WithContext(ctx)
 	if !r.basicAuth {
 		req.Header.Set("Authorization", r.key)
+	}
+	if r.customHeaders != nil {
+		for key, value := range r.customHeaders {
+			req.Header.Set(key, value)
+		}
 	}
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("Content-Type", "application/json")
