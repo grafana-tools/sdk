@@ -42,9 +42,12 @@ func TestClient_SearchDashboards(t *testing.T) {
 		},
 	} {
 		ts := httptest.NewServer(http.HandlerFunc(testSearchQuery(t, i, tc.Out)))
-		client := sdk.NewClient(ts.URL, "", ts.Client())
+		client, err := sdk.NewClient(ts.URL, "", ts.Client())
+		if err != nil {
+			t.Fatal(err)
+		}
 		ctx := context.Background()
-		_, err := client.SearchDashboards(ctx, tc.In.Query, tc.In.Starred, tc.In.Tags...)
+		_, err = client.SearchDashboards(ctx, tc.In.Query, tc.In.Starred, tc.In.Tags...)
 		ts.Close()
 		if err != nil {
 			t.Fatalf("SearchDashboards test %d failed: %s", i, err)
@@ -112,9 +115,12 @@ func TestClient_Search(t *testing.T) {
 		},
 	} {
 		ts := httptest.NewServer(http.HandlerFunc(testSearchQuery(t, i, tc.Out)))
-		client := sdk.NewClient(ts.URL, "", ts.Client())
+		client, err := sdk.NewClient(ts.URL, "", ts.Client())
+		if err != nil {
+			t.Fatal(err)
+		}
 		ctx := context.Background()
-		_, err := client.Search(ctx, tc.In...)
+		_, err = client.Search(ctx, tc.In...)
 		ts.Close()
 		if err != nil {
 			t.Fatalf("SearchDashboards test %d failed: %s", i, err)

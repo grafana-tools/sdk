@@ -50,7 +50,11 @@ func getClient(t *testing.T) *sdk.Client {
 	t.Helper()
 	addr, user, pass := getFullUrl(t)
 
-	return sdk.NewClient(addr, fmt.Sprintf("%s:%s", user, pass), sdk.DefaultHTTPClient)
+	client, err := sdk.NewClient(addr, fmt.Sprintf("%s:%s", user, pass), sdk.DefaultHTTPClient)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return client
 }
 
 func shouldSkip(t *testing.T) {
