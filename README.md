@@ -105,7 +105,8 @@ datasources. State of support for misc API parts noted below.
 There is no exact roadmap.  The integration tests are being run against the
 following Grafana versions:
 
-* [6.7.1](./travis.yml)
+* [7.0.4](./travis.yml)
+* [6.7.4](./travis.yml)
 * [6.6.2](/.travis.yml)
 * [6.5.3](/.travis.yml)
 * [6.4.5](/.travis.yml)
@@ -116,6 +117,10 @@ With the following Go versions:
 * 1.13.x
 * 1.12.x
 * 1.11.x
+
+Note that the integration tests only touch the API end-points. The members in
+structs of boards, panels, etc. might change their meaning or (dis-)appear
+completely between versions so it is not guaranteed that they will work 100%.
 
 I still have interest to this library development but not always have
 time for it. So I gladly accept new contributions. Drop an issue or
