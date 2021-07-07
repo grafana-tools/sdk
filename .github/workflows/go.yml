@@ -2,9 +2,9 @@ name: Go
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   lint:
@@ -14,31 +14,31 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: ${{ matrix.go }}
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go }}
 
-    - uses: actions/cache@v2
-      with:
-        path: |
-          ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
 
-    - name: Run linters
-      uses: golangci/golangci-lint-action@v2
-      with:
-        version: v1.41
+      - name: Run linters
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.41
 
   test:
     strategy:
-        matrix:
-          go: [1.16, 1.15, 1.14]
-          grafana: [6.7.1, 6.6.2, 6.5.3, 6.4.5]
+      matrix:
+        go: [1.16, 1.15, 1.14]
+        grafana: [6.7.1, 6.6.2, 6.5.3, 6.4.5]
 
     env:
       GRAFANA_INTEGRATION: 1
@@ -61,34 +61,34 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: ${{ matrix.go }}
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go }}
 
-    - uses: actions/cache@v2
-      with:
-        path: |
-          ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
 
-    - name: Test
-      run: go test -v ./...
-    # Calculate coverage with the newest Go version.
-    - name: Calc coverage
-      if: "${{ matrix.go == '1.16' }}"
-      run: |
-        go test -v -covermode=count -coverprofile=coverage.out
-    - name: Convert coverage.out to coverage.lcov
-      if: "${{ matrix.go == '1.16' }}"
-      uses: jandelgado/gcov2lcov-action@v1.0.6
-    - name: Coveralls
-      if: "${{ matrix.go == '1.16' }}"
-      uses: coverallsapp/github-action@v1.1.2
-      with:
-        github-token: ${{ secrets.github_token }}
-        path-to-lcov: coverage.lcov
+      - name: Test
+        run: go test -v ./...
+      # Calculate coverage with the newest Go version.
+      - name: Calc coverage
+        if: "${{ matrix.go == '1.16' && matrix.grafana == '6.7.1' }}"
+        run: |
+          go test -v -covermode=count -coverprofile=coverage.out
+      - name: Convert coverage.out to coverage.lcov
+        if: "${{ matrix.go == '1.16' && matrix.grafana == '6.7.1' }}"
+        uses: jandelgado/gcov2lcov-action@v1.0.6
+      - name: Coveralls
+        if: "${{ matrix.go == '1.16' && matrix.grafana == '6.7.1' }}"
+        uses: coverallsapp/github-action@v1.1.2
+        with:
+          github-token: ${{ secrets.github_token }}
+          path-to-lcov: coverage.lcov
