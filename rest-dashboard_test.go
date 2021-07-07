@@ -42,7 +42,7 @@ func TestClient_SearchDashboards(t *testing.T) {
 		},
 	} {
 		ts := httptest.NewServer(http.HandlerFunc(testSearchQuery(t, i, tc.Out)))
-		client := sdk.NewClient(ts.URL, "", ts.Client())
+		client, _ := sdk.NewClient(ts.URL, "", ts.Client())
 		ctx := context.Background()
 		_, err := client.SearchDashboards(ctx, tc.In.Query, tc.In.Starred, tc.In.Tags...)
 		ts.Close()
@@ -112,7 +112,7 @@ func TestClient_Search(t *testing.T) {
 		},
 	} {
 		ts := httptest.NewServer(http.HandlerFunc(testSearchQuery(t, i, tc.Out)))
-		client := sdk.NewClient(ts.URL, "", ts.Client())
+		client, _ := sdk.NewClient(ts.URL, "", ts.Client())
 		ctx := context.Background()
 		_, err := client.Search(ctx, tc.In...)
 		ts.Close()
