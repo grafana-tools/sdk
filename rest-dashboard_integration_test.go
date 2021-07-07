@@ -27,6 +27,9 @@ func Test_Dashboard_CRUD(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	board.ID = 1234
+	board.Title = "barfoo"
+
 	if _, err = client.DeleteDashboard(ctx, board.UpdateSlug()); err != nil {
 		t.Fatal(err)
 	}
@@ -77,6 +80,9 @@ func Test_Dashboard_CRUD_By_UID(t *testing.T) {
 	if err = json.Unmarshal(raw, &board); err != nil {
 		t.Fatal(err)
 	}
+
+	board.ID = 4321
+	board.Title = "foobar"
 
 	//Cleanup if Already exists
 	if _, err = client.DeleteDashboardByUID(ctx, board.UID); err != nil {
