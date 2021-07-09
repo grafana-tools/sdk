@@ -26,7 +26,7 @@ func TestAdminOperations(t *testing.T) {
 		t.Fatalf("failed to create an user: %s", err.Error())
 	}
 	if st.Message != nil && *st.Message == "failed to create user" {
-		t.Fatal("failed to create an user for some unknown reason")
+		t.Fatalf("failed to create an user for some unknown reason (%v)", st)
 	}
 
 	uid := *st.ID

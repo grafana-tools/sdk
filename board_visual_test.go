@@ -3,7 +3,6 @@ package sdk_test
 import (
 	"context"
 	"fmt"
-	"log"
 	"testing"
 	"time"
 
@@ -85,7 +84,8 @@ func TestSinglestatPanel(t *testing.T) {
 
 	ctx, cancel := chromedp.NewContext(
 		actxt,
-		chromedp.WithLogf(log.Printf),
+		chromedp.WithLogf(t.Logf),
+		chromedp.WithDebugf(t.Logf),
 	)
 	defer cancel()
 
