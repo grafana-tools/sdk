@@ -20,6 +20,8 @@ func TestCreateDelete(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create an org: %v (%s)", statusMessage, err.Error())
 	}
+	t.Logf("got status message: %v\n", statusMessage)
+
 	oID := *statusMessage.OrgID
 
 	retrievedOrg, err := client.GetOrgById(ctx, oID)

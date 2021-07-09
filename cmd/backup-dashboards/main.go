@@ -46,7 +46,11 @@ func main() {
 		os.Exit(0)
 	}
 	ctx := context.Background()
-	c := sdk.NewClient(os.Args[1], os.Args[2], sdk.DefaultHTTPClient)
+	c, err := sdk.NewClient(os.Args[1], os.Args[2], sdk.DefaultHTTPClient)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to create a client: %s\n", err)
+		os.Exit(1)
+	}
 	if boardLinks, err = c.SearchDashboards(ctx, "", false); err != nil {
 		fmt.Fprint(os.Stderr, err)
 		os.Exit(1)

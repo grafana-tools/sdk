@@ -52,7 +52,11 @@ func main() {
 		os.Exit(0)
 	}
 	ctx := context.Background()
-	c := sdk.NewClient(os.Args[1], os.Args[2], sdk.DefaultHTTPClient)
+	c, err := sdk.NewClient(os.Args[1], os.Args[2], sdk.DefaultHTTPClient)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to create a client: %s\n", err)
+		os.Exit(1)
+	}
 	filesInDir, err = ioutil.ReadDir(".")
 	if err != nil {
 		log.Fatal(err)
