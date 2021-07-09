@@ -51,7 +51,7 @@ jobs:
         ports:
           - 3000:3000
         env:
-          GF_AUTH_ANONYMOUS_ENABLED: true
+          GF_AUTH_ANONYMOUS_ENABLED: "true"
       chromedp:
         image: "chromedp/headless-shell:91.0.4472.69"
         ports:
