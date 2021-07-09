@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"testing"
+	"time"
 
 	"github.com/chromedp/chromedp"
 	"github.com/grafana-tools/sdk"
@@ -76,7 +77,10 @@ func TestSinglestatPanel(t *testing.T) {
 	durl := getDebugURL(t)
 
 	t.Logf("Got Chrome's URL: %s", durl)
-	actxt, cancelActxt := chromedp.NewRemoteAllocator(context.Background(), durl)
+	timeoutCtx, cancelTimeoutCtx := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancelTimeoutCtx()
+
+	actxt, cancelActxt := chromedp.NewRemoteAllocator(timeoutCtx, durl)
 	defer cancelActxt()
 
 	ctx, cancel := chromedp.NewContext(

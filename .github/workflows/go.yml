@@ -53,7 +53,7 @@ jobs:
         env:
           GF_AUTH_ANONYMOUS_ENABLED: true
       chromedp:
-        image: "chromedp/headless-shell"
+        image: "chromedp/headless-shell:91.0.4472.69"
         ports:
           - 9222:9222
         options: >-
