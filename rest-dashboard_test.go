@@ -305,7 +305,6 @@ func Test_DecodeRawBoardPreserveId(t *testing.T) {
 }
 
 func Test_DecodeRawBoardWipeId(t *testing.T) {
-
 	r := getRawBoardRequest(t, false)
 	//Serialize object
 	data, err := json.Marshal(r)
@@ -321,7 +320,6 @@ func Test_DecodeRawBoardWipeId(t *testing.T) {
 	rawData = rawData["dashboard"].(map[string]interface{})
 	assert.Equal(t, rawData["id"].(float64), float64(0))
 	assert.Equal(t, rawData["title"].(string), "woot")
-
 }
 
 func getRawBoardRequest(t *testing.T, preserveId bool) sdk.RawBoardRequest {
@@ -341,5 +339,4 @@ func getRawBoardRequest(t *testing.T, preserveId bool) sdk.RawBoardRequest {
 	r.Parameters = params
 
 	return r
-
 }

@@ -66,7 +66,6 @@ type RawBoardRequest struct {
 //MarshalJSON serializes the request to match the expectations of the grafana API.
 // Additionally, if preseveID is false, then the dashboard id is set to 0
 func (d RawBoardRequest) MarshalJSON() ([]byte, error) {
-	buf := bytes.NewBufferString("")
 	var raw []byte
 
 	if d.Parameters.PreserveId {
@@ -78,23 +77,23 @@ func (d RawBoardRequest) MarshalJSON() ([]byte, error) {
 		}
 		plain["id"] = 0
 		raw, _ = json.Marshal(plain)
-
 	}
 
-	parameters, err := json.Marshal(d.Parameters)
+	var output struct {
+		Dashboard map[string]interface{} `json:"dashboard"`
+		SetDashboardParams
+	}
+	err := json.Unmarshal(raw, &output.Dashboard)
 	if err != nil {
 		return nil, err
 	}
-	buf.WriteString(`{"dashboard":`)
-	buf.Write(raw)
-	buf.WriteString(",")
-	//Remove wrapping {}
-	parametersData := string(parameters)[1 : len(parameters)-1]
-	buf.Write([]byte(parametersData))
-	buf.WriteString("}")
+	output.SetDashboardParams = d.Parameters
+	result, err := json.Marshal(&output)
+	if err != nil {
+		return nil, err
+	}
 
-	return buf.Bytes(), nil
-
+	return result, nil
 }
 
 // GetDashboardByUID loads a dashboard and its metadata from Grafana by dashboard uid.
@@ -264,7 +263,7 @@ func (r *Client) Search(ctx context.Context, params ...SearchParam) ([]FoundBoar
 type SetDashboardParams struct {
 	FolderID   int
 	Overwrite  bool
-	PreserveId bool `json:"-"` //ignore on serialization
+	PreserveId bool `json:"-"`
 }
 
 // SetDashboard updates existing dashboard or creates a new one.
