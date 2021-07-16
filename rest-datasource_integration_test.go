@@ -2,6 +2,7 @@ package sdk_test
 
 import (
 	"context"
+	"errors"
 	"testing"
 
 	"github.com/grafana-tools/sdk"
@@ -23,6 +24,7 @@ func Test_Datasource_CRUD(t *testing.T) {
 
 	db := "grafanasdk"
 	ds := sdk.Datasource{
+		UID:       "datasource_uid",
 		Name:      "elastic_datasource",
 		Type:      "elasticsearch",
 		IsDefault: false,
@@ -50,6 +52,24 @@ func Test_Datasource_CRUD(t *testing.T) {
 		t.Fatalf("got wrong name: expected %s, was %s", dsRetrieved.Name, ds.Name)
 	}
 
+	dsRetrieved, err = client.GetDatasourceByUID(ctx, "datasource_uid")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if dsRetrieved.Name != ds.Name {
+		t.Fatalf("got wrong name: expected %s, was %s", dsRetrieved.Name, ds.Name)
+	}
+
+	dsRetrieved, err = client.GetDatasourceByName(ctx, "elastic_datasource")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if dsRetrieved.Name != ds.Name {
+		t.Fatalf("got wrong name: expected %s, was %s", dsRetrieved.Name, ds.Name)
+	}
+
 	ds.Name = "elasticsdksource"
 	ds.ID = dsRetrieved.ID
 	status, err = client.UpdateDatasource(ctx, ds)
@@ -66,4 +86,10 @@ func Test_Datasource_CRUD(t *testing.T) {
 	if err == nil {
 		t.Fatalf("expected the datasource to be deleted")
 	}
+
+	_, err = client.GetDatasourceByUID(ctx, "datasource_uid")
+	if !errors.As(err, &sdk.ErrNotFound{}) {
+		t.Fatalf("expected error not found")
+	}
+
 }
