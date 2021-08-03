@@ -558,12 +558,14 @@ type Target struct {
 	AliasBy            string                    `json:"aliasBy,omitempty"`
 	MetricType         string                    `json:"metricType,omitempty"`
 	MetricKind         string                    `json:"metricKind,omitempty"`
-	Filters            []string                  `json:"filters,omitempty"`
 	AlignmentPeriod    string                    `json:"alignmentPeriod,omitempty"`
 	CrossSeriesReducer string                    `json:"crossSeriesReducer,omitempty"`
 	PerSeriesAligner   string                    `json:"perSeriesAligner,omitempty"`
 	ValueType          string                    `json:"valueType,omitempty"`
 	GroupBys           []string                  `json:"groupBys,omitempty"`
+
+	// Used by stackdriver and alertmanager datasources with different types.
+	Filters interface{} `json:"filters,omitempty"`
 }
 
 // StackdriverAlignOptions defines the list of alignment options shown in
