@@ -12,7 +12,7 @@ type AnnotationResponse struct {
 	PrevState   string                 `json:"prevState,omitempty"`
 	Time        int64                  `json:"time,omitempty"`
 	TimeEnd     int64                  `json:"timeEnd,omitempty"`
-	Tags        []string               `json:"tags,omitempty"`
+	Tags        StringSliceString      `json:"tags,omitempty"`
 	Text        string                 `json:"text,omitempty"`
 	Type        string                 `json:"type"`
 	Data        map[string]interface{} `json:"data"`
