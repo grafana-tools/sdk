@@ -207,10 +207,10 @@ type (
 	}
 
 	Tooltip struct {
-		Shared       bool   `json:"shared"`
-		ValueType    string `json:"value_type"`
-		MsResolution bool   `json:"msResolution,omitempty"` // was added in Grafana 3.x
-		Sort         int    `json:"sort,omitempty"`
+		Shared       bool    `json:"shared"`
+		ValueType    string  `json:"value_type"`
+		MsResolution bool    `json:"msResolution,omitempty"` // was added in Grafana 3.x
+		Sort         BoolInt `json:"sort,omitempty"`
 	}
 	TablePanel struct {
 		Columns   []Column      `json:"columns"`
