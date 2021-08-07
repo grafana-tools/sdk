@@ -23,6 +23,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 )
 
 // GetAllDatasources gets all datasources.
@@ -37,7 +38,7 @@ func (r *Client) GetAllDatasources(ctx context.Context) ([]Datasource, error) {
 	if raw, code, err = r.get(ctx, "api/datasources", nil); err != nil {
 		return nil, err
 	}
-	if code != 200 {
+	if code != http.StatusOK {
 		return nil, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	err = json.Unmarshal(raw, &ds)
@@ -56,10 +57,14 @@ func (r *Client) GetDatasource(ctx context.Context, id uint) (Datasource, error)
 	if raw, code, err = r.get(ctx, fmt.Sprintf("api/datasources/%d", id), nil); err != nil {
 		return ds, err
 	}
-	if code != 200 {
-		return ds, fmt.Errorf("HTTP error %d: returns %s", code, raw)
+	switch code {
+	case http.StatusOK:
+		err = json.Unmarshal(raw, &ds)
+	case http.StatusNotFound:
+		err = fmt.Errorf("data source with id %q %w", id, ErrNotFound)
+	default:
+		err = fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
-	err = json.Unmarshal(raw, &ds)
 	return ds, err
 }
 
@@ -75,7 +80,7 @@ func (r *Client) GetDatasourceByName(ctx context.Context, name string) (Datasour
 	if raw, code, err = r.get(ctx, fmt.Sprintf("api/datasources/name/%s", name), nil); err != nil {
 		return ds, err
 	}
-	if code != 200 {
+	if code != http.StatusOK {
 		return ds, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	err = json.Unmarshal(raw, &ds)
@@ -89,17 +94,23 @@ func (r *Client) CreateDatasource(ctx context.Context, ds Datasource) (StatusMes
 		raw  []byte
 		resp StatusMessage
 		err  error
+		code int
 	)
 	if raw, err = json.Marshal(ds); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, _, err = r.post(ctx, "api/datasources", nil, raw); err != nil {
+	if raw, code, err = r.post(ctx, "api/datasources", nil, raw); err != nil {
 		return StatusMessage{}, err
 	}
-	if err = json.Unmarshal(raw, &resp); err != nil {
-		return StatusMessage{}, err
+	switch code {
+	case http.StatusOK:
+		err = json.Unmarshal(raw, &resp)
+	case http.StatusConflict:
+		err = fmt.Errorf("data source with name %q %w", ds.Name, ErrAlreadyExists)
+	default:
+		err = fmt.Errorf("HTTP status code %d: returns %s", code, raw)
 	}
-	return resp, nil
+	return resp, err
 }
 
 // UpdateDatasource updates a datasource from data passed in argument.
@@ -109,17 +120,23 @@ func (r *Client) UpdateDatasource(ctx context.Context, ds Datasource) (StatusMes
 		raw  []byte
 		resp StatusMessage
 		err  error
+		code int
 	)
 	if raw, err = json.Marshal(ds); err != nil {
-		return StatusMessage{}, err
+		return resp, err
 	}
-	if raw, _, err = r.put(ctx, fmt.Sprintf("api/datasources/%d", ds.ID), nil, raw); err != nil {
-		return StatusMessage{}, err
+	if raw, code, err = r.put(ctx, fmt.Sprintf("api/datasources/%d", ds.ID), nil, raw); err != nil {
+		return resp, err
 	}
-	if err = json.Unmarshal(raw, &resp); err != nil {
-		return StatusMessage{}, err
+	switch code {
+	case http.StatusOK:
+		err = json.Unmarshal(raw, &resp)
+	case http.StatusNotFound:
+		err = fmt.Errorf("data source with name %q %w", ds.Name, ErrNotFound)
+	default:
+		err = fmt.Errorf("HTTP status code %d: returns %s", code, raw)
 	}
-	return resp, nil
+	return resp, err
 }
 
 // DeleteDatasource deletes an existing datasource by ID.
@@ -129,9 +146,13 @@ func (r *Client) DeleteDatasource(ctx context.Context, id uint) (StatusMessage, 
 		raw   []byte
 		reply StatusMessage
 		err   error
+		code  int
 	)
-	if raw, _, err = r.delete(ctx, fmt.Sprintf("api/datasources/%d", id)); err != nil {
+	if raw, code, err = r.delete(ctx, fmt.Sprintf("api/datasources/%d", id)); err != nil {
 		return StatusMessage{}, err
+	}
+	if code != http.StatusOK {
+		return StatusMessage{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	err = json.Unmarshal(raw, &reply)
 	return reply, err
@@ -144,9 +165,13 @@ func (r *Client) DeleteDatasourceByName(ctx context.Context, name string) (Statu
 		raw   []byte
 		reply StatusMessage
 		err   error
+		code  int
 	)
-	if raw, _, err = r.delete(ctx, fmt.Sprintf("api/datasources/name/%s", name)); err != nil {
+	if raw, code, err = r.delete(ctx, fmt.Sprintf("api/datasources/name/%s", name)); err != nil {
 		return StatusMessage{}, err
+	}
+	if code != http.StatusOK {
+		return StatusMessage{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	err = json.Unmarshal(raw, &reply)
 	return reply, err
@@ -164,7 +189,7 @@ func (r *Client) GetDatasourceTypes(ctx context.Context) (map[string]DatasourceT
 	if raw, code, err = r.get(ctx, "api/datasources/plugins", nil); err != nil {
 		return nil, err
 	}
-	if code != 200 {
+	if code != http.StatusOK {
 		return nil, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	err = json.Unmarshal(raw, &dsTypes)

@@ -22,6 +22,8 @@ package sdk
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"net/http"
 )
 
 // HealthResponse represents the health of grafana server
@@ -35,14 +37,17 @@ type HealthResponse struct {
 // Reflects GET BaseURL API call.
 func (r *Client) GetHealth(ctx context.Context) (HealthResponse, error) {
 	var (
-		raw []byte
-		err error
+		raw    []byte
+		err    error
+		health HealthResponse
+		code   int
 	)
-	if raw, _, err = r.get(ctx, "/api/health", nil); err != nil {
+	if raw, code, err = r.get(ctx, "/api/health", nil); err != nil {
 		return HealthResponse{}, err
 	}
-
-	health := HealthResponse{}
+	if code != http.StatusOK {
+		return HealthResponse{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
+	}
 	if err := json.Unmarshal(raw, &health); err != nil {
 		return HealthResponse{}, err
 	}

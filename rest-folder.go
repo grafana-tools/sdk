@@ -23,6 +23,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"net/url"
 	"strconv"
 )
@@ -45,7 +46,7 @@ func (r *Client) GetAllFolders(ctx context.Context, params ...GetFolderParams) (
 	if raw, code, err = r.get(ctx, "api/folders", requestParams); err != nil {
 		return nil, err
 	}
-	if code != 200 {
+	if code != http.StatusOK {
 		return nil, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	err = json.Unmarshal(raw, &fs)
@@ -64,7 +65,7 @@ func (r *Client) GetFolderByUID(ctx context.Context, UID string) (Folder, error)
 	if raw, code, err = r.get(ctx, fmt.Sprintf("api/folders/%s", UID), nil); err != nil {
 		return f, err
 	}
-	if code != 200 {
+	if code != http.StatusOK {
 		return f, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	err = json.Unmarshal(raw, &f)
@@ -87,7 +88,7 @@ func (r *Client) CreateFolder(ctx context.Context, f Folder) (Folder, error) {
 	if raw, code, err = r.post(ctx, "api/folders", nil, raw); err != nil {
 		return rf, err
 	}
-	if code != 200 {
+	if code != http.StatusOK {
 		return rf, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	err = json.Unmarshal(raw, &rf)
@@ -110,7 +111,7 @@ func (r *Client) UpdateFolderByUID(ctx context.Context, f Folder) (Folder, error
 	if raw, code, err = r.put(ctx, fmt.Sprintf("api/folders/%s", f.UID), nil, raw); err != nil {
 		return rf, err
 	}
-	if code != 200 {
+	if code != http.StatusOK {
 		return f, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	err = json.Unmarshal(raw, &rf)
@@ -128,7 +129,7 @@ func (r *Client) DeleteFolderByUID(ctx context.Context, UID string) (bool, error
 	if raw, code, err = r.delete(ctx, fmt.Sprintf("api/folders/%s", UID)); err != nil {
 		return false, err
 	}
-	if code != 200 {
+	if code != http.StatusOK {
 		return false, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	return true, err
@@ -149,7 +150,7 @@ func (r *Client) GetFolderByID(ctx context.Context, ID int) (Folder, error) {
 	if raw, code, err = r.get(ctx, fmt.Sprintf("api/folders/id/%d", ID), nil); err != nil {
 		return f, err
 	}
-	if code != 200 {
+	if code != http.StatusOK {
 		return f, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	err = json.Unmarshal(raw, &f)

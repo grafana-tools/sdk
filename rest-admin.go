@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 )
 
 // CreateUser creates a new global user.
@@ -14,12 +15,16 @@ func (r *Client) CreateUser(ctx context.Context, user User) (StatusMessage, erro
 		raw  []byte
 		resp StatusMessage
 		err  error
+		code int
 	)
 	if raw, err = json.Marshal(user); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, _, err = r.post(ctx, "api/admin/users", nil, raw); err != nil {
+	if raw, code, err = r.post(ctx, "api/admin/users", nil, raw); err != nil {
 		return StatusMessage{}, err
+	}
+	if code != http.StatusOK {
+		return StatusMessage{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
 		return StatusMessage{}, err
@@ -35,12 +40,16 @@ func (r *Client) UpdateUserPermissions(ctx context.Context, permissions UserPerm
 		raw   []byte
 		reply StatusMessage
 		err   error
+		code  int
 	)
 	if raw, err = json.Marshal(permissions); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, _, err = r.put(ctx, fmt.Sprintf("api/admin/users/%d/permissions", uid), nil, raw); err != nil {
+	if raw, code, err = r.put(ctx, fmt.Sprintf("api/admin/users/%d/permissions", uid), nil, raw); err != nil {
 		return StatusMessage{}, err
+	}
+	if code != http.StatusOK {
+		return StatusMessage{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	err = json.Unmarshal(raw, &reply)
 	return reply, err
@@ -54,10 +63,14 @@ func (r *Client) SwitchUserContext(ctx context.Context, uid uint, oid uint) (Sta
 		raw  []byte
 		resp StatusMessage
 		err  error
+		code int
 	)
 
-	if raw, _, err = r.post(ctx, fmt.Sprintf("/api/users/%d/using/%d", uid, oid), nil, raw); err != nil {
+	if raw, code, err = r.post(ctx, fmt.Sprintf("/api/users/%d/using/%d", uid, oid), nil, raw); err != nil {
 		return StatusMessage{}, err
+	}
+	if code != http.StatusOK {
+		return StatusMessage{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
 		return StatusMessage{}, err

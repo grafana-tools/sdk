@@ -20,6 +20,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 )
 
 // GetAllAlertNotifications gets all alert notification channels.
@@ -34,7 +35,7 @@ func (c *Client) GetAllAlertNotifications(ctx context.Context) ([]AlertNotificat
 	if raw, code, err = c.get(ctx, "api/alert-notifications", nil); err != nil {
 		return nil, err
 	}
-	if code != 200 {
+	if code != http.StatusOK {
 		return nil, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	err = json.Unmarshal(raw, &an)
@@ -53,7 +54,7 @@ func (c *Client) GetAlertNotificationUID(ctx context.Context, uid string) (Alert
 	if raw, code, err = c.get(ctx, fmt.Sprintf("api/alert-notifications/uid/%s", uid), nil); err != nil {
 		return an, err
 	}
-	if code != 200 {
+	if code != http.StatusOK {
 		return an, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	err = json.Unmarshal(raw, &an)
@@ -72,7 +73,7 @@ func (c *Client) GetAlertNotificationID(ctx context.Context, id uint) (AlertNoti
 	if raw, code, err = c.get(ctx, fmt.Sprintf("api/alert-notifications/%d", id), nil); err != nil {
 		return an, err
 	}
-	if code != 200 {
+	if code != http.StatusOK {
 		return an, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	err = json.Unmarshal(raw, &an)
@@ -93,7 +94,7 @@ func (c *Client) CreateAlertNotification(ctx context.Context, an AlertNotificati
 	if raw, code, err = c.post(ctx, "api/alert-notifications", nil, raw); err != nil {
 		return -1, err
 	}
-	if code != 200 {
+	if code != http.StatusOK {
 		return -1, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	result := struct {
@@ -117,7 +118,7 @@ func (c *Client) UpdateAlertNotificationUID(ctx context.Context, an AlertNotific
 	if raw, code, err = c.put(ctx, fmt.Sprintf("api/alert-notifications/uid/%s", uid), nil, raw); err != nil {
 		return err
 	}
-	if code != 200 {
+	if code != http.StatusOK {
 		return fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	return nil
@@ -137,7 +138,7 @@ func (c *Client) UpdateAlertNotificationID(ctx context.Context, an AlertNotifica
 	if raw, code, err = c.put(ctx, fmt.Sprintf("api/alert-notifications/%d", id), nil, raw); err != nil {
 		return err
 	}
-	if code != 200 {
+	if code != http.StatusOK {
 		return fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	return nil
@@ -154,7 +155,7 @@ func (c *Client) DeleteAlertNotificationUID(ctx context.Context, uid string) err
 	if raw, code, err = c.delete(ctx, fmt.Sprintf("api/alert-notifications/uid/%s", uid)); err != nil {
 		return err
 	}
-	if code != 200 {
+	if code != http.StatusOK {
 		return fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	return nil
@@ -171,7 +172,7 @@ func (c *Client) DeleteAlertNotificationID(ctx context.Context, id uint) error {
 	if raw, code, err = c.delete(ctx, fmt.Sprintf("api/alert-notifications/%d", id)); err != nil {
 		return err
 	}
-	if code != 200 {
+	if code != http.StatusOK {
 		return fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	return nil

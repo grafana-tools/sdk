@@ -17,6 +17,8 @@ It was made foremost for
 later separated from it and moved to this new repository because the
 library is useful per se.
 
+The library requires at least Go 1.13.
+
 ## Library design principles
 
 1. SDK offers client functionality so it covers Grafana REST API with
@@ -102,20 +104,7 @@ datasources. State of support for misc API parts noted below.
 | Frontend settings           | -                         |
 | Admin                       | partially                 |
 
-There is no exact roadmap.  The integration tests are being run against the
-following Grafana versions:
-
-* [6.7.1](./travis.yml)
-* [6.6.2](/.travis.yml)
-* [6.5.3](/.travis.yml)
-* [6.4.5](/.travis.yml)
-
-With the following Go versions:
-
-* 1.14.x
-* 1.13.x
-* 1.12.x
-* 1.11.x
+The integration tests are being run for the Grafana and Go versions listed in [`.github/workflows/go.yml`](.github/workflows/go.yml).
 
 I still have interest to this library development but not always have
 time for it. So I gladly accept new contributions. Drop an issue or
@@ -136,3 +125,17 @@ https://github.com/grafana-tools/sdk
 * [github.com/raintank/memo](https://github.com/raintank/memo) — send slack mentions to Grafana annotations.
 * [github.com/retzkek/grafctl](https://github.com/retzkek/grafctl) — backup/restore/track dashboards with git.
 * [github.com/grafana/grizzly](https://github.com/grafana/grizzly) — manage Grafana dashboards via CLI and libsonnet/jsonnet
+
+## Running tests
+
+* Unit tests:
+	```command
+	$ go test ./...
+	```
+
+* Integration tests:
+
+	```command
+	$ GRAFANA_VERSION=6.7.1 docker-compose up -d
+	$ GRAFANA_INTEGRATION=1 go test ./...
+	```
