@@ -38,6 +38,7 @@ const (
 	RowType
 	BarGaugeType
 	HeatmapType
+	TableOldType
 )
 
 const MixedSource = "-- Mixed --"
@@ -59,6 +60,7 @@ type (
 		*AlertlistPanel
 		*BarGaugePanel
 		*HeatmapPanel
+		*TableOldPanel
 		*CustomPanel
 	}
 	panelType   int8
@@ -133,7 +135,7 @@ type (
 		Bars        bool        `json:"bars"`
 		DashLength  *uint       `json:"dashLength,omitempty"`
 		Dashes      *bool       `json:"dashes,omitempty"`
-		Decimals    *int       `json:"decimals,omitempty"`
+		Decimals    *int        `json:"decimals,omitempty"`
 		Fill        int         `json:"fill"`
 		//		Grid        grid        `json:"grid"` obsoleted in 4.1 by xaxis and yaxis
 
@@ -172,6 +174,11 @@ type (
 				} `json:"steps"`
 			} `json:"threshold"`
 		} `json:"defaults"`
+	}
+	TableOldPanel struct {
+		CommonPanel
+		Targets []Target      `json:"targets,omitempty"`
+		Styles  []ColumnStyle `json:"styles"`
 	}
 	Options struct {
 		Orientation   string `json:"orientation"`
@@ -442,7 +449,7 @@ type (
 		Type            string     `json:"type"`
 		ColorMode       *string    `json:"colorMode,omitempty"`
 		Colors          *[]string  `json:"colors,omitempty"`
-		Decimals        *int      `json:"decimals,omitempty"`
+		Decimals        *int       `json:"decimals,omitempty"`
 		Thresholds      *[]string  `json:"thresholds,omitempty"`
 		Unit            *string    `json:"unit,omitempty"`
 		MappingType     int        `json:"mappingType,omitempty"`
@@ -973,6 +980,12 @@ func (p *Panel) UnmarshalJSON(b []byte) (err error) {
 			if err = json.Unmarshal(b, &rowpanel); err == nil {
 				p.RowPanel = &rowpanel
 			}
+		case "table-old":
+			var tableOldPanel TableOldPanel
+			p.OfType = TableOldType
+			if err = json.Unmarshal(b, &tableOldPanel); err == nil {
+				p.TableOldPanel = &tableOldPanel
+			}
 		default:
 			var custom = make(CustomPanel)
 			p.OfType = CustomType
@@ -1052,6 +1065,12 @@ func (p *Panel) MarshalJSON() ([]byte, error) {
 			HeatmapPanel
 		}{p.CommonPanel, *p.HeatmapPanel}
 		return json.Marshal(outHeatmap)
+	case TableOldType:
+		var outTableOld = struct {
+			CommonPanel
+			TableOldPanel
+		}{p.CommonPanel, *p.TableOldPanel}
+		return json.Marshal(outTableOld)
 	case CustomType:
 		var outCustom = struct {
 			CommonPanel
