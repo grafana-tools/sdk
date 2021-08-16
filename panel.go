@@ -37,6 +37,7 @@ const (
 	StatType
 	RowType
 	BarGaugeType
+	GaugeType
 	HeatmapType
 )
 
@@ -58,6 +59,7 @@ type (
 		*RowPanel
 		*AlertlistPanel
 		*BarGaugePanel
+		*GaugePanel
 		*HeatmapPanel
 		*CustomPanel
 	}
@@ -133,7 +135,7 @@ type (
 		Bars        bool        `json:"bars"`
 		DashLength  *uint       `json:"dashLength,omitempty"`
 		Dashes      *bool       `json:"dashes,omitempty"`
-		Decimals    *int       `json:"decimals,omitempty"`
+		Decimals    *int        `json:"decimals,omitempty"`
 		Fill        int         `json:"fill"`
 		//		Grid        grid        `json:"grid"` obsoleted in 4.1 by xaxis and yaxis
 
@@ -172,6 +174,11 @@ type (
 				} `json:"steps"`
 			} `json:"threshold"`
 		} `json:"defaults"`
+	}
+	GaugePanel struct {
+		CommonPanel
+		Targets []Target      `json:"targets,omitempty"`
+		Styles  []ColumnStyle `json:"styles"`
 	}
 	Options struct {
 		Orientation   string `json:"orientation"`
@@ -442,7 +449,7 @@ type (
 		Type            string     `json:"type"`
 		ColorMode       *string    `json:"colorMode,omitempty"`
 		Colors          *[]string  `json:"colors,omitempty"`
-		Decimals        *int      `json:"decimals,omitempty"`
+		Decimals        *int       `json:"decimals,omitempty"`
 		Thresholds      *[]string  `json:"thresholds,omitempty"`
 		Unit            *string    `json:"unit,omitempty"`
 		MappingType     int        `json:"mappingType,omitempty"`
@@ -967,6 +974,12 @@ func (p *Panel) UnmarshalJSON(b []byte) (err error) {
 			if err = json.Unmarshal(b, &heatmap); err == nil {
 				p.HeatmapPanel = &heatmap
 			}
+		case "gauge":
+			var gaugePanel GaugePanel
+			p.OfType = GaugeType
+			if err = json.Unmarshal(b, &gaugePanel); err == nil {
+				p.GaugePanel = &gaugePanel
+			}
 		case "row":
 			var rowpanel RowPanel
 			p.OfType = RowType
@@ -1046,6 +1059,12 @@ func (p *Panel) MarshalJSON() ([]byte, error) {
 			RowPanel
 		}{p.CommonPanel, *p.RowPanel}
 		return json.Marshal(outRow)
+	case GaugeType:
+		var outGauge = struct {
+			CommonPanel
+			GaugePanel
+		}{p.CommonPanel, *p.GaugePanel}
+		return json.Marshal(outGauge)
 	case HeatmapType:
 		var outHeatmap = struct {
 			CommonPanel
