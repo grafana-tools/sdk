@@ -133,7 +133,7 @@ type (
 		Bars        bool        `json:"bars"`
 		DashLength  *uint       `json:"dashLength,omitempty"`
 		Dashes      *bool       `json:"dashes,omitempty"`
-		Decimals    *int       `json:"decimals,omitempty"`
+		Decimals    *int        `json:"decimals,omitempty"`
 		Fill        int         `json:"fill"`
 		//		Grid        grid        `json:"grid"` obsoleted in 4.1 by xaxis and yaxis
 
@@ -442,7 +442,7 @@ type (
 		Type            string     `json:"type"`
 		ColorMode       *string    `json:"colorMode,omitempty"`
 		Colors          *[]string  `json:"colors,omitempty"`
-		Decimals        *int      `json:"decimals,omitempty"`
+		Decimals        *int       `json:"decimals,omitempty"`
 		Thresholds      *[]string  `json:"thresholds,omitempty"`
 		Unit            *string    `json:"unit,omitempty"`
 		MappingType     int        `json:"mappingType,omitempty"`
@@ -514,7 +514,8 @@ type Target struct {
 	Format         string `json:"format,omitempty"`
 
 	// For InfluxDB
-	Measurement string `json:"measurement,omitempty"`
+	Measurement  string `json:"measurement,omitempty"`
+	ResultFormat string `json:"resultFormat,omitempty"`
 
 	// For Elasticsearch
 	DsType  *string `json:"dsType,omitempty"`
