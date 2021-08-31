@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"reflect"
 	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/grafana-tools/sdk"
@@ -339,4 +340,73 @@ func getRawBoardRequest(t *testing.T, preserveId bool) sdk.RawBoardRequest {
 	r.Parameters = params
 
 	return r
+}
+
+// TestCustomPanelSerialization serializes and de-serializes a sample dashboard
+// object a few times and prints out final serialized JSON data to highlight
+// that CustomPanel was nested in a strange way.
+func TestCustomPanelSerialization(t *testing.T) {
+	board := &sdk.Board{
+		ID:              0,
+		UID:             "",
+		Slug:            "",
+		Title:           "",
+		OriginalTitle:   "",
+		Tags:            nil,
+		Style:           "",
+		Timezone:        "",
+		Editable:        false,
+		HideControls:    false,
+		SharedCrosshair: false,
+		Panels: []*sdk.Panel{
+			{
+				CommonPanel:     sdk.CommonPanel{},
+				GraphPanel:      nil,
+				TablePanel:      nil,
+				TextPanel:       nil,
+				SinglestatPanel: nil,
+				DashlistPanel:   nil,
+				PluginlistPanel: nil,
+				RowPanel:        nil,
+				AlertlistPanel:  nil,
+				CustomPanel: &sdk.CustomPanel{
+					"key": "value",
+				},
+			},
+		},
+		Rows:       nil,
+		Templating: sdk.Templating{},
+		Annotations: struct {
+			List []sdk.Annotation `json:"list"`
+		}{},
+		Refresh:       nil,
+		SchemaVersion: 0,
+		Version:       0,
+		Links:         nil,
+		Time:          sdk.Time{},
+		Timepicker:    sdk.Timepicker{},
+		GraphTooltip:  0,
+	}
+
+	jb, err := json.Marshal(board)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	for i := 0; i < 10; i++ {
+		newBoard := &sdk.Board{}
+		if err := json.Unmarshal(jb, newBoard); err != nil {
+			t.Fatal(err)
+		}
+
+		jb, err = json.MarshalIndent(newBoard, "", "  ")
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	cnt := strings.Count(string(jb), "CustomPanel")
+	if cnt != 0 {
+		t.Fatalf("expected to not have any CustomPanel keys, got: %v", cnt)
+	}
 }
