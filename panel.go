@@ -164,14 +164,22 @@ type (
 	}
 	FieldConfig struct {
 		Defaults struct {
-			Unit      string `json:"unit"`
-			Threshold struct {
+			DisplayName string `json:"displayName,omitempty"`
+			Unit        string `json:"unit"`
+			Threshold   struct {
 				Mode  string `json:"mode"`
 				Steps []struct {
 					Color string `json:"color"`
 					Value string `json:"value"`
 				} `json:"steps"`
 			} `json:"threshold"`
+			Thresholds struct {
+				Mode  string `json:"mode"`
+				Steps []struct {
+					Color string  `json:"color"`
+					Value float64 `json:"value"`
+				} `json:"steps"`
+			} `json:"thresholds"`
 		} `json:"defaults"`
 	}
 	Options struct {
@@ -281,6 +289,7 @@ type (
 		ValueMaps       []ValueMap  `json:"valueMaps"`
 		ValueName       string      `json:"valueName"`
 		Options         Options     `json:"options"`
+		FieldConfig     FieldConfig `json:"fieldConfig"`
 	}
 	DashlistPanel struct {
 		Mode     string   `json:"mode"`
