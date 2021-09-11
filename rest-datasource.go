@@ -54,17 +54,17 @@ func (r *Client) GetDatasource(ctx context.Context, id uint) (Datasource, error)
 		code int
 		err  error
 	)
+
 	if raw, code, err = r.get(ctx, fmt.Sprintf("api/datasources/%d", id), nil); err != nil {
 		return ds, err
 	}
-	switch code {
-	case http.StatusOK:
-		err = json.Unmarshal(raw, &ds)
-	case http.StatusNotFound:
-		err = fmt.Errorf("data source with id %q %w", id, ErrNotFound)
-	default:
-		err = fmt.Errorf("HTTP error %d: returns %s", code, raw)
+
+	if code != http.StatusOK {
+		return ds, httpStatusCodeError(code, fmt.Sprintf("data source with id %d", id), raw)
 	}
+
+	err = json.Unmarshal(raw, &ds)
+
 	return ds, err
 }
 
@@ -102,14 +102,13 @@ func (r *Client) CreateDatasource(ctx context.Context, ds Datasource) (StatusMes
 	if raw, code, err = r.post(ctx, "api/datasources", nil, raw); err != nil {
 		return StatusMessage{}, err
 	}
-	switch code {
-	case http.StatusOK:
-		err = json.Unmarshal(raw, &resp)
-	case http.StatusConflict:
-		err = fmt.Errorf("data source with name %q %w", ds.Name, ErrAlreadyExists)
-	default:
-		err = fmt.Errorf("HTTP status code %d: returns %s", code, raw)
+
+	if code != http.StatusOK {
+		return StatusMessage{}, httpStatusCodeError(code, fmt.Sprintf("data source with name %q", ds.Name), raw)
 	}
+
+	err = json.Unmarshal(raw, &resp)
+
 	return resp, err
 }
 
@@ -128,14 +127,13 @@ func (r *Client) UpdateDatasource(ctx context.Context, ds Datasource) (StatusMes
 	if raw, code, err = r.put(ctx, fmt.Sprintf("api/datasources/%d", ds.ID), nil, raw); err != nil {
 		return resp, err
 	}
-	switch code {
-	case http.StatusOK:
-		err = json.Unmarshal(raw, &resp)
-	case http.StatusNotFound:
-		err = fmt.Errorf("data source with name %q %w", ds.Name, ErrNotFound)
-	default:
-		err = fmt.Errorf("HTTP status code %d: returns %s", code, raw)
+
+	if code != http.StatusOK {
+		return StatusMessage{}, httpStatusCodeError(code, fmt.Sprintf("data source with name %q", ds.Name), raw)
 	}
+
+	err = json.Unmarshal(raw, &resp)
+
 	return resp, err
 }
 

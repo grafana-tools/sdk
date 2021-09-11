@@ -166,21 +166,19 @@ func (r *Client) getRawDashboard(ctx context.Context, path string) ([]byte, Boar
 		err        error
 		boardBytes []byte
 	)
+
 	if raw, code, err = r.get(ctx, fmt.Sprintf("api/dashboards/%s", path), nil); err != nil {
 		return nil, BoardProperties{}, err
 	}
 
-	switch code {
-	case http.StatusOK:
-		dec := json.NewDecoder(bytes.NewReader(raw))
-		dec.UseNumber()
-		err = dec.Decode(&result)
-		boardBytes = []byte(result.Board)
-	case http.StatusNotFound:
-		err = fmt.Errorf("dashboard with path %q %w", path, ErrNotFound)
-	default:
-		err = fmt.Errorf("HTTP error %d: returns %s", code, raw)
+	if code != http.StatusOK {
+		return nil, BoardProperties{}, httpStatusCodeError(code, fmt.Sprintf("dashboard with path %q", path), raw)
 	}
+
+	dec := json.NewDecoder(bytes.NewReader(raw))
+	dec.UseNumber()
+	err = dec.Decode(&result)
+	boardBytes = []byte(result.Board)
 
 	return boardBytes, result.Meta, err
 }
@@ -309,18 +307,12 @@ func (r *Client) SetDashboard(ctx context.Context, board Board, params SetDashbo
 	if raw, code, err = r.post(ctx, "api/dashboards/db", nil, raw); err != nil {
 		return StatusMessage{}, err
 	}
-	switch code { // https://grafana.com/docs/grafana/latest/http_api/dashboard/#create--update-dashboard
-	case http.StatusOK:
-		err = json.Unmarshal(raw, &resp)
-	case http.StatusForbidden:
-		err = fmt.Errorf("database dashboard with uid %q %w", board.UID, ErrNotAccessDenied)
-	case http.StatusUnauthorized:
-		err = fmt.Errorf("database dashboard with uid %q %w", board.UID, ErrNotAuthorized)
-	case http.StatusPreconditionFailed:
-		err = fmt.Errorf("database dashboard with uid %q %w", board.UID, ErrCannotCreate)
-	default: // includes http.StatusBadRequest
-		err = fmt.Errorf("HTTP error %d: returns %s", code, raw)
+
+	if code != http.StatusOK {
+		return StatusMessage{}, httpStatusCodeError(code, fmt.Sprintf("database dashboard with uid %q", board.UID), raw)
 	}
+
+	err = json.Unmarshal(raw, &resp)
 
 	return resp, err
 }
@@ -406,14 +398,13 @@ func (r *Client) DeleteDashboardByUID(ctx context.Context, uid string) (StatusMe
 	if raw, code, err = r.delete(ctx, fmt.Sprintf("api/dashboards/uid/%s", uid)); err != nil {
 		return StatusMessage{}, err
 	}
-	switch code {
-	case http.StatusOK:
-		err = json.Unmarshal(raw, &reply)
-	case http.StatusNotFound:
-		err = fmt.Errorf("dashboard with UID %q %w", uid, ErrNotFound)
-	default:
-		err = fmt.Errorf("HTTP error %d: returns %s", code, raw)
+
+	if code != http.StatusOK {
+		return StatusMessage{}, httpStatusCodeError(code, fmt.Sprintf("dashboard with uid %q", uid), raw)
 	}
+
+	err = json.Unmarshal(raw, &reply)
+
 	return reply, err
 }
 
