@@ -173,6 +173,7 @@ type (
 					Value string `json:"value"`
 				} `json:"steps"`
 			} `json:"threshold"`
+			Links []Link `json:"links,omitempty"`
 		} `json:"defaults"`
 	}
 	Options struct {
