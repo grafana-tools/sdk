@@ -134,7 +134,7 @@ type (
 		Bars        bool        `json:"bars"`
 		DashLength  *uint       `json:"dashLength,omitempty"`
 		Dashes      *bool       `json:"dashes,omitempty"`
-		Decimals    *int       `json:"decimals,omitempty"`
+		Decimals    *int        `json:"decimals,omitempty"`
 		Fill        int         `json:"fill"`
 		//		Grid        grid        `json:"grid"` obsoleted in 4.1 by xaxis and yaxis
 
@@ -161,6 +161,7 @@ type (
 		YFormats        []string         `json:"y_formats,omitempty"`
 		Xaxis           Axis             `json:"xaxis"` // was added in Grafana 4.x?
 		Yaxes           []Axis           `json:"yaxes"` // was added in Grafana 4.x?
+		FieldConfig     *FieldConfig     `json:"fieldConfig,omitempty"`
 	}
 	FieldConfig struct {
 		Defaults struct {
@@ -172,6 +173,7 @@ type (
 					Value string `json:"value"`
 				} `json:"steps"`
 			} `json:"threshold"`
+			Links []Link `json:"links,omitempty"`
 		} `json:"defaults"`
 	}
 	Options struct {
@@ -443,7 +445,7 @@ type (
 		Type            string     `json:"type"`
 		ColorMode       *string    `json:"colorMode,omitempty"`
 		Colors          *[]string  `json:"colors,omitempty"`
-		Decimals        *int      `json:"decimals,omitempty"`
+		Decimals        *int       `json:"decimals,omitempty"`
 		Thresholds      *[]string  `json:"thresholds,omitempty"`
 		Unit            *string    `json:"unit,omitempty"`
 		MappingType     int        `json:"mappingType,omitempty"`
