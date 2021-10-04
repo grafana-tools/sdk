@@ -568,9 +568,9 @@ type Target struct {
 	ValueType          string                    `json:"valueType,omitempty"`
 	GroupBys           []string                  `json:"groupBys,omitempty"`
 	Tags               []struct {
-		Key      string `json:key,omitempty`
-		Operator string `json:operator,omitempty`
-		Value    string `json:value,omitempty`
+		Key      string `json:"key,omitempty"`
+		Operator string `json:"operator,omitempty"`
+		Value    string `json:"value,omitempty"`
 	}
 }
 
