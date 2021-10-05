@@ -619,7 +619,14 @@ func TestPanel_Stackdriver_ParsedTargets(t *testing.T) {
 				"MONEY"
 			  ]
 			}
-		  ]
+		  ],
+      tags: [
+        {
+          "key": "key",
+          "operator": "=",
+          "value": "value"
+        }
+      ]
 		}
 	  ],
 	  "alignmentPeriod": "stackdriver-auto",
@@ -693,6 +700,14 @@ func TestPanel_Stackdriver_ParsedTargets(t *testing.T) {
 	}
 	if graph.GraphPanel.Targets[0].MetricType != "pubsub.googleapis.com/subscription/ack_message_count" {
 		t.Fatalf("should be \"pubsub.googleapis.com/subscription/ack_message_count\" but is not")
+	}
+	if len(graph.GraphPanel.Targets[0].Tags) != 1 {
+		t.Errorf("should be 1 but %d", len(graph.GraphPanel.Targets[0].Tags))
+	}
+	var tag = graph.GraphPanel.Targets[0].Tags[0]
+
+	if tag.Key != "key" && tag.Operator != "=" && tag.Value != "value" {
+		t.Errorf("Unexpected Target Tags: got %s", tag)
 	}
 }
 
