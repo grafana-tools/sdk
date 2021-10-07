@@ -571,7 +571,7 @@ type Target struct {
 		Key      string `json:"key,omitempty"`
 		Operator string `json:"operator,omitempty"`
 		Value    string `json:"value,omitempty"`
-	}
+	} `json:"tags,omitempty"`
 }
 
 // StackdriverAlignOptions defines the list of alignment options shown in
