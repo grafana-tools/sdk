@@ -107,6 +107,15 @@ func TestUnmarshal_DashboardWithGraphWithTargets26(t *testing.T) {
 	if len(panel.GraphPanel.Targets) != 2 {
 		t.Errorf("panel has 2 targets but got %d", len(panel.GraphPanel.Targets))
 	}
+	if len(panel.GraphPanel.Targets[1].Tags) != 1 {
+		t.Fatalf("should be 1 but got %d", len(panel.GraphPanel.Targets[0].Tags))
+	}
+	var tag = panel.GraphPanel.Targets[1].Tags[0]
+
+	if tag.Key != "key" && tag.Operator != "=" && tag.Value != "testvalue" {
+		t.Fatalf("Unexpected Target Tags: got %s", tag)
+	}
+
 }
 
 func TestUnmarshal_DashboardWithEmptyPanels30(t *testing.T) {

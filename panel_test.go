@@ -622,13 +622,6 @@ func TestPanel_Stackdriver_ParsedTargets(t *testing.T) {
 		  ]
     }
 	  ],
-    "tags": [
-      {
-        "key": "key",
-        "operator": "=",
-        "value": "value"
-      }
-    ],
 	  "alignmentPeriod": "stackdriver-auto",
 	  "crossSeriesReducer": "REDUCE_MEAN",
 	  "defaultProject": "loading project...",
@@ -700,14 +693,6 @@ func TestPanel_Stackdriver_ParsedTargets(t *testing.T) {
 	}
 	if graph.GraphPanel.Targets[0].MetricType != "pubsub.googleapis.com/subscription/ack_message_count" {
 		t.Fatalf("should be \"pubsub.googleapis.com/subscription/ack_message_count\" but is not")
-	}
-	if len(graph.GraphPanel.Targets[0].Tags) != 1 {
-		t.Fatalf("should be 1 but got %d", len(graph.GraphPanel.Targets[0].Tags))
-	}
-	var tag = graph.GraphPanel.Targets[0].Tags[0]
-
-	if tag.Key != "key" && tag.Operator != "=" && tag.Value != "value" {
-		t.Fatalf("Unexpected Target Tags: got %s", tag)
 	}
 }
 
