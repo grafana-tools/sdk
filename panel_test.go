@@ -620,7 +620,7 @@ func TestPanel_Stackdriver_ParsedTargets(t *testing.T) {
 			  ]
 			}
 		  ]
-		}
+    }
 	  ],
 	  "alignmentPeriod": "stackdriver-auto",
 	  "crossSeriesReducer": "REDUCE_MEAN",
@@ -689,7 +689,7 @@ func TestPanel_Stackdriver_ParsedTargets(t *testing.T) {
 		t.Fatalf("%s", err)
 	}
 	if len(graph.GraphPanel.Targets) != 1 {
-		t.Errorf("should be 1 but %d", len(graph.GraphPanel.Targets))
+		t.Fatalf("should be 1 but %d", len(graph.GraphPanel.Targets))
 	}
 	if graph.GraphPanel.Targets[0].MetricType != "pubsub.googleapis.com/subscription/ack_message_count" {
 		t.Fatalf("should be \"pubsub.googleapis.com/subscription/ack_message_count\" but is not")

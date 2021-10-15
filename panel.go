@@ -567,6 +567,11 @@ type Target struct {
 	PerSeriesAligner   string                    `json:"perSeriesAligner,omitempty"`
 	ValueType          string                    `json:"valueType,omitempty"`
 	GroupBys           []string                  `json:"groupBys,omitempty"`
+	Tags               []struct {
+		Key      string `json:"key,omitempty"`
+		Operator string `json:"operator,omitempty"`
+		Value    string `json:"value,omitempty"`
+	} `json:"tags,omitempty"`
 }
 
 // StackdriverAlignOptions defines the list of alignment options shown in
