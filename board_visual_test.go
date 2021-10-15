@@ -3,6 +3,7 @@ package sdk_test
 import (
 	"context"
 	"fmt"
+	"strings"
 	"testing"
 	"time"
 
@@ -63,6 +64,11 @@ func TestSinglestatPanel(t *testing.T) {
 	panel.SinglestatPanel.ValueName = "avg"
 
 	r.Add(panel)
+
+	textPanel := sdk.NewText("text")
+	textPanel.TextPanel.Content = "content"
+	textPanel.TextPanel.Mode = "markdown"
+	r.Add(textPanel)
 	cl := getClient(t)
 
 	db, err := cl.SetDashboard(context.TODO(), *b, sdk.SetDashboardParams{
@@ -72,6 +78,12 @@ func TestSinglestatPanel(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed setting dashboard: %v", err)
 	}
+	t.Cleanup(func() {
+		_, err := cl.DeleteDashboardByUID(context.TODO(), *db.UID)
+		if err != nil {
+			t.Fatal("failed cleaning up due to", err.Error())
+		}
+	})
 
 	durl := getDebugURL(t)
 
@@ -105,5 +117,18 @@ func TestSinglestatPanel(t *testing.T) {
 
 	if res == "" {
 		t.Fatalf("expected single-stat panel to have some value")
+	}
+
+	err = chromedp.Run(ctx,
+		chromedp.Navigate(fullAddr),
+		chromedp.WaitReady(`grafana-app`),
+		chromedp.TextContent(`p.markdown-html`, &res, chromedp.NodeVisible, chromedp.ByQuery),
+	)
+	if err != nil {
+		t.Fatalf("running chromedp has failed: %v", err)
+	}
+
+	if strings.TrimSpace(res) != `content` {
+		t.Fatalf("expected text panel to have the correct value, got: %s", res)
 	}
 }
