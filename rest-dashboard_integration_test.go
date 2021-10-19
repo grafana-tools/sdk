@@ -116,3 +116,82 @@ func Test_Dashboard_CRUD_By_UID(t *testing.T) {
 	}
 
 }
+
+func Test_Dashboard_CRUD_Templating(t *testing.T) {
+	var (
+		err         error
+		boardResult sdk.Board
+		properties  sdk.BoardProperties
+	)
+
+	shouldSkip(t)
+	ctx := context.Background()
+	client := getClient(t)
+
+	var board sdk.Board
+
+	raw, _ := ioutil.ReadFile("testdata/empty-dashboard-with-uid-templating-8.2.json")
+
+	if err = json.Unmarshal(raw, &board); err != nil {
+		t.Fatal(err)
+	}
+
+	//Cleanup if Already exists
+	if _, err = client.DeleteDashboardByUID(ctx, board.UID); err != nil {
+		t.Fatal(err)
+	}
+
+	if _, err = client.SetRawDashboard(ctx, raw); err != nil {
+		t.Fatal(err)
+	}
+
+	if boardResult, properties, err = client.GetDashboardByUID(ctx, board.UID); err != nil {
+		t.Fatal(err)
+	}
+
+	params := sdk.SetDashboardParams{
+		FolderID:  properties.FolderID,
+		Overwrite: true,
+	}
+	if _, err = client.SetDashboard(ctx, boardResult, params); err != nil {
+		t.Fatal(err)
+	}
+
+	if raw, _, err = client.GetRawDashboardByUID(ctx, board.UID); err != nil {
+		t.Fatal(err)
+	}
+
+	{
+		var boardMap map[string]interface{}
+
+		err = json.Unmarshal(raw, &boardMap)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		templatingMap, found := boardMap["templating"].(map[string]interface{})
+		if !found {
+			t.Fatal()
+		}
+
+		list, found := templatingMap["list"].([]interface{})
+		if !found {
+			t.Fatal()
+		}
+
+		_, found = list[0].(map[string]interface{})["options"]
+		if found {
+			t.Fatal()
+		}
+	}
+
+	//Remove the dashboard that was created.
+	if _, err = client.DeleteDashboardByUID(ctx, board.UID); err != nil {
+		t.Fatal(err)
+	}
+
+	//Verify that it has been deleted
+	if boardResult, _, err = client.GetDashboardByUID(ctx, board.UID); err == nil {
+		t.Fatal("Failed to delete dashboard, it can still be retrieved")
+	}
+}
