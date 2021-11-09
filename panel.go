@@ -566,7 +566,7 @@ type Target struct {
 	CrossSeriesReducer string                    `json:"crossSeriesReducer,omitempty"`
 	PerSeriesAligner   string                    `json:"perSeriesAligner,omitempty"`
 	ValueType          string                    `json:"valueType,omitempty"`
-	GroupBys           []string                  `json:"groupBys,omitempty"`
+	GroupBy            []string                  `json:"groupBy,omitempty"`
 	Tags               []struct {
 		Key      string `json:"key,omitempty"`
 		Operator string `json:"operator,omitempty"`

@@ -630,7 +630,7 @@ func TestPanel_Stackdriver_ParsedTargets(t *testing.T) {
 		"=",
 		"some_subscription_id"
 	  ],
-	  "groupBys": [],
+	  "groupBy": [],
 	  "metricKind": "DELTA",
 	  "metricType": "pubsub.googleapis.com/subscription/ack_message_count",
 	  "perSeriesAligner": "ALIGN_DELTA",
