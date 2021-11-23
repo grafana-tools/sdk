@@ -261,28 +261,29 @@ type (
 		ValueName       string      `json:"valueName"`
 	}
 	StatPanel struct {
-		Colors          []string    `json:"colors"`
-		ColorValue      bool        `json:"colorValue"`
-		ColorBackground bool        `json:"colorBackground"`
-		Decimals        int         `json:"decimals"`
-		Format          string      `json:"format"`
-		Gauge           Gauge       `json:"gauge,omitempty"`
-		MappingType     *uint       `json:"mappingType,omitempty"`
-		MappingTypes    []*MapType  `json:"mappingTypes,omitempty"`
-		MaxDataPoints   *IntString  `json:"maxDataPoints,omitempty"`
-		NullPointMode   string      `json:"nullPointMode"`
-		Postfix         *string     `json:"postfix,omitempty"`
-		PostfixFontSize *string     `json:"postfixFontSize,omitempty"`
-		Prefix          *string     `json:"prefix,omitempty"`
-		PrefixFontSize  *string     `json:"prefixFontSize,omitempty"`
-		RangeMaps       []*RangeMap `json:"rangeMaps,omitempty"`
-		SparkLine       SparkLine   `json:"sparkline,omitempty"`
-		Targets         []Target    `json:"targets,omitempty"`
-		Thresholds      string      `json:"thresholds"`
-		ValueFontSize   string      `json:"valueFontSize"`
-		ValueMaps       []ValueMap  `json:"valueMaps"`
-		ValueName       string      `json:"valueName"`
-		Options         Options     `json:"options"`
+		Colors          []string     `json:"colors"`
+		ColorValue      bool         `json:"colorValue"`
+		ColorBackground bool         `json:"colorBackground"`
+		Decimals        int          `json:"decimals"`
+		Format          string       `json:"format"`
+		Gauge           Gauge        `json:"gauge,omitempty"`
+		MappingType     *uint        `json:"mappingType,omitempty"`
+		MappingTypes    []*MapType   `json:"mappingTypes,omitempty"`
+		MaxDataPoints   *IntString   `json:"maxDataPoints,omitempty"`
+		NullPointMode   string       `json:"nullPointMode"`
+		Postfix         *string      `json:"postfix,omitempty"`
+		PostfixFontSize *string      `json:"postfixFontSize,omitempty"`
+		Prefix          *string      `json:"prefix,omitempty"`
+		PrefixFontSize  *string      `json:"prefixFontSize,omitempty"`
+		RangeMaps       []*RangeMap  `json:"rangeMaps,omitempty"`
+		SparkLine       SparkLine    `json:"sparkline,omitempty"`
+		Targets         []Target     `json:"targets,omitempty"`
+		Thresholds      string       `json:"thresholds"`
+		ValueFontSize   string       `json:"valueFontSize"`
+		ValueMaps       []ValueMap   `json:"valueMaps"`
+		ValueName       string       `json:"valueName"`
+		Options         Options      `json:"options"`
+		FieldConfig     *FieldConfig `json:"fieldConfig,omitempty"`
 	}
 	DashlistPanel struct {
 		Mode     string   `json:"mode"`
