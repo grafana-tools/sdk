@@ -34,7 +34,7 @@ func (r *Client) GetAllDatasources(ctx context.Context) ([]Datasource, error) {
 		code int
 		err  error
 	)
-	if raw, code, err = r.get(ctx, "api/datasources", nil); err != nil {
+	if raw, code, err = r.get(ctx, "api/datasources"); err != nil {
 		return nil, err
 	}
 	if code != 200 {
@@ -53,7 +53,7 @@ func (r *Client) GetDatasource(ctx context.Context, id uint) (Datasource, error)
 		code int
 		err  error
 	)
-	if raw, code, err = r.get(ctx, fmt.Sprintf("api/datasources/%d", id), nil); err != nil {
+	if raw, code, err = r.get(ctx, fmt.Sprintf("api/datasources/%d", id)); err != nil {
 		return ds, err
 	}
 	if code != 200 {
@@ -65,14 +65,15 @@ func (r *Client) GetDatasource(ctx context.Context, id uint) (Datasource, error)
 
 // GetDatasourceByName gets an datasource by Name.
 // Reflects GET /api/datasources/name/:datasourceName API call.
-func (r *Client) GetDatasourceByName(ctx context.Context, name string) (Datasource, error) {
+func (r *Client) GetDatasourceByName(ctx context.Context, name string, requestModifier ...APIRequestModifier) (Datasource, error) {
 	var (
 		raw  []byte
 		ds   Datasource
 		code int
 		err  error
 	)
-	if raw, code, err = r.get(ctx, fmt.Sprintf("api/datasources/name/%s", name), nil); err != nil {
+
+	if raw, code, err = r.get(ctx, fmt.Sprintf("api/datasources/name/%s", name), requestModifier...); err != nil {
 		return ds, err
 	}
 	if code != 200 {
@@ -84,7 +85,7 @@ func (r *Client) GetDatasourceByName(ctx context.Context, name string) (Datasour
 
 // CreateDatasource creates a new datasource.
 // Reflects POST /api/datasources API call.
-func (r *Client) CreateDatasource(ctx context.Context, ds Datasource) (StatusMessage, error) {
+func (r *Client) CreateDatasource(ctx context.Context, ds Datasource, requestModifier ...APIRequestModifier) (StatusMessage, error) {
 	var (
 		raw  []byte
 		resp StatusMessage
@@ -93,7 +94,7 @@ func (r *Client) CreateDatasource(ctx context.Context, ds Datasource) (StatusMes
 	if raw, err = json.Marshal(ds); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, _, err = r.post(ctx, "api/datasources", nil, raw); err != nil {
+	if raw, _, err = r.post(ctx, "api/datasources", raw, requestModifier...); err != nil {
 		return StatusMessage{}, err
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
@@ -113,7 +114,7 @@ func (r *Client) UpdateDatasource(ctx context.Context, ds Datasource) (StatusMes
 	if raw, err = json.Marshal(ds); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, _, err = r.put(ctx, fmt.Sprintf("api/datasources/%d", ds.ID), nil, raw); err != nil {
+	if raw, _, err = r.put(ctx, fmt.Sprintf("api/datasources/%d", ds.ID), raw); err != nil {
 		return StatusMessage{}, err
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
@@ -161,7 +162,7 @@ func (r *Client) GetDatasourceTypes(ctx context.Context) (map[string]DatasourceT
 		code    int
 		err     error
 	)
-	if raw, code, err = r.get(ctx, "api/datasources/plugins", nil); err != nil {
+	if raw, code, err = r.get(ctx, "api/datasources/plugins"); err != nil {
 		return nil, err
 	}
 	if code != 200 {

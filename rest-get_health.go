@@ -38,7 +38,7 @@ func (r *Client) GetHealth(ctx context.Context) (HealthResponse, error) {
 		raw []byte
 		err error
 	)
-	if raw, _, err = r.get(ctx, "/api/health", nil); err != nil {
+	if raw, _, err = r.get(ctx, "/api/health"); err != nil {
 		return HealthResponse{}, err
 	}
 

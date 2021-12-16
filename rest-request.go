@@ -31,6 +31,9 @@ import (
 	"strings"
 )
 
+// APIRequestModifier allows to specify additional request modifiers
+type APIRequestModifier func(req *http.Request)
+
 // DefaultHTTPClient initialized Grafana with appropriate conditions.
 // It allows you globally redefine HTTP client.
 var DefaultHTTPClient = http.DefaultClient
@@ -77,33 +80,34 @@ func NewClient(apiURL, apiKeyOrBasicAuth string, client *http.Client) (*Client, 
 	return &Client{baseURL: baseURL.String(), basicAuth: basicAuth, key: key, client: client}, nil
 }
 
-func (r *Client) get(ctx context.Context, query string, params url.Values) ([]byte, int, error) {
-	return r.doRequest(ctx, "GET", query, params, nil)
+func (r *Client) get(ctx context.Context, query string, options ...APIRequestModifier) ([]byte, int, error) {
+	return r.doRequest(ctx, "GET", query, nil, options...)
 }
 
-func (r *Client) patch(ctx context.Context, query string, params url.Values, body []byte) ([]byte, int, error) {
-	return r.doRequest(ctx, "PATCH", query, params, bytes.NewBuffer(body))
+func (r *Client) patch(ctx context.Context, query string, body []byte, options ...APIRequestModifier) ([]byte, int, error) {
+	return r.doRequest(ctx, "PATCH", query, bytes.NewBuffer(body), options...)
 }
 
-func (r *Client) put(ctx context.Context, query string, params url.Values, body []byte) ([]byte, int, error) {
-	return r.doRequest(ctx, "PUT", query, params, bytes.NewBuffer(body))
+func (r *Client) put(ctx context.Context, query string, body []byte, options ...APIRequestModifier) ([]byte, int, error) {
+	return r.doRequest(ctx, "PUT", query, bytes.NewBuffer(body), options...)
 }
 
-func (r *Client) post(ctx context.Context, query string, params url.Values, body []byte) ([]byte, int, error) {
-	return r.doRequest(ctx, "POST", query, params, bytes.NewBuffer(body))
+func (r *Client) post(ctx context.Context, query string, body []byte, options ...APIRequestModifier) ([]byte, int, error) {
+	return r.doRequest(ctx, "POST", query, bytes.NewBuffer(body), options...)
 }
 
-func (r *Client) delete(ctx context.Context, query string) ([]byte, int, error) {
-	return r.doRequest(ctx, "DELETE", query, nil, nil)
+func (r *Client) delete(ctx context.Context, query string, options ...APIRequestModifier) ([]byte, int, error) {
+	return r.doRequest(ctx, "DELETE", query, nil, options...)
 }
 
-func (r *Client) doRequest(ctx context.Context, method, query string, params url.Values, buf io.Reader) ([]byte, int, error) {
+func (r *Client) doRequest(ctx context.Context, method, query string, buf io.Reader, options ...APIRequestModifier) ([]byte, int, error) {
 	u, _ := url.Parse(r.baseURL)
 	u.Path = path.Join(u.Path, query)
-	if params != nil {
-		u.RawQuery = params.Encode()
-	}
+
 	req, err := http.NewRequest(method, u.String(), buf)
+	for _, opt := range options {
+		opt(req)
+	}
 	if err != nil {
 		return nil, 0, err
 	}

@@ -180,17 +180,19 @@ func TestSearchType(t *testing.T) {
 		sp         = sdk.SearchType
 		key        = "type"
 		testValues = []sdk.SearchParamType{sdk.SearchTypeFolder, sdk.SearchTypeDashboard}
+		urlValues  url.Values
 	)
 
-	v := make(url.Values)
+	request, _ := http.NewRequest("GET", "", nil)
 	for _, testValue := range testValues {
-		sp(testValue)(&v)
+		sp(testValue)(request)
+		urlValues = request.URL.Query()
 		expectedLen := 1
-		gotLen := len(v[key])
+		gotLen := len(urlValues[key])
 		if gotLen != expectedLen {
 			t.Errorf("expected length of %s to be %d, but was %d", key, expectedLen, gotLen)
 		}
-		value := v.Get(key)
+		value := urlValues.Get(key)
 		if value != string(testValue) {
 			t.Errorf("expected value of %s to be %s, but was %s", key, testValue, value)
 		}
@@ -198,15 +200,16 @@ func TestSearchType(t *testing.T) {
 }
 
 func testRepeatableStringSearchParam(t *testing.T, sp func(string) sdk.SearchParam, key string, testValues []string) {
-	v := make(url.Values)
+	request, _ := http.NewRequest("GET", "", nil)
 	for i, testValue := range testValues {
-		sp(testValue)(&v)
+		sp(testValue)(request)
+		urlValues := request.URL.Query()
 		expectedLen := i + 1
-		gotLen := len(v[key])
+		gotLen := len(urlValues[key])
 		if gotLen != expectedLen {
 			t.Errorf("expected length of %s to be %d, but was %d", key, expectedLen, gotLen)
 		}
-		last := v[key][i]
+		last := urlValues[key][i]
 		if last != testValue {
 			t.Errorf("expected last %s to be %s, but was %s", key, testValue, last)
 		}
@@ -214,15 +217,16 @@ func testRepeatableStringSearchParam(t *testing.T, sp func(string) sdk.SearchPar
 }
 
 func testStringSearchParam(t *testing.T, sp func(string) sdk.SearchParam, key string, testValues []string) {
-	v := make(url.Values)
+	request, _ := http.NewRequest("GET", "", nil)
 	for _, testValue := range testValues {
-		sp(testValue)(&v)
+		sp(testValue)(request)
+		urlValues := request.URL.Query()
 		expectedLen := 1
-		gotLen := len(v[key])
+		gotLen := len(urlValues[key])
 		if gotLen != expectedLen {
 			t.Errorf("expected length of %s to be %d, but was %d", key, expectedLen, gotLen)
 		}
-		value := v.Get(key)
+		value := urlValues.Get(key)
 		if value != testValue {
 			t.Errorf("expected value of %s to be %s, but was %s", key, testValue, value)
 		}
@@ -230,15 +234,16 @@ func testStringSearchParam(t *testing.T, sp func(string) sdk.SearchParam, key st
 }
 
 func testBoolSearchParam(t *testing.T, sp func(bool) sdk.SearchParam, key string, testValues []bool) {
-	v := make(url.Values)
+	request, _ := http.NewRequest("GET", "", nil)
 	for _, testValue := range testValues {
-		sp(testValue)(&v)
+		sp(testValue)(request)
+		urlValues := request.URL.Query()
 		expectedLen := 1
-		gotLen := len(v[key])
+		gotLen := len(urlValues[key])
 		if gotLen != expectedLen {
 			t.Errorf("expected length of %s to be %d, but was %d", key, expectedLen, gotLen)
 		}
-		value := v.Get(key)
+		value := urlValues.Get(key)
 		if value != strconv.FormatBool(testValue) {
 			t.Errorf("expected value of %s to be %t, but was %s", key, testValue, value)
 		}
@@ -246,15 +251,17 @@ func testBoolSearchParam(t *testing.T, sp func(bool) sdk.SearchParam, key string
 }
 
 func testRepeatableIntSearchParam(t *testing.T, sp func(int) sdk.SearchParam, key string, testValues []int) {
-	v := make(url.Values)
+	request, _ := http.NewRequest("GET", "", nil)
+
 	for i, testValue := range testValues {
-		sp(testValue)(&v)
+		sp(testValue)(request)
+		urlValues := request.URL.Query()
 		expectedLen := i + 1
-		gotLen := len(v[key])
+		gotLen := len(urlValues[key])
 		if gotLen != expectedLen {
 			t.Errorf("expected length of %s to be %d, but was %d", key, expectedLen, gotLen)
 		}
-		last := v[key][i]
+		last := urlValues[key][i]
 		if last != strconv.Itoa(testValue) {
 			t.Errorf("expected last %s to be %d, but was %s", key, testValue, last)
 		}
@@ -262,9 +269,10 @@ func testRepeatableIntSearchParam(t *testing.T, sp func(int) sdk.SearchParam, ke
 }
 
 func testNonZeroUIntSearchParam(t *testing.T, sp func(uint) sdk.SearchParam, key string, testValues []uint) {
-	v := make(url.Values)
-	sp(0)(&v)
-	value := v.Get(key)
+	request, _ := http.NewRequest("GET", "", nil)
+	sp(0)(request)
+	urlValues := request.URL.Query()
+	value := urlValues.Get(key)
 	if value != "" {
 		t.Errorf("expected value of %s to be unset, but was %s", key, value)
 	}
@@ -272,15 +280,16 @@ func testNonZeroUIntSearchParam(t *testing.T, sp func(uint) sdk.SearchParam, key
 }
 
 func testUIntSearchParam(t *testing.T, sp func(uint) sdk.SearchParam, key string, testValues []uint) {
-	v := make(url.Values)
+	request, _ := http.NewRequest("GET", "", nil)
 	for _, testValue := range testValues {
-		sp(testValue)(&v)
+		sp(testValue)(request)
+		urlValues := request.URL.Query()
 		expectedLen := 1
-		gotLen := len(v[key])
+		gotLen := len(urlValues[key])
 		if gotLen != expectedLen {
 			t.Errorf("expected length of %s to be %d, but was %d", key, expectedLen, gotLen)
 		}
-		value := v.Get(key)
+		value := urlValues.Get(key)
 		if value != strconv.FormatUint(uint64(testValue), 10) {
 			t.Errorf("expected value of %s to be %d, but was %s", key, testValue, value)
 		}

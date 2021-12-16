@@ -1,14 +1,14 @@
 package sdk_test
 
 import (
-	"net/url"
+	"net/http"
 	"testing"
 
 	"github.com/grafana-tools/sdk"
 )
 
 func TestAnnotationOptions(t *testing.T) {
-	v := make(url.Values)
+	request, _ := http.NewRequest("GET", "", nil)
 	params := []sdk.GetAnnotationsParams{
 		sdk.WithTag("foo"),
 		sdk.WithTag("bar"),
@@ -18,9 +18,10 @@ func TestAnnotationOptions(t *testing.T) {
 	}
 
 	for _, p := range params {
-		p(v)
+		p(request)
 	}
 
+	v := request.URL.Query()
 	l := v.Get("limit")
 	if l != "3" {
 		t.Errorf("expected limit to be %s, but was %s", "3", l)
