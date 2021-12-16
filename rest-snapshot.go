@@ -21,7 +21,7 @@ func (r *Client) CreateSnapshot(ctx context.Context, a CreateSnapshotRequest) (S
 	if raw, err = json.Marshal(a); err != nil {
 		return StatusMessage{}, errors.Wrap(err, "marshal request")
 	}
-	if raw, code, err = r.post(ctx, "api/snapshots", nil, raw); err != nil {
+	if raw, code, err = r.post(ctx, "api/snapshots", raw); err != nil {
 		return StatusMessage{}, errors.Wrap(err, "create snapshot")
 	}
 	if code/100 != 2 {

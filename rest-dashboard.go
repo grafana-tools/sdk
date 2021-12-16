@@ -24,7 +24,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/url"
+	"net/http"
 	"strconv"
 	"strings"
 	"time"
@@ -164,7 +164,7 @@ func (r *Client) getRawDashboard(ctx context.Context, path string) ([]byte, Boar
 		code int
 		err  error
 	)
-	if raw, code, err = r.get(ctx, fmt.Sprintf("api/dashboards/%s", path), nil); err != nil {
+	if raw, code, err = r.get(ctx, fmt.Sprintf("api/dashboards/%s", path)); err != nil {
 		return nil, BoardProperties{}, err
 	}
 	if code != 200 {
@@ -242,13 +242,14 @@ func (r *Client) Search(ctx context.Context, params ...SearchParam) ([]FoundBoar
 		boards []FoundBoard
 		code   int
 		err    error
+		modifiers []APIRequestModifier
 	)
-	u := url.URL{}
-	q := u.Query()
-	for _, p := range params {
-		p(&q)
+
+	for _, params := range params {
+		modifiers = append(modifiers, APIRequestModifier(params))
 	}
-	if raw, code, err = r.get(ctx, "api/search", q); err != nil {
+
+	if raw, code, err = r.get(ctx, "api/search", modifiers...); err != nil {
 		return nil, err
 	}
 	if code != 200 {
@@ -299,7 +300,7 @@ func (r *Client) SetDashboard(ctx context.Context, board Board, params SetDashbo
 	if raw, err = json.Marshal(newBoard); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, code, err = r.post(ctx, "api/dashboards/db", nil, raw); err != nil {
+	if raw, code, err = r.post(ctx, "api/dashboards/db", raw); err != nil {
 		return StatusMessage{}, err
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
@@ -324,7 +325,7 @@ func (r *Client) SetRawDashboardWithParam(ctx context.Context, request RawBoardR
 	if err != nil {
 		return StatusMessage{}, errors.New(err.Error())
 	}
-	if rawResp, code, err = r.post(ctx, "api/dashboards/db", nil, raw); err != nil {
+	if rawResp, code, err = r.post(ctx, "api/dashboards/db", raw); err != nil {
 		return StatusMessage{}, err
 	}
 	if err = json.Unmarshal(rawResp, &resp); err != nil {
@@ -393,7 +394,7 @@ func (r *Client) DeleteDashboardByUID(ctx context.Context, uid string) (StatusMe
 
 type (
 	// SearchParam is a type for specifying Search params.
-	SearchParam func(*url.Values)
+	SearchParam APIRequestModifier
 	// SearchParamType is a type accepted by SearchType func.
 	SearchParamType string
 )
@@ -408,9 +409,11 @@ const (
 // Empty query is silently ignored.
 // Specifying it multiple times is futile, only last one will be sent.
 func SearchQuery(query string) SearchParam {
-	return func(v *url.Values) {
+	return func(req *http.Request) {
 		if query != "" {
-			v.Set("query", query)
+			values := req.URL.Query()
+			values.Set("query", query)
+			req.URL.RawQuery = values.Encode()
 		}
 	}
 }
@@ -419,9 +422,11 @@ func SearchQuery(query string) SearchParam {
 // Empty tag is silently ignored.
 // Can be specified multiple times, logical OR is applied.
 func SearchTag(tag string) SearchParam {
-	return func(v *url.Values) {
+	return func(req *http.Request) {
 		if tag != "" {
-			v.Add("tag", tag)
+			values := req.URL.Query()
+			values.Add("tag", tag)
+			req.URL.RawQuery = values.Encode()
 		}
 	}
 }
@@ -429,32 +434,40 @@ func SearchTag(tag string) SearchParam {
 // SearchType specifies Search type to search for.
 // Specifying it multiple times is futile, only last one will be sent.
 func SearchType(searchType SearchParamType) SearchParam {
-	return func(v *url.Values) {
-		v.Set("type", string(searchType))
+	return func(req *http.Request) {
+		values := req.URL.Query()
+		values.Set("type", string(searchType))
+		req.URL.RawQuery = values.Encode()
 	}
 }
 
 // SearchDashboardID specifies Search dashboard id's to search for.
 // Can be specified multiple times, logical OR is applied.
 func SearchDashboardID(dashboardID int) SearchParam {
-	return func(v *url.Values) {
-		v.Add("dashboardIds", strconv.Itoa(dashboardID))
+	return func(req *http.Request) {
+		values := req.URL.Query()
+		values.Add("dashboardIds", strconv.Itoa(dashboardID))
+		req.URL.RawQuery = values.Encode()
 	}
 }
 
 // SearchFolderID specifies Search folder id's to search for.
 // Can be specified multiple times, logical OR is applied.
 func SearchFolderID(folderID int) SearchParam {
-	return func(v *url.Values) {
-		v.Add("folderIds", strconv.Itoa(folderID))
+	return func(req *http.Request) {
+		values := req.URL.Query()
+		values.Add("folderIds", strconv.Itoa(folderID))
+		req.URL.RawQuery = values.Encode()
 	}
 }
 
 // SearchStarred specifies if Search should search for starred dashboards only.
 // Specifying it multiple times is futile, only last one will be sent.
 func SearchStarred(starred bool) SearchParam {
-	return func(v *url.Values) {
-		v.Set("starred", strconv.FormatBool(starred))
+	return func(req *http.Request) {
+		values := req.URL.Query()
+		values.Set("starred", strconv.FormatBool(starred))
+		req.URL.RawQuery = values.Encode()
 	}
 }
 
@@ -462,9 +475,11 @@ func SearchStarred(starred bool) SearchParam {
 // As of grafana 6.7 it has to be <= 5000. 0 stands for absence of parameter in a query.
 // Specifying it multiple times is futile, only last one will be sent.
 func SearchLimit(limit uint) SearchParam {
-	return func(v *url.Values) {
+	return func(req *http.Request) {
 		if limit > 0 {
-			v.Set("limit", strconv.FormatUint(uint64(limit), 10))
+			values := req.URL.Query()
+			values.Set("limit", strconv.FormatUint(uint64(limit), 10))
+			req.URL.RawQuery = values.Encode()
 		}
 	}
 }
@@ -473,9 +488,11 @@ func SearchLimit(limit uint) SearchParam {
 // Zero page is silently ignored, page numbers start from one.
 // Specifying it multiple times is futile, only last one will be sent.
 func SearchPage(page uint) SearchParam {
-	return func(v *url.Values) {
+	return func(req *http.Request) {
 		if page > 0 {
-			v.Set("page", strconv.FormatUint(uint64(page), 10))
+			values := req.URL.Query()
+			values.Set("page", strconv.FormatUint(uint64(page), 10))
+			req.URL.RawQuery = values.Encode()
 		}
 	}
 }

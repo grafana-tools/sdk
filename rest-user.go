@@ -24,7 +24,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/url"
+	"net/http"
 )
 
 // GetActualUser gets an actual user.
@@ -36,7 +36,7 @@ func (r *Client) GetActualUser(ctx context.Context) (User, error) {
 		code int
 		err  error
 	)
-	if raw, code, err = r.get(ctx, "api/user", nil); err != nil {
+	if raw, code, err = r.get(ctx, "api/user"); err != nil {
 		return user, err
 	}
 	if code != 200 {
@@ -59,7 +59,7 @@ func (r *Client) GetUser(ctx context.Context, id uint) (User, error) {
 		code int
 		err  error
 	)
-	if raw, code, err = r.get(ctx, fmt.Sprintf("api/users/%d", id), nil); err != nil {
+	if raw, code, err = r.get(ctx, fmt.Sprintf("api/users/%d", id)); err != nil {
 		return user, err
 	}
 	if code != 200 {
@@ -83,8 +83,11 @@ func (r *Client) GetAllUsers(ctx context.Context) ([]User, error) {
 		err   error
 	)
 
-	params := url.Values{}
-	params.Set("perpage", "99999")
+	params := func(req *http.Request) {
+		values := req.URL.Query()
+		values.Set("perpage", "99999")
+		req.URL.RawQuery = values.Encode()
+	}
 	if raw, code, err = r.get(ctx, "api/users", params); err != nil {
 		return users, err
 	}
@@ -113,25 +116,27 @@ func (r *Client) SearchUsersWithPaging(ctx context.Context, query *string, perpa
 		pageUsers PageUsers
 		code      int
 		err       error
+		params    []APIRequestModifier
 	)
 
-	var params url.Values = nil
 	if perpage != nil && page != nil {
-		if params == nil {
-			params = url.Values{}
-		}
-		params["perpage"] = []string{fmt.Sprint(*perpage)}
-		params["page"] = []string{fmt.Sprint(*page)}
+		params = append(params, func(req *http.Request) {
+			values := req.URL.Query()
+			values.Set("perpage", fmt.Sprint(*perpage))
+			values.Set("page", fmt.Sprint(*page))
+			req.URL.RawQuery = values.Encode()
+		})
 	}
 
 	if query != nil {
-		if params == nil {
-			params = url.Values{}
-		}
-		params["query"] = []string{*query}
+		params = append(params, func(req *http.Request) {
+			values := req.URL.Query()
+			values.Set("query", *query)
+			req.URL.RawQuery = values.Encode()
+		})
 	}
 
-	if raw, code, err = r.get(ctx, "api/users/search", params); err != nil {
+	if raw, code, err = r.get(ctx, "api/users/search", params...); err != nil {
 		return pageUsers, err
 	}
 	if code != 200 {
@@ -154,7 +159,7 @@ func (r *Client) SwitchActualUserContext(ctx context.Context, oid uint) (StatusM
 		err  error
 	)
 
-	if raw, _, err = r.post(ctx, fmt.Sprintf("/api/user/using/%d", oid), nil, raw); err != nil {
+	if raw, _, err = r.post(ctx, fmt.Sprintf("/api/user/using/%d", oid), raw); err != nil {
 		return StatusMessage{}, err
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {

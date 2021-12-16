@@ -23,7 +23,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/url"
+	"net/http"
 	"strconv"
 )
 
@@ -31,18 +31,15 @@ import (
 
 // GetAllFolders gets all folders.
 // Reflects GET /api/folders API call.
-func (r *Client) GetAllFolders(ctx context.Context, params ...GetFolderParams) ([]Folder, error) {
+func (r *Client) GetAllFolders(ctx context.Context, params ...APIRequestModifier) ([]Folder, error) {
 	var (
-		raw           []byte
-		fs            []Folder
-		code          int
-		err           error
-		requestParams = make(url.Values)
+		raw  []byte
+		fs   []Folder
+		code int
+		err  error
 	)
-	for _, p := range params {
-		p(requestParams)
-	}
-	if raw, code, err = r.get(ctx, "api/folders", requestParams); err != nil {
+
+	if raw, code, err = r.get(ctx, "api/folders", params...); err != nil {
 		return nil, err
 	}
 	if code != 200 {
@@ -61,7 +58,7 @@ func (r *Client) GetFolderByUID(ctx context.Context, UID string) (Folder, error)
 		code int
 		err  error
 	)
-	if raw, code, err = r.get(ctx, fmt.Sprintf("api/folders/%s", UID), nil); err != nil {
+	if raw, code, err = r.get(ctx, fmt.Sprintf("api/folders/%s", UID)); err != nil {
 		return f, err
 	}
 	if code != 200 {
@@ -73,18 +70,19 @@ func (r *Client) GetFolderByUID(ctx context.Context, UID string) (Folder, error)
 
 // CreateFolder create folders.
 // Reflects POST /api/folders API call.
-func (r *Client) CreateFolder(ctx context.Context, f Folder) (Folder, error) {
+func (r *Client) CreateFolder(ctx context.Context, f Folder, params ...APIRequestModifier) (Folder, error) {
 	var (
 		raw  []byte
 		rf   Folder
 		code int
 		err  error
 	)
+
 	rf = Folder{}
 	if raw, err = json.Marshal(f); err != nil {
 		return rf, err
 	}
-	if raw, code, err = r.post(ctx, "api/folders", nil, raw); err != nil {
+	if raw, code, err = r.post(ctx, "api/folders", raw, params...); err != nil {
 		return rf, err
 	}
 	if code != 200 {
@@ -107,7 +105,7 @@ func (r *Client) UpdateFolderByUID(ctx context.Context, f Folder) (Folder, error
 	if raw, err = json.Marshal(f); err != nil {
 		return rf, err
 	}
-	if raw, code, err = r.put(ctx, fmt.Sprintf("api/folders/%s", f.UID), nil, raw); err != nil {
+	if raw, code, err = r.put(ctx, fmt.Sprintf("api/folders/%s", f.UID), raw); err != nil {
 		return rf, err
 	}
 	if code != 200 {
@@ -146,7 +144,7 @@ func (r *Client) GetFolderByID(ctx context.Context, ID int) (Folder, error) {
 	if ID <= 0 {
 		return f, fmt.Errorf("ID cannot be less than zero")
 	}
-	if raw, code, err = r.get(ctx, fmt.Sprintf("api/folders/id/%d", ID), nil); err != nil {
+	if raw, code, err = r.get(ctx, fmt.Sprintf("api/folders/id/%d", ID)); err != nil {
 		return f, err
 	}
 	if code != 200 {
@@ -156,12 +154,11 @@ func (r *Client) GetFolderByID(ctx context.Context, ID int) (Folder, error) {
 	return f, err
 }
 
-// GetFolderParams is the type for all options implementing query parameters
-type GetFolderParams func(values url.Values)
-
 // Limit sets the max number of folders to return
-func Limit(limit uint) GetFolderParams {
-	return func(v url.Values) {
-		v.Set("limit", strconv.FormatUint(uint64(limit), 10))
+func Limit(limit uint) APIRequestModifier {
+	return func(req *http.Request) {
+		values := req.URL.Query()
+		values.Set("limit", strconv.FormatUint(uint64(limit), 10))
+		req.URL.RawQuery = values.Encode()
 	}
 }

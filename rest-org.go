@@ -38,7 +38,7 @@ func (r *Client) CreateOrg(ctx context.Context, org Org) (StatusMessage, error) 
 	if raw, err = json.Marshal(org); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, _, err = r.post(ctx, "api/orgs", nil, raw); err != nil {
+	if raw, _, err = r.post(ctx, "api/orgs", raw); err != nil {
 		return StatusMessage{}, err
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
@@ -56,7 +56,7 @@ func (r *Client) GetAllOrgs(ctx context.Context) ([]Org, error) {
 		code int
 		err  error
 	)
-	if raw, code, err = r.get(ctx, "api/orgs", nil); err != nil {
+	if raw, code, err = r.get(ctx, "api/orgs"); err != nil {
 		return orgs, err
 	}
 
@@ -80,7 +80,7 @@ func (r *Client) GetActualOrg(ctx context.Context) (Org, error) {
 		code int
 		err  error
 	)
-	if raw, code, err = r.get(ctx, "api/org", nil); err != nil {
+	if raw, code, err = r.get(ctx, "api/org"); err != nil {
 		return org, err
 	}
 	if code != http.StatusOK {
@@ -103,7 +103,7 @@ func (r *Client) GetOrgById(ctx context.Context, oid uint) (Org, error) {
 		code int
 		err  error
 	)
-	if raw, code, err = r.get(ctx, fmt.Sprintf("api/orgs/%d", oid), nil); err != nil {
+	if raw, code, err = r.get(ctx, fmt.Sprintf("api/orgs/%d", oid)); err != nil {
 		return org, err
 	}
 
@@ -127,7 +127,7 @@ func (r *Client) GetOrgByOrgName(ctx context.Context, name string) (Org, error) 
 		code int
 		err  error
 	)
-	if raw, code, err = r.get(ctx, fmt.Sprintf("api/orgs/name/%s", name), nil); err != nil {
+	if raw, code, err = r.get(ctx, fmt.Sprintf("api/orgs/name/%s", name)); err != nil {
 		return org, err
 	}
 
@@ -153,7 +153,7 @@ func (r *Client) UpdateActualOrg(ctx context.Context, org Org) (StatusMessage, e
 	if raw, err = json.Marshal(org); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, _, err = r.put(ctx, "api/org", nil, raw); err != nil {
+	if raw, _, err = r.put(ctx, "api/org", raw); err != nil {
 		return StatusMessage{}, err
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
@@ -173,7 +173,7 @@ func (r *Client) UpdateOrg(ctx context.Context, org Org, oid uint) (StatusMessag
 	if raw, err = json.Marshal(org); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, _, err = r.put(ctx, fmt.Sprintf("api/orgs/%d", oid), nil, raw); err != nil {
+	if raw, _, err = r.put(ctx, fmt.Sprintf("api/orgs/%d", oid), raw); err != nil {
 		return StatusMessage{}, err
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
@@ -208,7 +208,7 @@ func (r *Client) GetActualOrgUsers(ctx context.Context) ([]OrgUser, error) {
 		code  int
 		err   error
 	)
-	if raw, code, err = r.get(ctx, "api/org/users", nil); err != nil {
+	if raw, code, err = r.get(ctx, "api/org/users"); err != nil {
 		return nil, err
 	}
 	if code != http.StatusOK {
@@ -231,7 +231,7 @@ func (r *Client) GetOrgUsers(ctx context.Context, oid uint) ([]OrgUser, error) {
 		code  int
 		err   error
 	)
-	if raw, code, err = r.get(ctx, fmt.Sprintf("api/orgs/%d/users", oid), nil); err != nil {
+	if raw, code, err = r.get(ctx, fmt.Sprintf("api/orgs/%d/users", oid)); err != nil {
 		return nil, err
 	}
 	if code != http.StatusOK {
@@ -256,7 +256,7 @@ func (r *Client) AddActualOrgUser(ctx context.Context, userRole UserRole) (Statu
 	if raw, err = json.Marshal(userRole); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, _, err = r.post(ctx, "api/org/users", nil, raw); err != nil {
+	if raw, _, err = r.post(ctx, "api/org/users", raw); err != nil {
 		return StatusMessage{}, err
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
@@ -276,7 +276,7 @@ func (r *Client) UpdateActualOrgUser(ctx context.Context, user UserRole, uid uin
 	if raw, err = json.Marshal(user); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, _, err = r.post(ctx, fmt.Sprintf("api/org/users/%d", uid), nil, raw); err != nil {
+	if raw, _, err = r.post(ctx, fmt.Sprintf("api/org/users/%d", uid), raw); err != nil {
 		return StatusMessage{}, err
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
@@ -311,7 +311,7 @@ func (r *Client) AddOrgUser(ctx context.Context, user UserRole, oid uint) (Statu
 	if raw, err = json.Marshal(user); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, _, err = r.post(ctx, fmt.Sprintf("api/orgs/%d/users", oid), nil, raw); err != nil {
+	if raw, _, err = r.post(ctx, fmt.Sprintf("api/orgs/%d/users", oid), raw); err != nil {
 		return StatusMessage{}, err
 	}
 	err = json.Unmarshal(raw, &reply)
@@ -329,7 +329,7 @@ func (r *Client) UpdateOrgUser(ctx context.Context, user UserRole, oid, uid uint
 	if raw, err = json.Marshal(user); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, _, err = r.patch(ctx, fmt.Sprintf("api/orgs/%d/users/%d", oid, uid), nil, raw); err != nil {
+	if raw, _, err = r.patch(ctx, fmt.Sprintf("api/orgs/%d/users/%d", oid, uid), raw); err != nil {
 		return StatusMessage{}, err
 	}
 	err = json.Unmarshal(raw, &reply)
@@ -362,7 +362,7 @@ func (r *Client) UpdateActualOrgPreferences(ctx context.Context, prefs Preferenc
 	if raw, err = json.Marshal(prefs); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, _, err = r.put(ctx, "api/org/preferences/", nil, raw); err != nil {
+	if raw, _, err = r.put(ctx, "api/org/preferences/", raw); err != nil {
 		return StatusMessage{}, err
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
@@ -380,7 +380,7 @@ func (r *Client) GetActualOrgPreferences(ctx context.Context) (Preferences, erro
 		code int
 		err  error
 	)
-	if raw, code, err = r.get(ctx, "/api/org/preferences", nil); err != nil {
+	if raw, code, err = r.get(ctx, "/api/org/preferences"); err != nil {
 		return pref, err
 	}
 
@@ -406,7 +406,7 @@ func (r *Client) UpdateActualOrgAddress(ctx context.Context, address Address) (S
 	if raw, err = json.Marshal(address); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, _, err = r.put(ctx, "api/org/address", nil, raw); err != nil {
+	if raw, _, err = r.put(ctx, "api/org/address", raw); err != nil {
 		return StatusMessage{}, err
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
@@ -426,7 +426,7 @@ func (r *Client) UpdateOrgAddress(ctx context.Context, address Address, oid uint
 	if raw, err = json.Marshal(address); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, _, err = r.put(ctx, fmt.Sprintf("api/orgs/%d/address", oid), nil, raw); err != nil {
+	if raw, _, err = r.put(ctx, fmt.Sprintf("api/orgs/%d/address", oid), raw); err != nil {
 		return StatusMessage{}, err
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
