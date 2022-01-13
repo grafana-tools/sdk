@@ -38,6 +38,7 @@ const (
 	StatType
 	RowType
 	BarGaugeType
+	GaugeType
 	HeatmapType
 )
 
@@ -59,6 +60,7 @@ type (
 		*RowPanel
 		*AlertlistPanel
 		*BarGaugePanel
+		*GaugePanel
 		*HeatmapPanel
 		*CustomPanel
 	}
@@ -175,6 +177,11 @@ type (
 			} `json:"threshold"`
 			Links []Link `json:"links,omitempty"`
 		} `json:"defaults"`
+	}
+	GaugePanel struct {
+		CommonPanel
+		Targets []Target      `json:"targets,omitempty"`
+		Styles  []ColumnStyle `json:"styles"`
 	}
 	Options struct {
 		Orientation   string `json:"orientation"`
@@ -975,6 +982,12 @@ func (p *Panel) UnmarshalJSON(b []byte) (err error) {
 			if err = json.Unmarshal(b, &heatmap); err == nil {
 				p.HeatmapPanel = &heatmap
 			}
+		case "gauge":
+			var gaugePanel GaugePanel
+			p.OfType = GaugeType
+			if err = json.Unmarshal(b, &gaugePanel); err == nil {
+				p.GaugePanel = &gaugePanel
+			}
 		case "row":
 			var rowpanel RowPanel
 			p.OfType = RowType
@@ -1054,6 +1067,12 @@ func (p *Panel) MarshalJSON() ([]byte, error) {
 			RowPanel
 		}{p.CommonPanel, *p.RowPanel}
 		return json.Marshal(outRow)
+	case GaugeType:
+		var outGauge = struct {
+			CommonPanel
+			GaugePanel
+		}{p.CommonPanel, *p.GaugePanel}
+		return json.Marshal(outGauge)
 	case HeatmapType:
 		var outHeatmap = struct {
 			CommonPanel
