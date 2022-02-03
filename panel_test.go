@@ -263,6 +263,31 @@ func TestNewGraph(t *testing.T) {
 	}
 }
 
+func TestNewTimeseries(t *testing.T) {
+	var title = "Sample Title"
+
+	timeseries := sdk.NewTimeseries(title)
+
+	if timeseries.TimeseriesPanel == nil {
+		t.Error("should be not nil")
+	}
+	if timeseries.GraphPanel != nil {
+		t.Error("should be nil")
+	}
+	if timeseries.TextPanel != nil {
+		t.Error("should be nil")
+	}
+	if timeseries.DashlistPanel != nil {
+		t.Error("should be nil")
+	}
+	if timeseries.SinglestatPanel != nil {
+		t.Error("should be nil")
+	}
+	if timeseries.Title != title {
+		t.Errorf("title should be %s but %s", title, timeseries.Title)
+	}
+}
+
 func TestGraph_AddTarget(t *testing.T) {
 	var target = sdk.Target{
 		RefID:      "A",
