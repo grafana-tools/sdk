@@ -116,6 +116,42 @@ func (r *Client) GetDashboardBySlug(ctx context.Context, slug string) (Board, Bo
 	return r.getDashboard(ctx, path)
 }
 
+// DashboardVersion represents a response from /api/dashboards/id/:dashboardId/versions API
+type DashboardVersion struct {
+	ID            int       `json:"id"`
+	DashboardID   int       `json:"dashboardId"`
+	ParentVersion int       `json:"parentVersion"`
+	RestoredFrom  int       `json:"restoredFrom"`
+	Version       int       `json:"version"`
+	Created       time.Time `json:"created"`
+	CreatedBy     string    `json:"createdBy"`
+	Message       string    `json:"message"`
+}
+
+// GetDashboardVersionsByID reflects /api/dashboards/id/:dashboardId/versions API call
+func (r *Client) GetDashboardVersionsByID(ctx context.Context, id uint, start, limit int) ([]DashboardVersion, error) {
+	var (
+		raw    []byte
+		code   int
+		err    error
+		params = url.Values{
+			"start": []string{strconv.Itoa(start)},
+			"limit": []string{strconv.Itoa(limit)},
+		}
+	)
+
+	if raw, code, err = r.get(ctx, fmt.Sprintf("api/dashboards/id/%d/versions", id), params); err != nil {
+		return nil, err
+	}
+	if code != 200 {
+		return nil, fmt.Errorf("HTTP error %d: returns %s", code, raw)
+	}
+	var versions []DashboardVersion
+	err = json.Unmarshal(raw, &versions)
+
+	return versions, err
+}
+
 // getDashboard loads a dashboard from Grafana instance along with metadata for a dashboard.
 // For dashboards from a filesystem set "file/" prefix for slug. By default dashboards from
 // a database assumed. Database dashboards may have "db/" prefix or may have not, it will
