@@ -129,14 +129,14 @@ type DashboardVersion struct {
 }
 
 // GetDashboardVersionsByDashboardID reflects /api/dashboards/id/:dashboardId/versions API call
-func (r *Client) GetDashboardVersionsByDashboardID(ctx context.Context, id uint, params ...QueryParam) ([]DashboardVersion, error) {
+func (r *Client) GetDashboardVersionsByDashboardID(ctx context.Context, dashboardID uint, params ...QueryParam) ([]DashboardVersion, error) {
 	var (
 		raw  []byte
 		code int
 		err  error
 	)
 
-	if raw, code, err = r.get(ctx, fmt.Sprintf("api/dashboards/id/%d/versions", id), queryParams(params...)); err != nil {
+	if raw, code, err = r.get(ctx, fmt.Sprintf("api/dashboards/id/%d/versions", dashboardID), queryParams(params...)); err != nil {
 		return nil, err
 	}
 	if code != 200 {
