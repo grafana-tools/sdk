@@ -21,10 +21,6 @@ func Test_Team_CRUD(t *testing.T) {
 	if len(teams.Teams) != 0 {
 		t.Fatalf("expected to get zero teams, got %#v", teams)
 	}
-	_, err = client.GetTeamByName(ctx, teamName)
-	if err == nil {
-		t.Fatal("expected request to fail for team that doesnt exist")
-	}
 
 	team := sdk.Team{
 		Name:  teamName,
@@ -32,17 +28,23 @@ func Test_Team_CRUD(t *testing.T) {
 		OrgID: 1,
 	}
 
-	status, err := client.CreateTeam(ctx, team)
+	_, err = client.CreateTeam(ctx, team)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	_, err = client.GetTeam(ctx, *status.ID)
+	teamByName, err := client.GetTeamByName(ctx, teamName)
+	if err != nil {
+		t.Fatal(err)
+	}
+	teamId := teamByName.Teams[0].ID
+
+	_, err = client.GetTeam(ctx, teamId)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	_, err = client.UpdateTeam(ctx, *status.ID, sdk.Team{
+	_, err = client.UpdateTeam(ctx, teamId, sdk.Team{
 		Name:  "newTestTeam",
 		Email: "",
 		OrgID: 1,
@@ -51,7 +53,7 @@ func Test_Team_CRUD(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	_, err = client.DeleteTeam(ctx, *status.ID)
+	_, err = client.DeleteTeam(ctx, teamId)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -70,12 +72,18 @@ func Test_TeamMember_CRUD(t *testing.T) {
 		OrgID: 1,
 	}
 
-	status, err := client.CreateTeam(ctx, team)
+	_, err := client.CreateTeam(ctx, team)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	teamMembers, err := client.GetTeamMembers(ctx, *status.ID)
+	teamByName, err := client.GetTeamByName(ctx, teamName)
+	if err != nil {
+		t.Fatal(err)
+	}
+	teamId := teamByName.Teams[0].ID
+
+	teamMembers, err := client.GetTeamMembers(ctx, teamId)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -88,20 +96,20 @@ func Test_TeamMember_CRUD(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	_, err = client.AddTeamMember(ctx, *status.ID, actualUser.ID)
+	_, err = client.AddTeamMember(ctx, teamId, actualUser.ID)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	teamMembers, err = client.GetTeamMembers(ctx, *status.ID)
+	teamMembers, err = client.GetTeamMembers(ctx, teamId)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(teamMembers) == 1 {
+	if len(teamMembers) != 1 {
 		t.Fatalf("expected to get one teams members, got %#v", teamMembers)
 	}
 
-	_, err = client.DeleteTeamMember(ctx, *status.ID, actualUser.ID)
+	_, err = client.DeleteTeamMember(ctx, teamId, actualUser.ID)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -120,17 +128,23 @@ func Test_TeamPreferences(t *testing.T) {
 		OrgID: 1,
 	}
 
-	status, err := client.CreateTeam(ctx, team)
+	_, err := client.CreateTeam(ctx, team)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	_, err = client.GetTeamPreferences(ctx, *status.ID)
+	teamByName, err := client.GetTeamByName(ctx, teamName)
+	if err != nil {
+		t.Fatal(err)
+	}
+	teamId := teamByName.Teams[0].ID
+
+	_, err = client.GetTeamPreferences(ctx, teamId)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	_, err = client.UpdateTeamPreferences(ctx, *status.ID, sdk.TeamPreferences{
+	_, err = client.UpdateTeamPreferences(ctx, teamId, sdk.TeamPreferences{
 		Theme:           "dark",
 		HomeDashboardId: 0,
 		Timezone:        "UTC",
