@@ -41,7 +41,7 @@ func Test_Team_CRUD(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	teamId := teamByName.Teams[0].ID
+	teamId := teamByName.ID
 
 	_, err = client.GetTeam(ctx, teamId)
 	if err != nil {
@@ -85,7 +85,7 @@ func Test_TeamMember_CRUD(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	teamId := teamByName.Teams[0].ID
+	teamId := teamByName.ID
 
 	teamMembers, err := client.GetTeamMembers(ctx, teamId)
 	if err != nil {
@@ -141,7 +141,7 @@ func Test_TeamPreferences(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	teamId := teamByName.Teams[0].ID
+	teamId := teamByName.ID
 
 	_, err = client.GetTeamPreferences(ctx, teamId)
 	if err != nil {
