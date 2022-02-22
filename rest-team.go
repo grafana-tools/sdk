@@ -57,15 +57,19 @@ func (r *Client) SearchTeams(ctx context.Context, params ...SearchTeamParams) (P
 	return pageTeams, err
 }
 
-func (r *Client) GetTeamByName(ctx context.Context, name string) (*Team, error) {
+func (r *Client) GetTeamByName(ctx context.Context, name string) (Team, error) {
+	var (
+		team Team
+		err  error
+	)
 	search, err := r.SearchTeams(ctx, WithTeam(name))
 	if err != nil {
-		return nil, err
+		return team, err
 	}
-	if len(search.Teams) == 0 {
-		return nil, nil
+	if len(search.Teams) > 0 {
+		team = search.Teams[0]
 	}
-	return &search.Teams[0], nil
+	return team, nil
 }
 
 // GetTeam gets an team by ID.
