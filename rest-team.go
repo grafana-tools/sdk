@@ -25,41 +25,25 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"strconv"
 )
 
-// SearchTeamsWithPaging search teams with paging.
-// query optional.  query value is contained in one of the name, login or email fields. Query values with spaces need to be url encoded e.g. query=Jane%20Doe
-// perpage optional. default 1000
-// page optional. default 1
-// http://docs.grafana.org/http_api/team/#search-teams
-// http://docs.grafana.org/http_api/team/#search-teams-with-paging
-//
+// SearchTeams search teams with optional parameters.
 // Reflects GET /api/teams/search API call.
-func (r *Client) SearchTeamsWithPaging(ctx context.Context, query *string, perpage *int, page *int) (PageTeams, error) {
+func (r *Client) SearchTeams(ctx context.Context, params ...SearchTeamParams) (PageTeams, error) {
 	var (
 		raw       []byte
 		pageTeams PageTeams
 		code      int
 		err       error
+		requestParams = make(url.Values)
 	)
 
-	var params url.Values = nil
-	if perpage != nil && page != nil {
-		if params == nil {
-			params = url.Values{}
-		}
-		params["perpage"] = []string{fmt.Sprint(*perpage)}
-		params["page"] = []string{fmt.Sprint(*page)}
+	for _, p := range params {
+		p(requestParams)
 	}
 
-	if query != nil {
-		if params == nil {
-			params = url.Values{}
-		}
-		params["query"] = []string{*query}
-	}
-
-	if raw, code, err = r.get(ctx, "api/teams/search", params); err != nil {
+	if raw, code, err = r.get(ctx, "api/teams/search", requestParams); err != nil {
 		return pageTeams, err
 	}
 	if code != 200 {
@@ -73,29 +57,15 @@ func (r *Client) SearchTeamsWithPaging(ctx context.Context, query *string, perpa
 	return pageTeams, err
 }
 
-func (r *Client) GetTeamByName(ctx context.Context, name string) (PageTeams, error) {
-	var (
-		raw       []byte
-		pageTeams PageTeams
-		code      int
-		err       error
-	)
-
-	var params = url.Values{}
-	params["name"] = []string{name}
-
-	if raw, code, err = r.get(ctx, "api/teams/search", params); err != nil {
-		return pageTeams, err
+func (r *Client) GetTeamByName(ctx context.Context, name string) (*Team, error) {
+	search, err := r.SearchTeams(ctx, WithTeam(name))
+	if err != nil {
+		return nil, err
 	}
-	if code != 200 {
-		return pageTeams, fmt.Errorf("HTTP error %d: returns %s", code, raw)
+	if len(search.Teams) == 0 {
+		return nil, nil
 	}
-	dec := json.NewDecoder(bytes.NewReader(raw))
-	dec.UseNumber()
-	if err := dec.Decode(&pageTeams); err != nil {
-		return pageTeams, fmt.Errorf("unmarshal teams: %s\n%s", err, raw)
-	}
-	return pageTeams, err
+	return &search.Teams[0], nil
 }
 
 // GetTeam gets an team by ID.
@@ -283,4 +253,39 @@ func (r *Client) UpdateTeamPreferences(ctx context.Context, teamId uint, tp Team
 		return StatusMessage{}, err
 	}
 	return resp, nil
+}
+
+// SearchTeamParams is the type for all options implementing query parameters
+// perpage optional. default 1000
+// page optional. default 1
+// http://docs.grafana.org/http_api/team/#search-teams
+// http://docs.grafana.org/http_api/team/#search-teams-with-paging
+type SearchTeamParams func(values url.Values)
+
+// WithQuery adds a query parameter
+func WithQuery(query string) SearchTeamParams {
+	return func(v url.Values) {
+		v.Set("query", query)
+	}
+}
+
+// WithPagesize adds a page size query parameter
+func WithPagesize(size uint) SearchTeamParams {
+	return func(v url.Values) {
+		v.Set("perpage", strconv.FormatUint(uint64(size),10))
+	}
+}
+
+// WithPage adds a page number query parameter
+func WithPage(page uint) SearchTeamParams {
+	return func(v url.Values) {
+		v.Set("page", strconv.FormatUint(uint64(page),10))
+	}
+}
+
+// WithTeam adds a query parameter
+func WithTeam(team string) SearchTeamParams {
+	return func(v url.Values) {
+		v.Set("team", team)
+	}
 }

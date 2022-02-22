@@ -14,7 +14,11 @@ func Test_Team_CRUD(t *testing.T) {
 	ctx := context.Background()
 
 	teamName := "mytestteam"
-	teams, err := client.SearchTeamsWithPaging(ctx, &teamName, nil, nil)
+	teams, err := client.SearchTeams(ctx,
+		sdk.WithQuery(teamName),
+		sdk.WithPagesize(20),
+		sdk.WithPage(1),
+	)
 	if err != nil {
 		t.Fatal(err)
 	}
