@@ -22,7 +22,9 @@ func Test_FolderPermissions(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer client.DeleteFolderByUID(ctx, folder.UID)
+	defer func(client *sdk.Client, ctx context.Context, UID string) {
+		_, _ = client.DeleteFolderByUID(ctx, UID)
+	}(client, ctx, folder.UID)
 
 	permissions, err := client.GetFolderPermissions(ctx, folder.UID)
 	if err != nil {
