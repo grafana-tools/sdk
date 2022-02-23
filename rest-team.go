@@ -2,7 +2,7 @@ package sdk
 
 /*
    Copyright 2016 Alexander I.Grafov <grafov@gmail.com>
-   Copyright 2016-2019 The Grafana SDK authors
+   Copyright 2016-2022 The Grafana SDK authors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
