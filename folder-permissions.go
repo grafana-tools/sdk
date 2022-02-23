@@ -44,25 +44,3 @@ type FolderPermission struct {
 	IsFolder       bool           `json:"isFolder"`
 	Url            string         `json:"url,omitempty"`
 }
-
-// UpdateFolderPermissionRequest is a request to update the folder permissions
-type UpdateFolderPermissionRequest struct {
-	Permission PermissionType `json:"permission"`
-	UserId     uint           `json:"userId,omitempty"`
-	TeamId     uint           `json:"teamId,omitempty"`
-	Role       string         `json:"role,omitempty"`
-}
-
-// MapFolderPermissionsToUpdateRequest maps FolderPermission structs to UpdateFolderPermissionRequest
-func MapFolderPermissionsToUpdateRequest(permissions []FolderPermission) []UpdateFolderPermissionRequest {
-	var updates []UpdateFolderPermissionRequest
-	for _, permission := range permissions {
-		updates = append(updates, UpdateFolderPermissionRequest{
-			Permission: permission.Permission,
-			UserId:     permission.UserId,
-			TeamId:     permission.TeamId,
-			Role:       permission.Role,
-		})
-	}
-	return updates
-}
