@@ -31,10 +31,10 @@ import (
 // Reflects GET /api/folders/:uid/permissions API call.
 func (r *Client) GetFolderPermissions(ctx context.Context, folderUID string) ([]FolderPermission, error) {
 	var (
-		raw           []byte
-		fs            []FolderPermission
-		code          int
-		err           error
+		raw  []byte
+		fs   []FolderPermission
+		code int
+		err  error
 	)
 	if raw, code, err = r.get(ctx, fmt.Sprintf("api/folders/%s/permissions", folderUID), nil); err != nil {
 		return nil, err
@@ -48,7 +48,7 @@ func (r *Client) GetFolderPermissions(ctx context.Context, folderUID string) ([]
 
 // UpdateFolderPermissions update folders permission
 // Reflects PUT /api/folders/:uid/permissions API call.
-func (r *Client) UpdateFolderPermissions(ctx context.Context, folderUID string, up ...UpdateFolderPermissionRequest) (StatusMessage, error) {
+func (r *Client) UpdateFolderPermissions(ctx context.Context, folderUID string, up ...FolderPermission) (StatusMessage, error) {
 	var (
 		raw  []byte
 		rf   StatusMessage
@@ -56,7 +56,7 @@ func (r *Client) UpdateFolderPermissions(ctx context.Context, folderUID string, 
 		err  error
 	)
 	request := struct {
-		Items []UpdateFolderPermissionRequest `json:"items"`
+		Items []FolderPermission `json:"items"`
 	}{
 		Items: up,
 	}

@@ -38,14 +38,14 @@ func Test_FolderPermissions(t *testing.T) {
 		t.Fatalf("failed to get actual user: %s", err.Error())
 	}
 
-	var updatePermissions []sdk.UpdateFolderPermissionRequest
-	updatePermissions = append(updatePermissions, sdk.MapFolderPermissionsToUpdateRequest(permissions)...)
-	updatePermissions = append(updatePermissions, sdk.UpdateFolderPermissionRequest{
+	var updatePermissions []sdk.FolderPermission
+	updatePermissions = append(updatePermissions, permissions...)
+	updatePermissions = append(updatePermissions, sdk.FolderPermission{
 		Permission: sdk.PermissionAdmin,
-		UserId: actualUser.ID,
+		UserId:     actualUser.ID,
 	})
 
-	_ , err = client.UpdateFolderPermissions(ctx, folder.UID,
+	_, err = client.UpdateFolderPermissions(ctx, folder.UID,
 		updatePermissions...,
 	)
 	if err != nil {
