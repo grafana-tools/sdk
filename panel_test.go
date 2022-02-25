@@ -721,6 +721,101 @@ func TestPanel_Stackdriver_ParsedTargets(t *testing.T) {
 	}
 }
 
+func TestPanel_Timeseries(t *testing.T) {
+	var rawPanel = []byte(`{
+		"id": 2,
+		"gridPos": {
+		  "x": 0,
+		  "y": 0,
+		  "w": 12,
+		  "h": 9
+		},
+		"type": "timeseries",
+		"title": "Panel Title",
+		"options": {
+		"tooltip": {
+		  "mode": "single"
+		},
+		"legend": {
+		  "displayMode": "list",
+		  "placement": "bottom",
+		  "calcs": []
+		}
+		},
+		"fieldConfig": {
+		"defaults": {
+		  "custom": {
+		  "drawStyle": "line",
+		  "lineInterpolation": "linear",
+		  "barAlignment": 0,
+		  "lineWidth": 1,
+		  "fillOpacity": 0,
+		  "gradientMode": "none",
+		  "spanNulls": false,
+		  "showPoints": "auto",
+		  "pointSize": 5,
+		  "stacking": {
+			"mode": "none",
+			"group": "A"
+		  },
+		  "axisPlacement": "auto",
+		  "axisLabel": "",
+		  "scaleDistribution": {
+			"type": "linear"
+		  },
+		  "hideFrom": {
+			"tooltip": false,
+			"viz": false,
+			"legend": false
+		  },
+		  "thresholdsStyle": {
+			"mode": "off"
+		  }
+		  },
+		  "color": {
+		  "mode": "palette-classic"
+		  },
+		  "thresholds": {
+		  "mode": "absolute",
+		  "steps": [
+			{
+			"value": 0.1,
+			"color": "green"
+			},
+			{
+			"value": 80,
+			"color": "red"
+			}
+		  ]
+		  },
+		  "mappings": []
+		},
+		"overrides": []
+		},
+		"targets": [
+		  {
+			"expr": "test_expr",
+			"legendFormat": "",
+			"interval": "",
+			"exemplar": true,
+			"refId": "A",
+			"datasource": "Sample datasource"
+		  }
+		],
+		"datasource": null
+	}`)
+	var timeseries sdk.Panel
+	err := json.Unmarshal(rawPanel, &timeseries)
+
+	if err != nil {
+		t.Fatalf("%s", err)
+	}
+
+	if len(timeseries.TimeseriesPanel.Targets) != 1 {
+		t.Fatalf("should be 1 but %d", len(timeseries.TimeseriesPanel.Targets))
+	}
+}
+
 // TestCustomPanelOutput_MarshalJSON marshals new custom panel to JSON,
 // then marshals that json to map[string]interface{},\
 // and then checks both custom and non-custom keys are present and correct.

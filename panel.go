@@ -420,7 +420,7 @@ type (
 	}
 	ThresholdStep struct {
 		Color string `json:"color"`
-		Value *int   `json:"value"`
+		Value *float64   `json:"value"`
 	}
 	FieldConfigColor struct {
 		Mode       string `json:"mode"`
