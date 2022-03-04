@@ -165,9 +165,7 @@ func (r *Client) getDashboard(ctx context.Context, path string) (Board, BoardPro
 			Board Board           `json:"dashboard"`
 		}
 	)
-	dec := json.NewDecoder(bytes.NewReader(raw))
-	dec.UseNumber()
-	if err := dec.Decode(&result.Board); err != nil {
+	if err := unmarshalJSONUsingNumber(raw, &result.Board); err != nil {
 		return Board{}, BoardProperties{}, errors.Wrap(err, "unmarshal board")
 	}
 	return result.Board, bp, err
@@ -202,9 +200,7 @@ func (r *Client) getRawDashboard(ctx context.Context, path string) ([]byte, Boar
 	if code != 200 {
 		return nil, BoardProperties{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
-	dec := json.NewDecoder(bytes.NewReader(raw))
-	dec.UseNumber()
-	if err := dec.Decode(&result); err != nil {
+	if err := unmarshalJSONUsingNumber(raw, &result); err != nil {
 		return nil, BoardProperties{}, errors.Wrap(err, "unmarshal board")
 	}
 	return []byte(result.Board), result.Meta, err
@@ -558,4 +554,20 @@ func cleanPrefix(slug string) (string, bool) {
 		return slug[3:], false
 	}
 	return slug, true
+}
+
+// unmarshalJSONUsingNumber will unmarshal json data, using Number instead of float64 where possible.
+// It will also decorate the returned error citing the problematic piece of payload.
+func unmarshalJSONUsingNumber(data []byte, v interface{}) error {
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.UseNumber()
+
+	if err := dec.Decode(v); err != nil {
+		if jsonErr := (&json.SyntaxError{}); errors.As(err, &jsonErr) {
+			problemPart := data[jsonErr.Offset-10 : jsonErr.Offset+10]
+			return fmt.Errorf("%w ~ error near '%s' (offset %d)", err, problemPart, jsonErr.Offset)
+		}
+		return err
+	}
+	return nil
 }
