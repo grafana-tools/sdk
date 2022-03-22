@@ -2,9 +2,11 @@ package sdk_test
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/grafana-tools/sdk"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_Datasource_CRUD(t *testing.T) {
@@ -46,12 +48,15 @@ func Test_Datasource_CRUD(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if dsRetrieved.Name != ds.Name {
-		t.Fatalf("got wrong name: expected %s, was %s", dsRetrieved.Name, ds.Name)
-	}
+	assert.Equal(t, dsRetrieved.Name, ds.Name, fmt.Sprintf("got wrong name: expected %s, was %s", dsRetrieved.Name, ds.Name))
+	//assert.NotNilf(t)
 
 	ds.Name = "elasticsdksource"
 	ds.ID = dsRetrieved.ID
+	ds.UID = "ZrY0GDS7z"
+	readOnly := false
+	ds.ReadOnly = &readOnly
+	ds.TypeLogoURL = "www.duckduckgo.com"
 	status, err = client.UpdateDatasource(ctx, ds)
 	if err != nil {
 		t.Fatal(err)
