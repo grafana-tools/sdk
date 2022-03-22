@@ -24,10 +24,10 @@ package sdk
 type Datasource struct {
 	ID                uint        `json:"id"`
 	OrgID             uint        `json:"orgId"`
-	Uid               string      `json:"uid"`
+	UID               string      `json:"uid"`
 	Name              string      `json:"name"`
 	Type              string      `json:"type"`
-	TypeLogoUrl       string      `json:"typeLogoUrl"`
+	TypeLogoURL       string      `json:"typeLogoUrl"`
 	Access            string      `json:"access"` // direct or proxy
 	URL               string      `json:"url"`
 	Password          *string     `json:"password,omitempty"`
