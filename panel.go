@@ -373,8 +373,8 @@ type (
 	FieldConfigDefaults struct {
 		Unit       string            `json:"unit"`
 		Decimals   *int              `json:"decimals,omitempty"`
-		Min        *int              `json:"min,omitempty"`
-		Max        *int              `json:"max,omitempty"`
+		Min        *float64          `json:"min,omitempty"`
+		Max        *float64          `json:"max,omitempty"`
 		Color      FieldConfigColor  `json:"color"`
 		Thresholds Thresholds        `json:"thresholds"`
 		Custom     FieldConfigCustom `json:"custom"`
@@ -419,8 +419,8 @@ type (
 		Steps []ThresholdStep `json:"steps"`
 	}
 	ThresholdStep struct {
-		Color string `json:"color"`
-		Value *int   `json:"value"`
+		Color string   `json:"color"`
+		Value *float64 `json:"value"`
 	}
 	FieldConfigColor struct {
 		Mode       string `json:"mode"`
