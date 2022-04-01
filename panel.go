@@ -23,6 +23,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 )
 
 // Each panel may be one of these types.
@@ -1030,78 +1031,85 @@ type probePanel struct {
 
 func (p *Panel) UnmarshalJSON(b []byte) (err error) {
 	var probe probePanel
-	if err = json.Unmarshal(b, &probe); err == nil {
-		p.CommonPanel = probe.CommonPanel
-		switch probe.Type {
-		case "graph":
-			var graph GraphPanel
-			p.OfType = GraphType
-			if err = json.Unmarshal(b, &graph); err == nil {
-				p.GraphPanel = &graph
-			}
-		case "table":
-			var table TablePanel
-			p.OfType = TableType
-			if err = json.Unmarshal(b, &table); err == nil {
-				p.TablePanel = &table
-			}
-		case "text":
-			var text TextPanel
-			p.OfType = TextType
-			if err = json.Unmarshal(b, &text); err == nil {
-				p.TextPanel = &text
-			}
-		case "singlestat":
-			var singlestat SinglestatPanel
-			p.OfType = SinglestatType
-			if err = json.Unmarshal(b, &singlestat); err == nil {
-				p.SinglestatPanel = &singlestat
-			}
-		case "stat":
-			var stat StatPanel
-			p.OfType = StatType
-			if err = json.Unmarshal(b, &stat); err == nil {
-				p.StatPanel = &stat
-			}
-		case "dashlist":
-			var dashlist DashlistPanel
-			p.OfType = DashlistType
-			if err = json.Unmarshal(b, &dashlist); err == nil {
-				p.DashlistPanel = &dashlist
-			}
-		case "bargauge":
-			var bargauge BarGaugePanel
-			p.OfType = BarGaugeType
-			if err = json.Unmarshal(b, &bargauge); err == nil {
-				p.BarGaugePanel = &bargauge
-			}
-		case "heatmap":
-			var heatmap HeatmapPanel
-			p.OfType = HeatmapType
-			if err = json.Unmarshal(b, &heatmap); err == nil {
-				p.HeatmapPanel = &heatmap
-			}
-		case "timeseries":
-			var timeseries TimeseriesPanel
-			p.OfType = TimeseriesType
-			if err = json.Unmarshal(b, &timeseries); err == nil {
-				p.TimeseriesPanel = &timeseries
-			}
-		case "row":
-			var rowpanel RowPanel
-			p.OfType = RowType
-			if err = json.Unmarshal(b, &rowpanel); err == nil {
-				p.RowPanel = &rowpanel
-			}
-		default:
-			var custom = make(CustomPanel)
-			p.OfType = CustomType
-			if err = json.Unmarshal(b, &custom); err == nil {
-				p.CustomPanel = &custom
-			}
+	if err = json.Unmarshal(b, &probe); err != nil {
+		return err
+	}
+
+	p.CommonPanel = probe.CommonPanel
+	switch probe.Type {
+	case "graph":
+		var graph GraphPanel
+		p.OfType = GraphType
+		if err = json.Unmarshal(b, &graph); err == nil {
+			p.GraphPanel = &graph
+		}
+	case "table":
+		var table TablePanel
+		p.OfType = TableType
+		if err = json.Unmarshal(b, &table); err == nil {
+			p.TablePanel = &table
+		}
+	case "text":
+		var text TextPanel
+		p.OfType = TextType
+		if err = json.Unmarshal(b, &text); err == nil {
+			p.TextPanel = &text
+		}
+	case "singlestat":
+		var singlestat SinglestatPanel
+		p.OfType = SinglestatType
+		if err = json.Unmarshal(b, &singlestat); err == nil {
+			p.SinglestatPanel = &singlestat
+		}
+	case "stat":
+		var stat StatPanel
+		p.OfType = StatType
+		if err = json.Unmarshal(b, &stat); err == nil {
+			p.StatPanel = &stat
+		}
+	case "dashlist":
+		var dashlist DashlistPanel
+		p.OfType = DashlistType
+		if err = json.Unmarshal(b, &dashlist); err == nil {
+			p.DashlistPanel = &dashlist
+		}
+	case "bargauge":
+		var bargauge BarGaugePanel
+		p.OfType = BarGaugeType
+		if err = json.Unmarshal(b, &bargauge); err == nil {
+			p.BarGaugePanel = &bargauge
+		}
+	case "heatmap":
+		var heatmap HeatmapPanel
+		p.OfType = HeatmapType
+		if err = json.Unmarshal(b, &heatmap); err == nil {
+			p.HeatmapPanel = &heatmap
+		}
+	case "timeseries":
+		var timeseries TimeseriesPanel
+		p.OfType = TimeseriesType
+		if err = json.Unmarshal(b, &timeseries); err == nil {
+			p.TimeseriesPanel = &timeseries
+		}
+	case "row":
+		var rowpanel RowPanel
+		p.OfType = RowType
+		if err = json.Unmarshal(b, &rowpanel); err == nil {
+			p.RowPanel = &rowpanel
+		}
+	default:
+		var custom = make(CustomPanel)
+		p.OfType = CustomType
+		if err = json.Unmarshal(b, &custom); err == nil {
+			p.CustomPanel = &custom
 		}
 	}
-	return
+
+	if err != nil && (probe.Title != "" || probe.Type != "") {
+		err = fmt.Errorf("%w (panel %q of type %q)", err, probe.Title, probe.Type)
+	}
+
+	return err
 }
 
 func (p *Panel) MarshalJSON() ([]byte, error) {
