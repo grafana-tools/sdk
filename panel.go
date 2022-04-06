@@ -67,9 +67,9 @@ type (
 	}
 	panelType   int8
 	CommonPanel struct {
-		Datasource *string `json:"datasource,omitempty"` // metrics
-		Editable   bool    `json:"editable"`
-		Error      bool    `json:"error"`
+		Datasource *DatasourceRef `json:"datasource,omitempty"` // metrics
+		Editable   bool           `json:"editable"`
+		Error      bool           `json:"error"`
 		GridPos    struct {
 			H *int `json:"h,omitempty"`
 			W *int `json:"w,omitempty"`
@@ -550,9 +550,9 @@ type (
 
 // for an any panel
 type Target struct {
-	RefID      string `json:"refId"`
-	Datasource string `json:"datasource,omitempty"`
-	Hide       bool   `json:"hide,omitempty"`
+	RefID      string         `json:"refId"`
+	Datasource *DatasourceRef `json:"datasource,omitempty"`
+	Hide       bool           `json:"hide,omitempty"`
 
 	// For PostgreSQL
 	Table        string `json:"table,omitempty"`
@@ -943,7 +943,7 @@ func (p *Panel) RepeatDatasourcesForEachTarget(dsNames ...string) {
 			for _, ds := range dsNames {
 				newTarget := target
 				newTarget.RefID = refID
-				newTarget.Datasource = ds
+				newTarget.Datasource = &DatasourceRef{LegacyName: ds}
 				refID = incRefID(refID)
 				*targets = append(*targets, newTarget)
 			}
@@ -974,13 +974,13 @@ func (p *Panel) RepeatTargetsForDatasources(dsNames ...string) {
 		lenTargets := len(*targets)
 		for i, name := range dsNames {
 			if i < lenTargets {
-				(*targets)[i].Datasource = name
+				(*targets)[i].Datasource = &DatasourceRef{LegacyName: name}
 				lastRefID = (*targets)[i].RefID
 			} else {
 				newTarget := (*targets)[i%lenTargets]
 				lastRefID = incRefID(lastRefID)
 				newTarget.RefID = lastRefID
-				newTarget.Datasource = name
+				newTarget.Datasource = &DatasourceRef{LegacyName: name}
 				*targets = append(*targets, newTarget)
 			}
 		}

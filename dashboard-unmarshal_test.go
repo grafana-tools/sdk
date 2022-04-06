@@ -24,6 +24,9 @@ import (
 	"io/ioutil"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/grafana-tools/sdk"
 )
 
@@ -101,8 +104,8 @@ func TestUnmarshal_DashboardWithGraphWithTargets26(t *testing.T) {
 	if panel.OfType != sdk.GraphType {
 		t.Errorf("panel type should be %d (\"graph\") type but got %d", sdk.GraphType, panel.OfType)
 	}
-	if *panel.Datasource != sdk.MixedSource {
-		t.Errorf("panel Datasource should be \"%s\" but got \"%s\"", sdk.MixedSource, *panel.Datasource)
+	if panel.Datasource.LegacyName != sdk.MixedSource {
+		t.Errorf("panel Datasource should have legacy name \"%s\" but got \"%s\"", sdk.MixedSource, panel.Datasource.LegacyName)
 	}
 	if len(panel.GraphPanel.Targets) != 2 {
 		t.Errorf("panel has 2 targets but got %d", len(panel.GraphPanel.Targets))
@@ -187,4 +190,36 @@ func TestUnmarshal_DashboardWithMixedYaxes(t *testing.T) {
 	if max4.Value != 50 || max4.Valid != true {
 		t.Errorf("panel #1 has wrong max value: %f, expected: %f", max4.Value, 100.0)
 	}
+}
+
+func TestUnmarshalDashboardWithObjectDatasourceRefs(t *testing.T) {
+	var board sdk.Board
+	raw, _ := ioutil.ReadFile("testdata/dashboard-with-object-datasource-ref-grafana-8.4.3.json")
+
+	err := json.Unmarshal(raw, &board)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	expectedPromDS := &sdk.DatasourceRef{Type: "prometheus", UID: "prom-ds-uid"}
+	expectedLogsDS := &sdk.DatasourceRef{Type: "logs", UID: "logs-ds-uid"}
+	expectedGraphiteDS := &sdk.DatasourceRef{Type: "graphite", UID: "graphite-ds-uid"}
+
+	require.Lenf(t, board.Panels, 1, "there is 1 panel expected but got %d", len(board.Panels))
+
+	panel := board.Panels[0]
+	assert.Equal(t, expectedPromDS, panel.Datasource)
+	require.Equalf(t, sdk.TimeseriesType, panel.OfType, "expected panel to be timeseries panel type %d, got %d", sdk.TimeseriesType, panel.OfType)
+	require.Lenf(t, panel.TimeseriesPanel.Targets, 1, "there is 1 target expected but got %d", len(panel.TimeseriesPanel.Targets))
+
+	target := panel.TimeseriesPanel.Targets[0]
+	assert.Equal(t, expectedPromDS, target.Datasource)
+
+	require.Lenf(t, board.Annotations.List, 1, "there is 1 annotation expected but got %d", len(board.Annotations.List))
+	annotation := board.Annotations.List[0]
+	assert.Equal(t, expectedLogsDS, annotation.Datasource)
+
+	require.Lenf(t, board.Templating.List, 1, "there is 1 template var expected but got %d", len(board.Templating.List))
+	templating := board.Templating.List[0]
+	assert.Equal(t, expectedGraphiteDS, templating.Datasource)
 }
