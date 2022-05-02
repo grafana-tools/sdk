@@ -952,7 +952,7 @@ func (p *Panel) RepeatDatasourcesForEachTarget(dsNames ...string) {
 			for _, ds := range dsNames {
 				newTarget := target
 				newTarget.RefID = refID
-				newTarget.Datasource = ds
+				// newTarget.Datasource = ds TODO No one is calling this function
 				refID = incRefID(refID)
 				*targets = append(*targets, newTarget)
 			}
@@ -983,13 +983,13 @@ func (p *Panel) RepeatTargetsForDatasources(dsNames ...string) {
 		lenTargets := len(*targets)
 		for i, name := range dsNames {
 			if i < lenTargets {
-				(*targets)[i].Datasource = name
+				// (*targets)[i].Datasource = name  TODO Noone is calling this function
 				lastRefID = (*targets)[i].RefID
 			} else {
 				newTarget := (*targets)[i%lenTargets]
 				lastRefID = incRefID(lastRefID)
 				newTarget.RefID = lastRefID
-				newTarget.Datasource = name
+				// newTarget.Datasource = name  TODO Noone is calling this fuction
 				*targets = append(*targets, newTarget)
 			}
 		}
