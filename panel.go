@@ -548,10 +548,15 @@ type (
 	}
 )
 
+type DataSource struct {
+   Type string `json:"type,omitempty"` 
+   Uid  string `json:"uid,omitempty"` 
+}
+
 // for an any panel
 type Target struct {
 	RefID      string `json:"refId"`
-	Datasource string `json:"datasource,omitempty"`
+	Datasource DataSource `json:"datasource,omitempty"`
 	Hide       bool   `json:"hide,omitempty"`
 
 	// For PostgreSQL
