@@ -949,7 +949,7 @@ func (p *Panel) RepeatDatasourcesForEachTarget(dsNames ...string) {
 		cleanedTargets := make([]Target, 0, len(originalTargets)*len(dsNames))
 		*targets = cleanedTargets
 		for _, target := range originalTargets {
-			for _, _ := range dsNames {
+			for _, _ = range dsNames {
 				newTarget := target
 				newTarget.RefID = refID
 				// newTarget.Datasource = ds TODO No one is calling this function
