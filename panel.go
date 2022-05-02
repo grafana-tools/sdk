@@ -949,7 +949,7 @@ func (p *Panel) RepeatDatasourcesForEachTarget(dsNames ...string) {
 		cleanedTargets := make([]Target, 0, len(originalTargets)*len(dsNames))
 		*targets = cleanedTargets
 		for _, target := range originalTargets {
-			for _, ds := range dsNames {
+			for _, _ := range dsNames {
 				newTarget := target
 				newTarget.RefID = refID
 				// newTarget.Datasource = ds TODO No one is calling this function
@@ -981,7 +981,7 @@ func (p *Panel) RepeatTargetsForDatasources(dsNames ...string) {
 	repeatTarget := func(dsNames []string, targets *[]Target) {
 		var lastRefID string
 		lenTargets := len(*targets)
-		for i, name := range dsNames {
+		for i, _ := range dsNames {
 			if i < lenTargets {
 				// (*targets)[i].Datasource = name  TODO Noone is calling this function
 				lastRefID = (*targets)[i].RefID
