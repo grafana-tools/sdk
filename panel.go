@@ -166,8 +166,10 @@ type (
 		Yaxes           []Axis           `json:"yaxes"` // was added in Grafana 4.x?
 		FieldConfig     *FieldConfig     `json:"fieldConfig,omitempty"`
 	}
+	OverRides struct {}
 	FieldConfig struct {
 		Defaults FieldConfigDefaults `json:"defaults"`
+		OverRides []OverRides `json:"overrides,omitempty"`
 	}
 	Options struct {
 		Orientation   string `json:"orientation"`
@@ -371,6 +373,7 @@ type (
 	TimeseriesTooltipOptions struct {
 		Mode string `json:"mode"`
 	}
+	Map struct {}
 	FieldConfigDefaults struct {
 		Unit       string            `json:"unit"`
 		Decimals   *int              `json:"decimals,omitempty"`
@@ -380,6 +383,7 @@ type (
 		Thresholds Thresholds        `json:"thresholds"`
 		Custom     FieldConfigCustom `json:"custom"`
 		Links      []Link            `json:"links,omitempty"`
+		Mappings   []Map             `json:"mappings,omitempty"`
 	}
 	FieldConfigCustom struct {
 		AxisLabel         string `json:"axisLabel,omitempty"`
@@ -548,10 +552,15 @@ type (
 	}
 )
 
+type DataSource struct {
+   Type string `json:"type,omitempty"` 
+   Uid  string `json:"uid,omitempty"` 
+}
+
 // for an any panel
 type Target struct {
 	RefID      string `json:"refId"`
-	Datasource string `json:"datasource,omitempty"`
+	Datasource DataSource `json:"datasource,omitempty"`
 	Hide       bool   `json:"hide,omitempty"`
 
 	// For PostgreSQL
