@@ -278,6 +278,7 @@ type (
 		ValueMaps       []ValueMap  `json:"valueMaps"`
 		ValueName       string      `json:"valueName"`
 		Options         Options     `json:"options"`
+		FieldConfig     FieldConfig `json:"fieldConfig"`
 	}
 	DashlistPanel struct {
 		Mode     string   `json:"mode"`
