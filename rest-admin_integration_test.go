@@ -2,6 +2,7 @@ package sdk_test
 
 import (
 	"context"
+	"github.com/stretchr/testify/assert"
 	"testing"
 
 	"github.com/grafana-tools/sdk"
@@ -52,4 +53,12 @@ func TestAdminOperations(t *testing.T) {
 	if retrievedUser.IsGrafanaAdmin != true {
 		t.Fatal("user should be an admin but is not")
 	}
+	//Delete user
+	msg, err := client.DeleteUser(ctx, retrievedUser.ID)
+	assert.Nil(t, err)
+	assert.Equal(t, "User deleted", *msg.Message)
+	//attempt to retrieve deleted user
+	retrievedUser, err = client.GetUser(ctx, retrievedUser.ID)
+	assert.NotNil(t, err, "Deleted user should not be accessible")
+
 }

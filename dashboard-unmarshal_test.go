@@ -101,8 +101,8 @@ func TestUnmarshal_DashboardWithGraphWithTargets26(t *testing.T) {
 	if panel.OfType != sdk.GraphType {
 		t.Errorf("panel type should be %d (\"graph\") type but got %d", sdk.GraphType, panel.OfType)
 	}
-	if *panel.Datasource != sdk.MixedSource {
-		t.Errorf("panel Datasource should be \"%s\" but got \"%s\"", sdk.MixedSource, *panel.Datasource)
+	if panel.Datasource != sdk.MixedSource {
+		t.Errorf("panel Datasource should be \"%s\" but got \"%s\"", sdk.MixedSource, panel.Datasource)
 	}
 	if len(panel.GraphPanel.Targets) != 2 {
 		t.Errorf("panel has 2 targets but got %d", len(panel.GraphPanel.Targets))
@@ -187,4 +187,41 @@ func TestUnmarshal_DashboardWithMixedYaxes(t *testing.T) {
 	if max4.Value != 50 || max4.Valid != true {
 		t.Errorf("panel #1 has wrong max value: %f, expected: %f", max4.Value, 100.0)
 	}
+}
+
+func TestUnmarshal_DashboardWithGraphWithTargets83(t *testing.T) {
+	var board sdk.Board
+	raw, _ := ioutil.ReadFile("testdata/default-panels-graph-with-target-8.3.json")
+
+	err := json.Unmarshal(raw, &board)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(board.Panels) != 2 {
+		t.Fatalf("board should have 2 panels but got %d", len(board.Panels))
+	}
+	rowPanel := board.Panels[0]
+	if rowPanel.OfType != sdk.RowType {
+		t.Errorf("panel type should be %d (\"row\") type but got %d", sdk.GraphType, rowPanel.OfType)
+	}
+
+	panel := board.Panels[1]
+	if panel.OfType != sdk.GraphType {
+		t.Errorf("panel type should be %d (\"graph\") type but got %d", sdk.GraphType, panel.OfType)
+	}
+
+	if len(panel.GraphPanel.Targets) != 1 {
+		t.Errorf("panel has 1 targets but got %d", len(panel.GraphPanel.Targets))
+	}
+
+	target := panel.GraphPanel.Targets[0]
+	datasource, ok := target.Datasource.(map[string]interface{})
+	if !ok {
+		t.Fatalf("target Datasource should be a map but got %T", panel.Datasource)
+	}
+	if datasource["type"] != "prometheus" {
+		t.Errorf("target datasource should be of type \"prometheus\" but got %s", datasource["type"])
+	}
+
 }
