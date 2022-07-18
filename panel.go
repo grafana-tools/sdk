@@ -24,6 +24,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"sort"
 )
 
 // Each panel may be one of these types.
@@ -1209,11 +1210,18 @@ func (c customPanelOutput) MarshalJSON() ([]byte, error) {
 	// Append custom keys to marshalled CommonPanel.
 	buf := bytes.NewBuffer(b[:len(b)-1])
 
-	for k, v := range c.CustomPanel {
+	// Sort keys to make output idempotent
+	keys := make([]string, 0, len(c.CustomPanel))
+	for k := range c.CustomPanel {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for _, k := range keys {
 		buf.WriteString(`,"`)
 		buf.WriteString(k)
 		buf.WriteString(`":`)
-		b, err := json.Marshal(v)
+		b, err := json.Marshal(c.CustomPanel[k])
 		if err != nil {
 			return b, err
 		}
