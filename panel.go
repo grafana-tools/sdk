@@ -93,12 +93,13 @@ type (
 			Text     string `json:"text"`
 			Value    string `json:"value"`
 		} `json:"scopedVars,omitempty"`
-		Span        float32 `json:"span"`                  // general
-		Title       string  `json:"title"`                 // general
-		Description *string `json:"description,omitempty"` // general
-		Transparent bool    `json:"transparent"`
-		Type        string  `json:"type"`
-		Alert       *Alert  `json:"alert,omitempty"`
+		Span            float32          `json:"span"`                  // general
+		Title           string           `json:"title"`                 // general
+		Description     *string          `json:"description,omitempty"` // general
+		Transparent     bool             `json:"transparent"`
+		Type            string           `json:"type"`
+		Alert           *Alert           `json:"alert,omitempty"`
+		Transformations []Transformation `json:"transformations,omitempty"`
 	}
 	AlertEvaluator struct {
 		Params []float64 `json:"params,omitempty"`
@@ -429,7 +430,12 @@ type (
 		FixedColor string `json:"fixedColor,omitempty"`
 		SeriesBy   string `json:"seriesBy,omitempty"`
 	}
-	CustomPanel map[string]interface{}
+	CustomPanel    map[string]interface{}
+	Transformation struct {
+		ID       string      `json:"id"`
+		Disabled bool        `json:"disabled"`
+		Options  interface{} `json:"options"`
+	}
 )
 
 // for a graph panel
