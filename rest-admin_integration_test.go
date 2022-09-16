@@ -2,8 +2,9 @@ package sdk_test
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 
 	"github.com/grafana-tools/sdk"
 )
@@ -52,6 +53,17 @@ func TestAdminOperations(t *testing.T) {
 	}
 	if retrievedUser.IsGrafanaAdmin != true {
 		t.Fatal("user should be an admin but is not")
+	}
+	_, err = client.UpdateUserPassword(ctx, sdk.UserPassword{Password: "123456"}, uid)
+	if err != nil {
+		t.Fatalf("failed to change the user's password")
+	}
+	retrievedUser, err = client.GetUser(ctx, uid)
+	if err != nil {
+		t.Fatalf("failed to get user: %s", err.Error())
+	}
+	if retrievedUser.Password != "123456" {
+		t.Fatalf("failed to change the user's password")
 	}
 	//Delete user
 	msg, err := client.DeleteUser(ctx, retrievedUser.ID)
