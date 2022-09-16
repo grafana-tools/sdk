@@ -82,3 +82,19 @@ func (r *Client) SwitchUserContext(ctx context.Context, uid uint, oid uint) (Sta
 	}
 	return resp, nil
 }
+
+func (r *Client) UpdateUserPassword(ctx context.Context, password UserPassword, uid uint) (StatusMessage, error) {
+	var (
+		raw   []byte
+		reply StatusMessage
+		err   error
+	)
+	if raw, err = json.Marshal(password); err != nil {
+		return StatusMessage{}, err
+	}
+	if raw, _, err = r.put(ctx, fmt.Sprintf("api/admin/users/%d/password", uid), nil, raw); err != nil {
+		return StatusMessage{}, err
+	}
+	err = json.Unmarshal(raw, &reply)
+	return reply, err
+}
