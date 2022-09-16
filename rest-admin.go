@@ -47,7 +47,7 @@ func (r *Client) DeleteUser(ctx context.Context, uid uint) (StatusMessage, error
 
 // UpdateUserPermissions updates the permissions of a global user.
 // Requires basic authentication and that the authenticated user is a Grafana Admin.
-// Reflects PUT /api/admin/users/:userId/password API call.
+// Reflects PUT /api/admin/users/:userId/permissions API call.
 func (r *Client) UpdateUserPermissions(ctx context.Context, permissions UserPermissions, uid uint) (StatusMessage, error) {
 	var (
 		raw   []byte
@@ -81,4 +81,23 @@ func (r *Client) SwitchUserContext(ctx context.Context, uid uint, oid uint) (Sta
 		return StatusMessage{}, err
 	}
 	return resp, nil
+}
+
+// UpdateUserPassword updates the password of a global user.
+// Requires basic authentication and that the authenticated user is a Grafana Admin.
+// Reflects PUT /api/admin/users/:userId/password API call.
+func (r *Client) UpdateUserPassword(ctx context.Context, password UserPassword, uid uint) (StatusMessage, error) {
+	var (
+		raw   []byte
+		reply StatusMessage
+		err   error
+	)
+	if raw, err = json.Marshal(password); err != nil {
+		return StatusMessage{}, err
+	}
+	if raw, _, err = r.put(ctx, fmt.Sprintf("api/admin/users/%d/password", uid), nil, raw); err != nil {
+		return StatusMessage{}, err
+	}
+	err = json.Unmarshal(raw, &reply)
+	return reply, err
 }
