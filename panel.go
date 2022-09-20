@@ -132,6 +132,7 @@ type (
 		Notifications       []AlertNotification `json:"notifications,omitempty"`
 		Message             string              `json:"message,omitempty"`
 		For                 string              `json:"for,omitempty"`
+    	PanelID             *uint               `json:"panel_id,omitempty"`
 	}
 	GraphPanel struct {
 		AliasColors interface{} `json:"aliasColors"` // XXX
