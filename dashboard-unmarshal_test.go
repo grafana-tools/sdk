@@ -225,3 +225,34 @@ func TestUnmarshal_DashboardWithGraphWithTargets83(t *testing.T) {
 	}
 
 }
+
+func TestUnmarshal_DashboardTableWithTransformations90(t *testing.T) {
+	var board sdk.Board
+
+	raw, err := ioutil.ReadFile("testdata/default-panels-table-with-transformations-9.0.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := json.Unmarshal(raw, &board); err != nil {
+		t.Fatal(err)
+	}
+
+	panel := board.Panels[0]
+	if len(panel.CommonPanel.Transformations) != 1 {
+		t.Errorf("panel should have 1 transformation defined, but has %d", len(panel.CommonPanel.Transformations))
+	}
+
+	transform := panel.CommonPanel.Transformations[0]
+	if transform.ID != "histogram" {
+		t.Fatalf(`transformation ID should be "histogram", but got %s`, transform.ID)
+	}
+
+	options, ok := transform.Options.(map[string]interface{})
+	if !ok {
+		t.Fatalf("transformation options should be a map but got %T", transform.Options)
+	}
+
+	if options["bucketSize"] != 5.0 {
+		t.Fatalf("transformation bucket size should be 5.0, but got %+v", options["bucketSize"])
+	}
+}
