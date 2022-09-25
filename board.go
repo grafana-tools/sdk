@@ -85,7 +85,7 @@ type (
 		AutoCount   *int        `json:"auto_count,omitempty"`
 		Datasource  interface{} `json:"datasource"`
 		Refresh     BoolInt     `json:"refresh"`
-		Options     []Option    `json:"options"`
+		Options     []Option    `json:"options,omitempty"`
 		IncludeAll  bool        `json:"includeAll"`
 		AllFormat   string      `json:"allFormat"`
 		AllValue    string      `json:"allValue"`
