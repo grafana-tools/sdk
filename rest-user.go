@@ -24,6 +24,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"net/url"
 )
 
@@ -39,7 +40,7 @@ func (r *Client) GetActualUser(ctx context.Context) (User, error) {
 	if raw, code, err = r.get(ctx, "api/user", nil); err != nil {
 		return user, err
 	}
-	if code != 200 {
+	if code != http.StatusOK {
 		return user, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	dec := json.NewDecoder(bytes.NewReader(raw))
@@ -62,7 +63,7 @@ func (r *Client) GetUser(ctx context.Context, id uint) (User, error) {
 	if raw, code, err = r.get(ctx, fmt.Sprintf("api/users/%d", id), nil); err != nil {
 		return user, err
 	}
-	if code != 200 {
+	if code != http.StatusOK {
 		return user, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	dec := json.NewDecoder(bytes.NewReader(raw))
@@ -88,7 +89,7 @@ func (r *Client) GetAllUsers(ctx context.Context) ([]User, error) {
 	if raw, code, err = r.get(ctx, "api/users", params); err != nil {
 		return users, err
 	}
-	if code != 200 {
+	if code != http.StatusOK {
 		return users, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	dec := json.NewDecoder(bytes.NewReader(raw))
@@ -134,7 +135,7 @@ func (r *Client) SearchUsersWithPaging(ctx context.Context, query *string, perpa
 	if raw, code, err = r.get(ctx, "api/users/search", params); err != nil {
 		return pageUsers, err
 	}
-	if code != 200 {
+	if code != http.StatusOK {
 		return pageUsers, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	dec := json.NewDecoder(bytes.NewReader(raw))
@@ -152,10 +153,13 @@ func (r *Client) SwitchActualUserContext(ctx context.Context, oid uint) (StatusM
 		raw  []byte
 		resp StatusMessage
 		err  error
+		code int
 	)
-
-	if raw, _, err = r.post(ctx, fmt.Sprintf("/api/user/using/%d", oid), nil, raw); err != nil {
+	if raw, code, err = r.post(ctx, fmt.Sprintf("/api/user/using/%d", oid), nil, raw); err != nil {
 		return StatusMessage{}, err
+	}
+	if code != http.StatusOK {
+		return StatusMessage{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
 		return StatusMessage{}, err

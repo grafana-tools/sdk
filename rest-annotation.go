@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"net/url"
 	"strconv"
 	"time"
@@ -19,12 +20,16 @@ func (r *Client) CreateAnnotation(ctx context.Context, a CreateAnnotationRequest
 		raw  []byte
 		resp StatusMessage
 		err  error
+		code int
 	)
 	if raw, err = json.Marshal(a); err != nil {
 		return StatusMessage{}, errors.Wrap(err, "marshal request")
 	}
-	if raw, _, err = r.post(ctx, "api/annotations", nil, raw); err != nil {
+	if raw, code, err = r.post(ctx, "api/annotations", nil, raw); err != nil {
 		return StatusMessage{}, errors.Wrap(err, "create annotation")
+	}
+	if code != http.StatusOK {
+		return StatusMessage{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
 		return StatusMessage{}, errors.Wrap(err, "unmarshal response message")
@@ -38,12 +43,16 @@ func (r *Client) PatchAnnotation(ctx context.Context, id uint, a PatchAnnotation
 		raw  []byte
 		resp StatusMessage
 		err  error
+		code int
 	)
 	if raw, err = json.Marshal(a); err != nil {
 		return StatusMessage{}, errors.Wrap(err, "marshal request")
 	}
-	if raw, _, err = r.patch(ctx, fmt.Sprintf("api/annotations/%d", id), nil, raw); err != nil {
+	if raw, code, err = r.patch(ctx, fmt.Sprintf("api/annotations/%d", id), nil, raw); err != nil {
 		return StatusMessage{}, errors.Wrap(err, "patch annotation")
+	}
+	if code != http.StatusOK {
+		return StatusMessage{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
 		return StatusMessage{}, errors.Wrap(err, "unmarshal response message")
@@ -58,14 +67,18 @@ func (r *Client) GetAnnotations(ctx context.Context, params ...GetAnnotationsPar
 		err           error
 		resp          []AnnotationResponse
 		requestParams = make(url.Values)
+		code          int
 	)
 
 	for _, p := range params {
 		p(requestParams)
 	}
 
-	if raw, _, err = r.get(ctx, "api/annotations", requestParams); err != nil {
+	if raw, code, err = r.get(ctx, "api/annotations", requestParams); err != nil {
 		return nil, errors.Wrap(err, "get annotations")
+	}
+	if code != http.StatusOK {
+		return nil, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
 		return nil, errors.Wrap(err, "unmarshal response message")
@@ -79,10 +92,14 @@ func (r *Client) DeleteAnnotation(ctx context.Context, id uint) (StatusMessage, 
 		raw  []byte
 		err  error
 		resp StatusMessage
+		code int
 	)
 
-	if raw, _, err = r.delete(ctx, fmt.Sprintf("api/annotations/%d", id)); err != nil {
+	if raw, code, err = r.delete(ctx, fmt.Sprintf("api/annotations/%d", id)); err != nil {
 		return StatusMessage{}, errors.Wrap(err, "delete annotation")
+	}
+	if code != http.StatusOK {
+		return StatusMessage{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
 		return StatusMessage{}, errors.Wrap(err, "unmarshal response message")

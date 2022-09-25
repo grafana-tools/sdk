@@ -34,12 +34,16 @@ func (r *Client) CreateOrg(ctx context.Context, org Org) (StatusMessage, error) 
 		raw  []byte
 		resp StatusMessage
 		err  error
+		code int
 	)
 	if raw, err = json.Marshal(org); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, _, err = r.post(ctx, "api/orgs", nil, raw); err != nil {
+	if raw, code, err = r.post(ctx, "api/orgs", nil, raw); err != nil {
 		return StatusMessage{}, err
+	}
+	if code != http.StatusOK {
+		return StatusMessage{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
 		return StatusMessage{}, err
@@ -59,7 +63,6 @@ func (r *Client) GetAllOrgs(ctx context.Context) ([]Org, error) {
 	if raw, code, err = r.get(ctx, "api/orgs", nil); err != nil {
 		return orgs, err
 	}
-
 	if code != http.StatusOK {
 		return orgs, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
@@ -106,7 +109,6 @@ func (r *Client) GetOrgById(ctx context.Context, oid uint) (Org, error) {
 	if raw, code, err = r.get(ctx, fmt.Sprintf("api/orgs/%d", oid), nil); err != nil {
 		return org, err
 	}
-
 	if code != http.StatusOK {
 		return org, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
@@ -130,7 +132,6 @@ func (r *Client) GetOrgByOrgName(ctx context.Context, name string) (Org, error) 
 	if raw, code, err = r.get(ctx, fmt.Sprintf("api/orgs/name/%s", name), nil); err != nil {
 		return org, err
 	}
-
 	if code != http.StatusOK {
 		return org, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
@@ -149,12 +150,16 @@ func (r *Client) UpdateActualOrg(ctx context.Context, org Org) (StatusMessage, e
 		raw  []byte
 		resp StatusMessage
 		err  error
+		code int
 	)
 	if raw, err = json.Marshal(org); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, _, err = r.put(ctx, "api/org", nil, raw); err != nil {
+	if raw, code, err = r.put(ctx, "api/org", nil, raw); err != nil {
 		return StatusMessage{}, err
+	}
+	if code != http.StatusOK {
+		return StatusMessage{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
 		return StatusMessage{}, err
@@ -169,12 +174,16 @@ func (r *Client) UpdateOrg(ctx context.Context, org Org, oid uint) (StatusMessag
 		raw  []byte
 		resp StatusMessage
 		err  error
+		code int
 	)
 	if raw, err = json.Marshal(org); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, _, err = r.put(ctx, fmt.Sprintf("api/orgs/%d", oid), nil, raw); err != nil {
+	if raw, code, err = r.put(ctx, fmt.Sprintf("api/orgs/%d", oid), nil, raw); err != nil {
 		return StatusMessage{}, err
+	}
+	if code != http.StatusOK {
+		return StatusMessage{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
 		return StatusMessage{}, err
@@ -189,9 +198,13 @@ func (r *Client) DeleteOrg(ctx context.Context, oid uint) (StatusMessage, error)
 		raw  []byte
 		resp StatusMessage
 		err  error
+		code int
 	)
-	if raw, _, err = r.delete(ctx, fmt.Sprintf("api/orgs/%d", oid)); err != nil {
+	if raw, code, err = r.delete(ctx, fmt.Sprintf("api/orgs/%d", oid)); err != nil {
 		return StatusMessage{}, err
+	}
+	if code != http.StatusOK {
+		return StatusMessage{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
 		return StatusMessage{}, err
@@ -252,12 +265,16 @@ func (r *Client) AddActualOrgUser(ctx context.Context, userRole UserRole) (Statu
 		raw  []byte
 		resp StatusMessage
 		err  error
+		code int
 	)
 	if raw, err = json.Marshal(userRole); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, _, err = r.post(ctx, "api/org/users", nil, raw); err != nil {
+	if raw, code, err = r.post(ctx, "api/org/users", nil, raw); err != nil {
 		return StatusMessage{}, err
+	}
+	if code != http.StatusOK {
+		return StatusMessage{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
 		return StatusMessage{}, err
@@ -272,12 +289,16 @@ func (r *Client) UpdateActualOrgUser(ctx context.Context, user UserRole, uid uin
 		raw  []byte
 		resp StatusMessage
 		err  error
+		code int
 	)
 	if raw, err = json.Marshal(user); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, _, err = r.post(ctx, fmt.Sprintf("api/org/users/%d", uid), nil, raw); err != nil {
+	if raw, code, err = r.post(ctx, fmt.Sprintf("api/org/users/%d", uid), nil, raw); err != nil {
 		return StatusMessage{}, err
+	}
+	if code != http.StatusOK {
+		return StatusMessage{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
 		return StatusMessage{}, err
@@ -292,9 +313,13 @@ func (r *Client) DeleteActualOrgUser(ctx context.Context, uid uint) (StatusMessa
 		raw   []byte
 		reply StatusMessage
 		err   error
+		code  int
 	)
-	if raw, _, err = r.delete(ctx, fmt.Sprintf("api/org/users/%d", uid)); err != nil {
+	if raw, code, err = r.delete(ctx, fmt.Sprintf("api/org/users/%d", uid)); err != nil {
 		return StatusMessage{}, err
+	}
+	if code != http.StatusOK {
+		return StatusMessage{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	err = json.Unmarshal(raw, &reply)
 	return reply, err
@@ -307,12 +332,16 @@ func (r *Client) AddOrgUser(ctx context.Context, user UserRole, oid uint) (Statu
 		raw   []byte
 		reply StatusMessage
 		err   error
+		code  int
 	)
 	if raw, err = json.Marshal(user); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, _, err = r.post(ctx, fmt.Sprintf("api/orgs/%d/users", oid), nil, raw); err != nil {
+	if raw, code, err = r.post(ctx, fmt.Sprintf("api/orgs/%d/users", oid), nil, raw); err != nil {
 		return StatusMessage{}, err
+	}
+	if code != http.StatusOK {
+		return StatusMessage{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	err = json.Unmarshal(raw, &reply)
 	return reply, err
@@ -325,12 +354,16 @@ func (r *Client) UpdateOrgUser(ctx context.Context, user UserRole, oid, uid uint
 		raw   []byte
 		reply StatusMessage
 		err   error
+		code  int
 	)
 	if raw, err = json.Marshal(user); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, _, err = r.patch(ctx, fmt.Sprintf("api/orgs/%d/users/%d", oid, uid), nil, raw); err != nil {
+	if raw, code, err = r.patch(ctx, fmt.Sprintf("api/orgs/%d/users/%d", oid, uid), nil, raw); err != nil {
 		return StatusMessage{}, err
+	}
+	if code != http.StatusOK {
+		return StatusMessage{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	err = json.Unmarshal(raw, &reply)
 	return reply, err
@@ -343,9 +376,13 @@ func (r *Client) DeleteOrgUser(ctx context.Context, oid, uid uint) (StatusMessag
 		raw   []byte
 		reply StatusMessage
 		err   error
+		code  int
 	)
-	if raw, _, err = r.delete(ctx, fmt.Sprintf("api/orgs/%d/users/%d", oid, uid)); err != nil {
+	if raw, code, err = r.delete(ctx, fmt.Sprintf("api/orgs/%d/users/%d", oid, uid)); err != nil {
 		return StatusMessage{}, err
+	}
+	if code != http.StatusOK {
+		return StatusMessage{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	err = json.Unmarshal(raw, &reply)
 	return reply, err
@@ -358,12 +395,16 @@ func (r *Client) UpdateActualOrgPreferences(ctx context.Context, prefs Preferenc
 		raw  []byte
 		resp StatusMessage
 		err  error
+		code int
 	)
 	if raw, err = json.Marshal(prefs); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, _, err = r.put(ctx, "api/org/preferences/", nil, raw); err != nil {
+	if raw, code, err = r.put(ctx, "api/org/preferences/", nil, raw); err != nil {
 		return StatusMessage{}, err
+	}
+	if code != http.StatusOK {
+		return StatusMessage{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
 		return StatusMessage{}, err
@@ -377,13 +418,12 @@ func (r *Client) GetActualOrgPreferences(ctx context.Context) (Preferences, erro
 	var (
 		raw  []byte
 		pref Preferences
-		code int
 		err  error
+		code int
 	)
 	if raw, code, err = r.get(ctx, "/api/org/preferences", nil); err != nil {
 		return pref, err
 	}
-
 	if code != http.StatusOK {
 		return pref, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
@@ -402,12 +442,16 @@ func (r *Client) UpdateActualOrgAddress(ctx context.Context, address Address) (S
 		raw  []byte
 		resp StatusMessage
 		err  error
+		code int
 	)
 	if raw, err = json.Marshal(address); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, _, err = r.put(ctx, "api/org/address", nil, raw); err != nil {
+	if raw, code, err = r.put(ctx, "api/org/address", nil, raw); err != nil {
 		return StatusMessage{}, err
+	}
+	if code != http.StatusOK {
+		return StatusMessage{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
 		return StatusMessage{}, err
@@ -422,12 +466,16 @@ func (r *Client) UpdateOrgAddress(ctx context.Context, address Address, oid uint
 		raw  []byte
 		resp StatusMessage
 		err  error
+		code int
 	)
 	if raw, err = json.Marshal(address); err != nil {
 		return StatusMessage{}, err
 	}
-	if raw, _, err = r.put(ctx, fmt.Sprintf("api/orgs/%d/address", oid), nil, raw); err != nil {
+	if raw, code, err = r.put(ctx, fmt.Sprintf("api/orgs/%d/address", oid), nil, raw); err != nil {
 		return StatusMessage{}, err
+	}
+	if code != http.StatusOK {
+		return StatusMessage{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	if err = json.Unmarshal(raw, &resp); err != nil {
 		return StatusMessage{}, err

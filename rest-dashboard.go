@@ -24,6 +24,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
@@ -193,21 +194,25 @@ func (r *Client) getRawDashboard(ctx context.Context, path string) ([]byte, Boar
 			Meta  BoardProperties `json:"meta"`
 			Board json.RawMessage `json:"dashboard"`
 		}
-		code int
-		err  error
+		code       int
+		err        error
+		boardBytes []byte
 	)
+
 	if raw, code, err = r.get(ctx, fmt.Sprintf("api/dashboards/%s", path), nil); err != nil {
 		return nil, BoardProperties{}, err
 	}
-	if code != 200 {
-		return nil, BoardProperties{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
+
+	if code != http.StatusOK {
+		return nil, BoardProperties{}, httpStatusCodeError(code, fmt.Sprintf("dashboard with path %q", path), raw)
 	}
+
 	dec := json.NewDecoder(bytes.NewReader(raw))
 	dec.UseNumber()
-	if err := dec.Decode(&result); err != nil {
-		return nil, BoardProperties{}, errors.Wrap(err, "unmarshal board")
-	}
-	return []byte(result.Board), result.Meta, err
+	err = dec.Decode(&result)
+	boardBytes = []byte(result.Board)
+
+	return boardBytes, result.Meta, err
 }
 
 // GetRawDashboardByUID loads a dashboard and its metadata from Grafana by dashboard uid.
@@ -283,7 +288,7 @@ func (r *Client) Search(ctx context.Context, params ...SearchParam) ([]FoundBoar
 	if raw, code, err = r.get(ctx, "api/search", q); err != nil {
 		return nil, err
 	}
-	if code != 200 {
+	if code != http.StatusOK {
 		return nil, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	err = json.Unmarshal(raw, &boards)
@@ -334,13 +339,14 @@ func (r *Client) SetDashboard(ctx context.Context, board Board, params SetDashbo
 	if raw, code, err = r.post(ctx, "api/dashboards/db", nil, raw); err != nil {
 		return StatusMessage{}, err
 	}
-	if err = json.Unmarshal(raw, &resp); err != nil {
-		return StatusMessage{}, err
+
+	if code != http.StatusOK {
+		return StatusMessage{}, httpStatusCodeError(code, fmt.Sprintf("database dashboard with uid %q", board.UID), raw)
 	}
-	if code != 200 {
-		return resp, fmt.Errorf("HTTP error %d: returns %s", code, *resp.Message)
-	}
-	return resp, nil
+
+	err = json.Unmarshal(raw, &resp)
+
+	return resp, err
 }
 
 //SetRawDashboardWithParam sends the serialized along with request parameters
@@ -362,7 +368,7 @@ func (r *Client) SetRawDashboardWithParam(ctx context.Context, request RawBoardR
 	if err = json.Unmarshal(rawResp, &resp); err != nil {
 		return StatusMessage{}, err
 	}
-	if code != 200 {
+	if code != http.StatusOK {
 		return StatusMessage{}, fmt.Errorf("HTTP error %d: returns %s", code, *resp.Message)
 	}
 	return resp, nil
@@ -397,12 +403,16 @@ func (r *Client) DeleteDashboard(ctx context.Context, slug string) (StatusMessag
 		raw           []byte
 		reply         StatusMessage
 		err           error
+		code          int
 	)
 	if slug, isBoardFromDB = cleanPrefix(slug); !isBoardFromDB {
 		return StatusMessage{}, errors.New("only database dashboards (with 'db/' prefix in a slug) can be removed")
 	}
-	if raw, _, err = r.delete(ctx, fmt.Sprintf("api/dashboards/db/%s", slug)); err != nil {
+	if raw, code, err = r.delete(ctx, fmt.Sprintf("api/dashboards/db/%s", slug)); err != nil {
 		return StatusMessage{}, err
+	}
+	if code != http.StatusOK {
+		return StatusMessage{}, fmt.Errorf("HTTP error %d: returns %s", code, raw)
 	}
 	err = json.Unmarshal(raw, &reply)
 	return reply, err
@@ -415,11 +425,18 @@ func (r *Client) DeleteDashboardByUID(ctx context.Context, uid string) (StatusMe
 		raw   []byte
 		reply StatusMessage
 		err   error
+		code  int
 	)
-	if raw, _, err = r.delete(ctx, fmt.Sprintf("api/dashboards/uid/%s", uid)); err != nil {
+	if raw, code, err = r.delete(ctx, fmt.Sprintf("api/dashboards/uid/%s", uid)); err != nil {
 		return StatusMessage{}, err
 	}
+
+	if code != http.StatusOK {
+		return StatusMessage{}, httpStatusCodeError(code, fmt.Sprintf("dashboard with uid %q", uid), raw)
+	}
+
 	err = json.Unmarshal(raw, &reply)
+
 	return reply, err
 }
 
