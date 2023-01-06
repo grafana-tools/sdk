@@ -263,6 +263,31 @@ func TestNewGraph(t *testing.T) {
 	}
 }
 
+func TestNewTimeseries(t *testing.T) {
+	var title = "Sample Title"
+
+	timeseries := sdk.NewTimeseries(title)
+
+	if timeseries.TimeseriesPanel == nil {
+		t.Error("should be not nil")
+	}
+	if timeseries.GraphPanel != nil {
+		t.Error("should be nil")
+	}
+	if timeseries.TextPanel != nil {
+		t.Error("should be nil")
+	}
+	if timeseries.DashlistPanel != nil {
+		t.Error("should be nil")
+	}
+	if timeseries.SinglestatPanel != nil {
+		t.Error("should be nil")
+	}
+	if timeseries.Title != title {
+		t.Errorf("title should be %s but %s", title, timeseries.Title)
+	}
+}
+
 func TestGraph_AddTarget(t *testing.T) {
 	var target = sdk.Target{
 		RefID:      "A",
@@ -620,7 +645,7 @@ func TestPanel_Stackdriver_ParsedTargets(t *testing.T) {
 			  ]
 			}
 		  ]
-		}
+    }
 	  ],
 	  "alignmentPeriod": "stackdriver-auto",
 	  "crossSeriesReducer": "REDUCE_MEAN",
@@ -630,7 +655,7 @@ func TestPanel_Stackdriver_ParsedTargets(t *testing.T) {
 		"=",
 		"some_subscription_id"
 	  ],
-	  "groupBys": [],
+	  "groupBy": [],
 	  "metricKind": "DELTA",
 	  "metricType": "pubsub.googleapis.com/subscription/ack_message_count",
 	  "perSeriesAligner": "ALIGN_DELTA",
@@ -689,9 +714,143 @@ func TestPanel_Stackdriver_ParsedTargets(t *testing.T) {
 		t.Fatalf("%s", err)
 	}
 	if len(graph.GraphPanel.Targets) != 1 {
-		t.Errorf("should be 1 but %d", len(graph.GraphPanel.Targets))
+		t.Fatalf("should be 1 but %d", len(graph.GraphPanel.Targets))
 	}
 	if graph.GraphPanel.Targets[0].MetricType != "pubsub.googleapis.com/subscription/ack_message_count" {
 		t.Fatalf("should be \"pubsub.googleapis.com/subscription/ack_message_count\" but is not")
 	}
+}
+
+func TestPanel_Timeseries(t *testing.T) {
+	var rawPanel = []byte(`{
+		"id": 2,
+		"gridPos": {
+		  "x": 0,
+		  "y": 0,
+		  "w": 12,
+		  "h": 9
+		},
+		"type": "timeseries",
+		"title": "Panel Title",
+		"options": {
+		"tooltip": {
+		  "mode": "single"
+		},
+		"legend": {
+		  "displayMode": "list",
+		  "placement": "bottom",
+		  "calcs": []
+		}
+		},
+		"fieldConfig": {
+		"defaults": {
+		  "custom": {
+		  "drawStyle": "line",
+		  "lineInterpolation": "linear",
+		  "barAlignment": 0,
+		  "lineWidth": 1,
+		  "fillOpacity": 0,
+		  "gradientMode": "none",
+		  "spanNulls": false,
+		  "showPoints": "auto",
+		  "pointSize": 5,
+		  "stacking": {
+			"mode": "none",
+			"group": "A"
+		  },
+		  "axisPlacement": "auto",
+		  "axisLabel": "",
+		  "scaleDistribution": {
+			"type": "linear"
+		  },
+		  "hideFrom": {
+			"tooltip": false,
+			"viz": false,
+			"legend": false
+		  },
+		  "thresholdsStyle": {
+			"mode": "off"
+		  }
+		  },
+		  "color": {
+		  "mode": "palette-classic"
+		  },
+		  "thresholds": {
+		  "mode": "absolute",
+		  "steps": [
+			{
+			"value": 0.1,
+			"color": "green"
+			},
+			{
+			"value": 80,
+			"color": "red"
+			}
+		  ]
+		  },
+		  "mappings": []
+		},
+		"overrides": []
+		},
+		"targets": [
+		  {
+			"expr": "test_expr",
+			"legendFormat": "",
+			"interval": "",
+			"exemplar": true,
+			"refId": "A",
+			"datasource": "Sample datasource"
+		  }
+		],
+		"datasource": null
+	}`)
+	var timeseries sdk.Panel
+	err := json.Unmarshal(rawPanel, &timeseries)
+
+	if err != nil {
+		t.Fatalf("%s", err)
+	}
+
+	if len(timeseries.TimeseriesPanel.Targets) != 1 {
+		t.Fatalf("should be 1 but %d", len(timeseries.TimeseriesPanel.Targets))
+	}
+}
+
+// TestCustomPanelOutput_MarshalJSON marshals new custom panel to JSON,
+// then marshals that json to map[string]interface{},\
+// and then checks both custom and non-custom keys are present and correct.
+func TestCustomPanelOutput_MarshalJSON(t *testing.T) {
+	var (
+		titleKey    = "title"
+		titleValue  = "test title"
+		customKey   = "test_key"
+		customValue = "bar_value"
+	)
+	p := sdk.NewCustom(titleValue)
+	custom := map[string]interface{}(*p.CustomPanel)
+	custom[customKey] = customValue
+	b, err := json.Marshal(p)
+	if err != nil {
+		t.Fatalf("failed to marshal custom panel: %v", err)
+	}
+	var j = make(map[string]interface{})
+	err = json.Unmarshal(b, &j)
+	if err != nil {
+		t.Fatalf("failed to unmarshal: %v", err)
+	}
+	val, ok := j[customKey]
+	if !ok {
+		t.Fatalf("failed to find key %s in map %v", customKey, j)
+	}
+	if val != customValue {
+		t.Fatalf("wrong value of %s: got %s, expected %s", customKey, val, customValue)
+	}
+	val, ok = j[titleKey]
+	if !ok {
+		t.Fatalf("failed to find key %s in map %v", titleKey, j)
+	}
+	if val != titleValue {
+		t.Fatalf("wrong value of %s: got %s, expected %s", titleKey, val, titleValue)
+	}
+
 }

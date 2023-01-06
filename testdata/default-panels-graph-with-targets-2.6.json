@@ -78,7 +78,14 @@
               "legendFormat": "changes",
               "refId": "B",
               "step": 21,
-              "datasource": "Prometheus"
+              "datasource": "Prometheus",
+              "tags": [
+                {
+                  "key": "key",
+                  "operator": "=",
+                  "value": "testvalue"
+                }
+              ]
             }
           ],
           "timeFrom": null,
