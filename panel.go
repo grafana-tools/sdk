@@ -585,7 +585,8 @@ type Target struct {
 	Format         string `json:"format,omitempty"`
 
 	// For InfluxDB
-	Measurement string `json:"measurement,omitempty"`
+	Measurement  string `json:"measurement,omitempty"`
+	ResultFormat string `json:"resultFormat,omitempty"`
 
 	// For Elasticsearch
 	DsType  *string `json:"dsType,omitempty"`
