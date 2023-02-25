@@ -57,13 +57,13 @@ type BoardProperties struct {
 	FolderURL   string    `json:"folderUrl"`
 }
 
-//RawBoardRequest struct that wraps Board and parameters being sent
+// RawBoardRequest struct that wraps Board and parameters being sent
 type RawBoardRequest struct {
 	Dashboard  []byte
 	Parameters SetDashboardParams
 }
 
-//MarshalJSON serializes the request to match the expectations of the grafana API.
+// MarshalJSON serializes the request to match the expectations of the grafana API.
 // Additionally, if preseveID is false, then the dashboard id is set to 0
 func (d RawBoardRequest) MarshalJSON() ([]byte, error) {
 	var raw []byte
@@ -294,8 +294,10 @@ func (r *Client) Search(ctx context.Context, params ...SearchParam) ([]FoundBoar
 // that affects where and how the dashboard will be stored
 type SetDashboardParams struct {
 	FolderID   int
+	FolderUID  *string
 	Overwrite  bool
 	PreserveId bool `json:"-"`
+	Message    *string
 }
 
 // SetDashboard updates existing dashboard or creates a new one.
@@ -310,9 +312,11 @@ func (r *Client) SetDashboard(ctx context.Context, board Board, params SetDashbo
 	var (
 		isBoardFromDB bool
 		newBoard      struct {
-			Dashboard Board `json:"dashboard"`
-			FolderID  int   `json:"folderId"`
-			Overwrite bool  `json:"overwrite"`
+			Dashboard Board   `json:"dashboard"`
+			FolderID  int     `json:"folderId"`
+			FolderUID *string `json:"folderUid"`
+			Overwrite bool    `json:"overwrite"`
+			Message   *string `json:"message"`
 		}
 		raw  []byte
 		resp StatusMessage
@@ -327,6 +331,12 @@ func (r *Client) SetDashboard(ctx context.Context, board Board, params SetDashbo
 	newBoard.Overwrite = params.Overwrite
 	if !params.Overwrite {
 		newBoard.Dashboard.ID = 0
+	}
+	if params.Message != nil {
+		newBoard.Message = params.Message
+	}
+	if params.FolderUID != nil {
+		newBoard.FolderUID = params.FolderUID
 	}
 	if raw, err = json.Marshal(newBoard); err != nil {
 		return StatusMessage{}, err
@@ -343,7 +353,7 @@ func (r *Client) SetDashboard(ctx context.Context, board Board, params SetDashbo
 	return resp, nil
 }
 
-//SetRawDashboardWithParam sends the serialized along with request parameters
+// SetRawDashboardWithParam sends the serialized along with request parameters
 func (r *Client) SetRawDashboardWithParam(ctx context.Context, request RawBoardRequest) (StatusMessage, error) {
 	var (
 		rawResp []byte
